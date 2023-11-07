@@ -40,6 +40,8 @@ android {
 
 dependencies {
 
+    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.compose.ui:ui:1.3.0")
     implementation("androidx.compose.material3:material3:1.1.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
@@ -47,7 +49,7 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
 
-    implementation("com.android.tools.build:gradle:8.1.0")
+    implementation("com.android.tools.build:gradle:7.1.3")
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin")
 
 }
