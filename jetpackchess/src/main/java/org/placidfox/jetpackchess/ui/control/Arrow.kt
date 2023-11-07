@@ -2,7 +2,12 @@ package org.placidfox.jetpackchess.ui.control
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,28 +22,31 @@ fun Arrow (uiState: UIViewModel) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Button(onClick = {uiState.changeActivePosition(0)},
-            enabled = !uiState.isFirstPosition.value
+            enabled = uiState.isFirstPosition.value
 
         ){
-            Text("First")
+            //Text("First")
+            Icon(Icons.Default.KeyboardArrowLeft, contentDescription = "switch_Icon")
+            Icon(Icons.Default.KeyboardArrowLeft, contentDescription = "switch_Icon")
         }
         Button(onClick = {uiState.backActivePosition()},
             enabled = uiState.isActivePositionFirst.value
 
         ){
-            Text("Back")
+            Icon(Icons.Default.KeyboardArrowLeft, contentDescription = "switch_Icon")
         }
         Button(onClick = {uiState.forwardActivePosition()
         },
             enabled = uiState.isActivePositionLast.value
         ) {
-            Text("Forward")
+            Icon(Icons.Default.KeyboardArrowRight, contentDescription = "switch_Icon")
         }
         Button(onClick = {uiState.changeActivePosition(uiState.gameTimeline.positionsTimeline.lastIndex)
         },
-            enabled = !uiState.isLastPosition.value
+            enabled = uiState.isLastPosition.value
         ) {
-            Text("Last")
+            Icon(Icons.Default.KeyboardArrowRight, contentDescription = "switch_Icon")
+            Icon(Icons.Default.KeyboardArrowRight, contentDescription = "switch_Icon")
         }
 
     }

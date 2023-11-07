@@ -1,5 +1,6 @@
 package org.placidfox.jetpackchess.viewModel
 
+import org.placidfox.jetpackchess.controller.JetpackChessMode
 import org.placidfox.jetpackchess.model.board.Board
 import org.placidfox.jetpackchess.model.board.Coordinate
 import org.placidfox.jetpackchess.model.game.GamePosition
@@ -8,6 +9,47 @@ import org.placidfox.jetpackchess.model.game.parameters.CastlingStatus
 import org.placidfox.jetpackchess.model.game.parameters.EnPassantStatus
 import org.placidfox.jetpackchess.model.move.AppliedMove
 import org.placidfox.jetpackchess.model.piece.*
+
+
+fun UIViewModel.updateButtonState(){
+
+    isActivePositionFirst.value = activePositionIndex > 0
+    isFirstPosition.value = activePositionIndex != 0
+
+    when(mode){
+        JetpackChessMode.GAME, JetpackChessMode.OPENING_SCROLL -> {
+            isActivePositionLast.value = activePositionIndex < gameTimeline.positionsTimeline.lastIndex
+            isLastPosition.value = (activePositionIndex != gameTimeline.positionsTimeline.lastIndex)
+        }
+        JetpackChessMode.PUZZLE, JetpackChessMode.OPENING_TEST -> {
+            isActivePositionLast.value = activePositionIndex < maxSeenPosition
+            isLastPosition.value = maxSeenPosition == gameTimeline.positionsTimeline.lastIndex && activePositionIndex < gameTimeline.positionsTimeline.lastIndex
+        }
+
+    }
+
+}
+
+fun UIViewModel.initText(){
+    when(mode){
+        JetpackChessMode.GAME -> textState.value = "Game in Progress"
+        JetpackChessMode.PUZZLE -> textState.value = "Puzzle in Progress"
+        JetpackChessMode.OPENING_TEST -> textState.value = "Opening Test in Progress"
+        JetpackChessMode.OPENING_SCROLL -> textState.value = "Scroll an Opening"
+    }
+}
+
+fun UIViewModel.updateText(){
+
+    when(mode){
+        JetpackChessMode.GAME -> TODO()
+        JetpackChessMode.PUZZLE, JetpackChessMode.OPENING_TEST  -> if(activePositionIndex == gameTimeline.positionsTimeline.lastIndex){
+            textState.value = "Finish"
+        }
+        JetpackChessMode.OPENING_SCROLL -> TODO()
+    }
+
+}
 
 
 fun UIViewModel.askPromotion(){
@@ -19,7 +61,6 @@ fun UIViewModel.promotionChoice(chosenPiece: Class<out Piece>){
     validateMove(proposedMove!!)
     switchPromotionDialog()
 }
-
 
 fun addMoveMadeGamePosition(gamePosition: GamePosition, moveUCI: AppliedMove) {
     gamePosition.nextMove = moveUCI

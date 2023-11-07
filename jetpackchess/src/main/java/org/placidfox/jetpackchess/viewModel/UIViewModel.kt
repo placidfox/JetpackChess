@@ -18,20 +18,20 @@ import org.placidfox.jetpackchess.model.piece.*
 import org.placidfox.jetpackchess.ui.board.BoardColor
 
 class UIViewModel (
-    private val mode: JetpackChessMode,
+    val mode: JetpackChessMode,
     val gameTimeline: GameTimeline,
     private val boardOrientation : PlayerColor,
     private val boardColor: BoardColor,
     //val toolbarState: ToolbarState = ToolbarState,
 ): ViewModel() {
 
-    private var activePositionIndex: Int = 0
+    var activePositionIndex: Int = 0
         set(value) {
             field = value
             updateActivePosition()
         }
 
-    private var maxSeenPosition: Int = 0
+    var maxSeenPosition: Int = 0
 
     val activePosition: MutableState<GamePosition> = mutableStateOf(gameTimeline.positionsTimeline[activePositionIndex])
 
@@ -41,7 +41,9 @@ class UIViewModel (
     val isFirstPosition: MutableState<Boolean> = mutableStateOf(false)
     val isLastPosition: MutableState<Boolean> = mutableStateOf(false)
 
-    val isMaxSeenPosition: MutableState<Boolean> = mutableStateOf(false)
+    private val isMaxSeenPosition: MutableState<Boolean> = mutableStateOf(false)
+
+    val textState: MutableState<String> = mutableStateOf("In Progress...")
 
     var activePlayer = mutableStateOf(PlayerColor.WHITE)
 
@@ -188,6 +190,8 @@ class UIViewModel (
         changeActivePosition(index)
         maxSeenPosition = index
         isMaxSeenPosition.value = false
+        updateButtonState()
+        initText()
     }
 
     fun changeActivePosition(index: Int) {
@@ -230,11 +234,9 @@ class UIViewModel (
     private fun updateActivePosition() {
         activePosition.value = gameTimeline.positionsTimeline[activePositionIndex]
         activePlayer.value = activePosition.value.activePlayer
-        isActivePositionLast.value = activePositionIndex < gameTimeline.positionsTimeline.lastIndex
-        isActivePositionFirst.value = activePositionIndex > 0
-        isFirstPosition.value = (activePositionIndex == 0)
-        isLastPosition.value = (activePositionIndex == gameTimeline.positionsTimeline.lastIndex)
         score.value = activePosition.value.calculateScore(boardOrientation) // copy from getter() ?
+        updateButtonState()
+        updateText()
     }
 
 }

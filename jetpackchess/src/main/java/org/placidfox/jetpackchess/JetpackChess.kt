@@ -19,6 +19,7 @@ import org.placidfox.jetpackchess.model.piece.*
 import org.placidfox.jetpackchess.ui.board.BoardComposable
 import org.placidfox.jetpackchess.ui.control.Arrow
 import org.placidfox.jetpackchess.ui.control.PromotionDialog
+import org.placidfox.jetpackchess.ui.control.StatusBar
 import org.placidfox.jetpackchess.ui.control.SwitchOrientation
 
 
@@ -33,20 +34,12 @@ fun JetpackChess(controller: Controller){
         BoardComposable(controller.uiState)
         Arrow(controller.uiState)
         SwitchOrientation(controller.uiState)
+        StatusBar(controller.uiState)
+
+
         if(controller.uiState.showPromotionDialog.value) {
             PromotionDialog(uiState = controller.uiState)
         }
-        Button(onClick = { controller.reset() }) {
-            Text("Reset")
-        }
-        Button(onClick = {
-            controller.newPuzzle(FEN_DEFAULT_POSITION, testEnPassant, metadataOpening, PlayerColor.BLACK, true)
-
-        }) {
-            Text("New Puzzle Test")
-        }
-
-
 
     }
 
@@ -62,6 +55,8 @@ val testVariationPromotion = "e2e4 c7b1R d2c8n d7d5"
 val testEnPassant = "e2e4 a7a6 e4e5 a6a5 g2g4 a5a4 g4g5 f7f5 g5f6"
 val testEnPassantandCaptureFirst = "e5f6 e7f6"
 
+val puzzlewhite = listOf("2r3k1/1q3ppp/B3pbb1/2Rp4/P7/1Q2P2P/1P4P1/6K1 b - - 2 27", "b7b3 c5c8 f6d8 c8d8")
+val puzzleblack = listOf("8/2r3k1/5p2/3Q4/P2P4/4PN2/5PPP/6K1 w - - 3 31", "d5e4 c7c1 f3e1 c1e1")
 
 var mapMetadata = mapOf(
     Metadata.OPENING_NAME to "Caro-Kann",
