@@ -33,7 +33,6 @@ fun SquareComposable(uiState: UIViewModel, square: Square){
         DecoratorPreviousMoves(uiState, square)
         Coordinate(uiState, square)
         PieceComposable(uiState, square)
-
     }
 
 }

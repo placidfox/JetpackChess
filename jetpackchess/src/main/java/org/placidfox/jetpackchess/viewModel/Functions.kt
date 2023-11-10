@@ -42,11 +42,11 @@ fun UIViewModel.initText(){
 fun UIViewModel.updateText(){
 
     when(mode){
-        JetpackChessMode.GAME -> TODO()
+        JetpackChessMode.GAME -> {} // TODO()
         JetpackChessMode.PUZZLE, JetpackChessMode.OPENING_TEST  -> if(activePositionIndex == gameTimeline.positionsTimeline.lastIndex){
             textState.value = "Finish"
         }
-        JetpackChessMode.OPENING_SCROLL -> TODO()
+        JetpackChessMode.OPENING_SCROLL -> {} // TODO()
     }
 
 }

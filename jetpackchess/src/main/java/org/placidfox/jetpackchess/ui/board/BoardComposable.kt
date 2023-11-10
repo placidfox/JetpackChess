@@ -1,7 +1,10 @@
 package org.placidfox.jetpackchess.ui.board
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import org.placidfox.jetpackchess.model.piece.PlayerColor.*
@@ -13,13 +16,23 @@ fun BoardComposable (uiState: UIViewModel){
     when(uiState.boardOrientationState.value) {
 
         WHITE ->
-            Box(Modifier.fillMaxWidth().aspectRatio(1f)) {
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f)) {
                 Row {
                     for (file in 1..8) {
                         Column (modifier = Modifier.weight(1f)) {
                             for (rank in 8 downTo 1) {
-                                //SquareComposable(uiState, uiState.gameTimeline.positionsTimeline[uiState.activePositionIndex.value].board.getSquare(file, rank))
-                                SquareComposable(uiState, uiState.activePosition.value.board.getSquare(file, rank))
+                                Box(
+                                    modifier = Modifier
+                                        .aspectRatio(1f)
+                                        .clickable { },
+                                    contentAlignment = Alignment.Center
+
+                                ) {
+                                    SquareComposable(uiState, uiState.activePosition.value.board.getSquare(file, rank))
+                                }
                             }
                         }
 
@@ -28,7 +41,10 @@ fun BoardComposable (uiState: UIViewModel){
             }
 
         BLACK ->
-            Box (Modifier.fillMaxWidth().aspectRatio(1f)) {
+            Box (
+                Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f)) {
                 Row {
                     for (file in 8 downTo 1) {
                         Column(modifier = Modifier.weight(1f)) {
