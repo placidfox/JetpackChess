@@ -21,13 +21,13 @@ fun Coordinate(uiState: UIViewModel, square: Square){
 
         PlayerColor.WHITE -> {
 
-            if (square.position.file == 8) {
+            if (square.coordinate.file == 8) {
                 BoxWithConstraints(modifier = Modifier.fillMaxSize(0.95f),
                     contentAlignment = Alignment.TopEnd){
 
                     val boxWithConstraintsScope = this
 
-                    Text(text = square.position.rank.toString(),
+                    Text(text = square.coordinate.rank.toString(),
                         fontSize = boxWithConstraintsScope.maxHeight.value.sp / 5,
                         fontWeight = FontWeight.Bold,
                         color = if (square.isLight) {
@@ -39,7 +39,7 @@ fun Coordinate(uiState: UIViewModel, square: Square){
 
                 }
             }
-            if (square.position.rank == 1) {
+            if (square.coordinate.rank == 1) {
                 BoxWithConstraints(
                     modifier = Modifier.fillMaxSize(0.95f),
                     contentAlignment = Alignment.BottomStart
@@ -48,10 +48,10 @@ fun Coordinate(uiState: UIViewModel, square: Square){
                     val boxWithConstraintsScope = this
 
                     Text(
-                        text = square.position.fileLetter.toString(),
+                        text = square.coordinate.fileLetter.toString(),
                         fontSize = boxWithConstraintsScope.maxHeight.value.sp / 5,
                         fontWeight = FontWeight.Bold,
-                        color = if (square.position.isLightSquare()) {
+                        color = if (square.coordinate.isLightSquare()) {
                             uiState.boardColorState.value.darkSquareColor
                         } else {
                             uiState.boardColorState.value.lightSquareColor
@@ -65,13 +65,13 @@ fun Coordinate(uiState: UIViewModel, square: Square){
         }
 
         PlayerColor.BLACK -> {
-            if (square.position.file == 1) {
+            if (square.coordinate.file == 1) {
                 BoxWithConstraints(modifier = Modifier.fillMaxSize(0.95f),
                     contentAlignment = Alignment.TopEnd){
 
                     val boxWithConstraintsScope = this
 
-                    Text(text = square.position.rank.toString(),
+                    Text(text = square.coordinate.rank.toString(),
                         fontSize = boxWithConstraintsScope.maxHeight.value.sp / 5,
                         fontWeight = FontWeight.Bold,
                         color = if (square.isLight) {
@@ -85,7 +85,7 @@ fun Coordinate(uiState: UIViewModel, square: Square){
             }
 
 
-            if (square.position.rank == 8) {
+            if (square.coordinate.rank == 8) {
 
                 BoxWithConstraints(
                     modifier = Modifier.fillMaxSize(0.95f),
@@ -95,7 +95,7 @@ fun Coordinate(uiState: UIViewModel, square: Square){
                     val boxWithConstraintsScope = this
 
                     Text(
-                        text = square.position.fileLetter.toString(),
+                        text = square.coordinate.fileLetter.toString(),
                         fontSize = boxWithConstraintsScope.maxHeight.value.sp / 5,
                         fontWeight = FontWeight.Bold,
                         color = if (square.isLight) {

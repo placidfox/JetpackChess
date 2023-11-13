@@ -1,6 +1,8 @@
 package org.placidfox.jetpackchess.model.piece
 
 import org.placidfox.jetpackchess.R
+import org.placidfox.jetpackchess.model.board.Square
+import org.placidfox.jetpackchess.model.game.GamePosition
 
 class Knight(override val color: PlayerColor) : Piece {
 

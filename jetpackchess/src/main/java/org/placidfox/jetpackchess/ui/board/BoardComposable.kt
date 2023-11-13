@@ -18,7 +18,6 @@ fun BoardComposable (uiState: UIViewModel){
                     for (file in 1..8) {
                         Column (modifier = Modifier.weight(1f)) {
                             for (rank in 8 downTo 1) {
-                                //SquareComposable(uiState, uiState.gameTimeline.positionsTimeline[uiState.activePositionIndex.value].board.getSquare(file, rank))
                                 SquareComposable(uiState, uiState.activePosition.value.board.getSquare(file, rank))
                             }
                         }
@@ -52,10 +51,5 @@ enum class BoardColor (val lightSquareColor: Color, val darkSquareColor: Color){
     Blue(Color(red = 225 , green = 235, blue = 238), Color(red = 114, green = 160, blue = 193)),
 }
 
-enum class DecoratorColor (val color: Color){
-    SELECTED_SQUARE(Color.Blue),
-    PREVIOUS_MOVE_COLOR(Color.Yellow),
-    CHECK_COLOR(Color.Red)
 
-}
 

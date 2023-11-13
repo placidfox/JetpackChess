@@ -21,6 +21,8 @@ interface Piece {
     /** List of accessible squares without Illegal Moves (ifChecked or Pinned Pieces) **/
     fun accessibleSquares(gamePosition: GamePosition): List<Square> = emptyList()
 
+
+
 }
 
 

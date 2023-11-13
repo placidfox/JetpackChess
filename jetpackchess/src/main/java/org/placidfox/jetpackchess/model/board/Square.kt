@@ -8,24 +8,24 @@ import org.placidfox.jetpackchess.model.piece.PlayerColor
 
 
 data class Square(
-    val position: Coordinate,
+    val coordinate: Coordinate,
     val piece: Piece? = null
 ) {
 
     val file: Int =
-        position.file
+        coordinate.file
 
     val rank: Int =
-        position.rank
+        coordinate.rank
 
     val coordinateText: String =
-        position.textName
+        coordinate.textName
 
     val isLight: Boolean =
-        position.isLightSquare()
+        coordinate.isLightSquare()
 
     val isDark: Boolean =
-        position.isDarkSquare()
+        coordinate.isDarkSquare()
 
     val isEmpty: Boolean
         get() = piece == null

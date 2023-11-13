@@ -31,6 +31,7 @@ fun SquareComposable(uiState: UIViewModel, square: Square){
         DecoratorSelected(uiState, square)
         DecoratorDestination(uiState, square)
         DecoratorPreviousMoves(uiState, square)
+        DecoratorWrongMove(uiState, square)
         Coordinate(uiState, square)
         PieceComposable(uiState, square)
 

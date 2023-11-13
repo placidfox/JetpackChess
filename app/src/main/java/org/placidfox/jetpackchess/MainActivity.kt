@@ -8,6 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 
 import androidx.compose.ui.Modifier
+import org.placidfox.jetpackchess.controller.GameController
 import org.placidfox.jetpackchess.controller.OpeningScrollController
 import org.placidfox.jetpackchess.controller.OpeningTestController
 import org.placidfox.jetpackchess.controller.PuzzleController
@@ -21,20 +22,15 @@ import org.placidfox.jetpackchess.ui.theme.JetpackChessTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        val controller = OpeningTestController()
+        val controller = PuzzleController()
 
-        //controller.newPuzzleLichess(puzzlewhite[0], puzzlewhite[1], metadataOpening)
-        //controller.newPuzzleLichess(puzzleblack[0], puzzleblack[1], metadataOpening)
-        //controller.newPuzzleLichess(puzzlewhitepromotion[0], puzzlewhitepromotion[1], metadataOpening)
-
-        //controller.newOpening(uciVariation = openingwhite[1], metadata = metadataOpening, playerSide = PlayerColor.WHITE)
-        controller.newOpening(uciVariation = openingblack[1], metadata = metadataOpening, playerSide = PlayerColor.BLACK)
+        controller.newPuzzleLichess(puzzlewhite[0], puzzlewhite[1], metadataPuzzle)
 
 
         super.onCreate(savedInstanceState)
         setContent {
             JetpackChessTheme {
-                // A surface container using the 'background' color from the theme
+
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
 
                     JetpackChess(controller)

@@ -20,7 +20,9 @@ import org.placidfox.jetpackchess.viewModel.promotionChoice
 fun PromotionDialog(
     uiState: UIViewModel,
 ){
-    Dialog(onDismissRequest = { uiState.showPromotionDialog.value = false  }, ) {
+    Dialog(
+        onDismissRequest = {},
+        ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()

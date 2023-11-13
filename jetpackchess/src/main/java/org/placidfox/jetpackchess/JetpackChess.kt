@@ -4,9 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,10 +15,8 @@ import org.placidfox.jetpackchess.model.game.parameters.OpeningMetadata
 import org.placidfox.jetpackchess.model.game.parameters.PuzzleMetadata
 import org.placidfox.jetpackchess.model.piece.*
 import org.placidfox.jetpackchess.ui.board.BoardComposable
-import org.placidfox.jetpackchess.ui.control.Arrow
 import org.placidfox.jetpackchess.ui.control.PromotionDialog
-import org.placidfox.jetpackchess.ui.control.StatusBar
-import org.placidfox.jetpackchess.ui.control.SwitchOrientation
+import org.placidfox.jetpackchess.ui.control.Toolbar
 
 
 @Composable
@@ -32,10 +28,7 @@ fun JetpackChess(controller: Controller){
         verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
 
         BoardComposable(controller.uiState)
-        Arrow(controller.uiState)
-        SwitchOrientation(controller.uiState)
-        StatusBar(controller.uiState)
-
+        Toolbar(controller.uiState)
 
         if(controller.uiState.showPromotionDialog.value) {
             PromotionDialog(uiState = controller.uiState)

@@ -43,7 +43,7 @@ class UIViewModel (
 
     private val isMaxSeenPosition: MutableState<Boolean> = mutableStateOf(false)
 
-    val textState: MutableState<String> = mutableStateOf("In Progress...")
+    val status: MutableState<STATUS> = mutableStateOf(STATUS.PENDING)
 
     var activePlayer = mutableStateOf(PlayerColor.WHITE)
 
@@ -55,6 +55,8 @@ class UIViewModel (
 
     val lastMovePosition: List<Coordinate>?
         get() = activePosition.value.lastMove?.let { listOf(it.from, activePosition.value.lastMove!!.to) }
+
+    var wrongMovePosition = mutableStateOf<List<Coordinate>?>(null)
 
     // calculate score from boardOrientation
     val score = mutableStateOf(activePosition.value.calculateScore(boardOrientation))
@@ -69,12 +71,12 @@ class UIViewModel (
         get() = activePosition.value.board.emptySquares() + activePosition.value.board.piecesColorPositionMinusKing(activePlayer.value.opponent()).map { it.key }
         //TODO() // activePlayer Coordinate - pin - check ?
 
+
     val selectablePosition: List<Coordinate> = emptyList()
     //TODO() // activePlayer Coordinate - pin - check ?
 
 
     fun calculatePossibleDestination() { //TODO() with Move Validation ? activePlayer Coordinate + possible move from piece without pin or check ?
-
 
     }
 
@@ -104,18 +106,18 @@ class UIViewModel (
     fun clickSquareAction(square: Square){
         if (selectedSquare.value == null) {
 
-            if (turnPlayerPiecesPositions.contains(square.position)) {
-                selectedSquare.value = square.position
-
+            if (turnPlayerPiecesPositions.contains(square.coordinate)) {
+                selectedSquare.value = square.coordinate
+                calculatePossibleMove(square)
             }
 
         } else {
-            if (square.position == selectedSquare.value) {
+            if (square.coordinate == selectedSquare.value) {
                 selectedSquare.value = null
 
             } else {
-                if (possibleDestination.contains(square.position)) {
-                    destinationSquare.value = square.position
+                if (possibleDestination.contains(square.coordinate)) {
+                    destinationSquare.value = square.coordinate
 
                     proposedMove = ProposedMove(selectedSquare.value!!, destinationSquare.value!!, activePosition.value)
 
@@ -139,10 +141,12 @@ class UIViewModel (
 
             JetpackChessMode.PUZZLE, JetpackChessMode.OPENING_TEST ->
                 if (proposedMove.from == activePosition.value.nextMove!!.from && proposedMove.to == activePosition.value.nextMove!!.to && proposedMove.promotionTo == activePosition.value.nextMove!!.promotionTo){
+                    resetWrongMoveDecorator()
                     applyAutoMove()
-
                 } else {
                     resetSelectedSquare()
+                    setWrongMoveDecorator(proposedMove)
+                    statusMistake()
                 }
             JetpackChessMode.OPENING_SCROLL -> {}
 
@@ -191,25 +195,23 @@ class UIViewModel (
         maxSeenPosition = index
         isMaxSeenPosition.value = false
         updateButtonState()
-        initText()
+        initStatus()
     }
 
     fun changeActivePosition(index: Int) {
         resetSelectedSquare()
+        resetWrongMoveDecorator()
         activePositionIndex = index
     }
 
     fun forwardActivePosition() {
-        resetSelectedSquare()
         changeActivePosition(activePositionIndex + 1)
         updateMaxSeenPosition()
     }
 
     fun backActivePosition() {
-        resetSelectedSquare()
         changeActivePosition(activePositionIndex - 1)
-        updateMaxSeenPosition()
-
+        //updateMaxSeenPosition() - Not necessary ? to delete if no bug detected
     }
 
     private fun resetSelectedSquare() {
@@ -236,11 +238,23 @@ class UIViewModel (
         activePlayer.value = activePosition.value.activePlayer
         score.value = activePosition.value.calculateScore(boardOrientation) // copy from getter() ?
         updateButtonState()
-        updateText()
-    }
+        checkEndStatus()
+     }
 
 }
 
+
+
+enum class STATUS{
+    PENDING,
+    SCROLLING,
+    IN_PROGRESS_GAME,
+    IN_PROGRESS_OK,
+    IN_PROGRESS_WRONG,
+    FINISH_GAME,
+    FINISH_OK,
+    FINISH_WRONG,
+}
 
 
 
