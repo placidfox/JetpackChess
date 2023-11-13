@@ -1,7 +1,7 @@
 # JetpackChess
 Chess Board Library for Jetpack Compose
 
-The goal is to serve as an interactive board to train with puzzle or practoce your opening lines.
+The goal is to serve as an interactive board to train with puzzle or practice your opening lines.
 
 [early developpement]
 
