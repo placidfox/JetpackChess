@@ -1,6 +1,5 @@
 package org.placidfox.jetpackchess.controller
 
-import org.placidfox.jetpackchess.FEN_DEFAULT_POSITION
 import org.placidfox.jetpackchess.model.board.Board
 import org.placidfox.jetpackchess.model.board.Coordinate
 import org.placidfox.jetpackchess.model.game.GamePosition
@@ -17,66 +16,9 @@ interface Controller {
 
     fun reset() {
         importFen(FEN_DEFAULT_POSITION)
-        uiState.boardOrientationState.value = PlayerColor.WHITE // useless ?
+        uiState.boardOrientationState.value = PlayerColor.WHITE
     }
 
-    fun newGame(
-        metadata: Metadata,
-        playerSide: PlayerColor,
-    ) {
-        importFen(FEN_DEFAULT_POSITION)
-        importMetadata(metadata)
-        uiState.boardOrientationState.value = playerSide
-    }
-
-
-    fun newPuzzle(
-        fen: String,
-        uciVariation: String,
-        metadata: Metadata,
-        playerSide: PlayerColor,
-        indexStartZero: Boolean
-    ){
-        importFENandMoveList(
-            fen,
-            uciVariation,
-            if(indexStartZero){0}else{1}
-        )
-        importMetadata(metadata)
-        uiState.boardOrientationState.value = playerSide
-    }
-
-    fun newPuzzleLichess(
-        fen: String,
-        uciVariation: String,
-        metadata: Metadata
-    ){
-        val turnFirstMoveVariation = splitPlayerTurn(fen.split(" ")[1])
-
-        importFENandMoveList(
-            fen,
-            uciVariation,
-            1
-        )
-        importMetadata(metadata)
-        uiState.boardOrientationState.value = turnFirstMoveVariation.opponent()
-    }
-
-    fun newOpening(
-        fen: String = FEN_DEFAULT_POSITION,
-        uciVariation: String,
-        metadata: Metadata,
-        playerSide: PlayerColor
-    ) {
-        //reset() // PAS NECESSAIRE ?
-        importFENandMoveList(
-            fen,
-            uciVariation,
-            if(playerSide == PlayerColor.WHITE){0}else{1}
-        )
-        importMetadata(metadata)
-        uiState.boardOrientationState.value = playerSide
-    }
 
 
     fun importFen(fen: String) {
@@ -99,11 +41,11 @@ interface Controller {
     }
 
 
-    fun importFENandMoveList(fen: String, uciVariation: String, startIndex: Int = 0) {
+    fun importFENandMoveList(fen: String, uciMoves: String, startIndex: Int = 0) {
         importFen(fen)
 
         val uciMovesString: List<String> =
-            uciVariation.split(" ")
+            uciMoves.split(" ")
 
         for (move in uciMovesString) {
             val from = move.substring(startIndex = 0, endIndex = 2)
@@ -131,12 +73,9 @@ interface Controller {
 
     }
 
-    fun importMetadata(metadata: Metadata){
-        uiState.gameTimeline.gameMetadata = OpeningMetadata(metadata.tags)
-    }
 
 }
-class GameController : Controller {
+/*class GameController : Controller { //TODO(NEED MOVE VALIDATION & CHECK / CHECKMATE)
 
     override val mode: JetpackChessMode = JetpackChessMode.GAME
     override var uiState: UIViewModel = UIViewModel(
@@ -146,17 +85,15 @@ class GameController : Controller {
         BoardColor.Wood
     )
 
-    override fun newPuzzle(fen: String, uciVariation: String, metadata: Metadata, playerSide: PlayerColor, indexStartZero: Boolean) {
+    fun newGame(
+        playerSide: PlayerColor,
+    ) {
+        importFen(FEN_DEFAULT_POSITION)
+        uiState.boardOrientationState.value = playerSide
     }
 
-    override fun newPuzzleLichess(fen: String, uciVariation: String, metadata: Metadata) {
-    }
 
-    override fun newOpening(fen: String, uciVariation: String, metadata: Metadata, playerSide: PlayerColor) {
-    }
-
-
-}
+}*/
 
 class PuzzleController : Controller {
 
@@ -168,20 +105,40 @@ class PuzzleController : Controller {
         BoardColor.Wood
     )
 
-    override fun newGame(metadata: Metadata, playerSide: PlayerColor) {
+    fun newPuzzle(
+        fen: String,
+        uciMoves: String,
+        playerSide: PlayerColor,
+        firstDisplayedMove: Int = 0
+    ){
+        importFENandMoveList(
+            fen,
+            uciMoves,
+            firstDisplayedMove
+        )
+        uiState.boardOrientationState.value = playerSide
     }
 
-    override fun newOpening(fen: String, uciVariation: String, metadata: Metadata, playerSide: PlayerColor) {
+    fun newPuzzleLichess(
+        fen: String,
+        uciMoves: String
+    ){
+        val turnFirstMoveVariation = splitPlayerTurn(fen.split(" ")[1])
+
+        importFENandMoveList(
+            fen,
+            uciMoves,
+            1
+        )
+        uiState.boardOrientationState.value = turnFirstMoveVariation.opponent()
     }
-
-
-
 
 }
 
-class OpeningTestController : Controller {
 
-    override val mode: JetpackChessMode = JetpackChessMode.OPENING_TEST
+class ScrollController : Controller {
+
+    override val mode: JetpackChessMode = JetpackChessMode.SCROLL
     override var uiState: UIViewModel = UIViewModel(
         mode,
         GameTimeline(mode, mutableListOf(initialGamePosition)),
@@ -189,35 +146,16 @@ class OpeningTestController : Controller {
         BoardColor.Wood
     )
 
-    override fun newGame(metadata: Metadata, playerSide: PlayerColor) {
-    }
-
-    override fun newPuzzle(fen: String, uciVariation: String, metadata: Metadata, playerSide: PlayerColor, indexStartZero: Boolean) {
-    }
-
-    override fun newPuzzleLichess(fen: String, uciVariation: String, metadata: Metadata) {
-    }
-
-
-}
-
-class OpeningScrollController : Controller {
-
-    override val mode: JetpackChessMode = JetpackChessMode.OPENING_SCROLL
-    override var uiState: UIViewModel = UIViewModel(
-        mode,
-        GameTimeline(mode, mutableListOf(initialGamePosition)),
-        PlayerColor.WHITE,
-        BoardColor.Wood
-    )
-
-    override fun newGame(metadata: Metadata, playerSide: PlayerColor) {
-    }
-
-    override fun newPuzzle(fen: String, uciVariation: String, metadata: Metadata, playerSide: PlayerColor, indexStartZero: Boolean) {
-    }
-
-    override fun newPuzzleLichess(fen: String, uciVariation: String, metadata: Metadata) {
+    fun newVariation(
+        fen: String,
+        uciMoves: String,
+        playerSide: PlayerColor
+    ){
+        importFENandMoveList(
+            fen,
+            uciMoves
+        )
+        uiState.boardOrientationState.value = playerSide
     }
 
 
@@ -226,11 +164,10 @@ class OpeningScrollController : Controller {
 enum class JetpackChessMode{
     GAME,
     PUZZLE,
-    OPENING_TEST,
-    OPENING_SCROLL
+    SCROLL
 }
 
-
+const val FEN_DEFAULT_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 val initialPieces = mapOf(
     Coordinate.A8 to Rook(PlayerColor.BLACK),
@@ -278,4 +215,5 @@ val initialGamePosition = GamePosition(
     0,
     1
 )
+
 

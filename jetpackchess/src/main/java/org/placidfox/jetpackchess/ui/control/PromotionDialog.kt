@@ -36,9 +36,6 @@ fun PromotionDialog(
                 PieceIcon(Bishop::class.java, uiState)
                 PieceIcon(Knight::class.java, uiState)
             }
-            TextButton(onClick = { /*TODO*/ }) {
-                Text("Promote")
-            }
         }
     }
 

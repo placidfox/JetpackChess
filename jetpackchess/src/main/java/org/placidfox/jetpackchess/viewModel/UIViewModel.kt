@@ -22,7 +22,6 @@ class UIViewModel (
     val gameTimeline: GameTimeline,
     private val boardOrientation : PlayerColor,
     private val boardColor: BoardColor,
-    //val toolbarState: ToolbarState = ToolbarState,
 ): ViewModel() {
 
     var activePositionIndex: Int = 0
@@ -54,7 +53,7 @@ class UIViewModel (
     val destinationSquare = mutableStateOf<Coordinate?>(null)
 
     val lastMovePosition: List<Coordinate>?
-        get() = activePosition.value.lastMove?.let { listOf(it.from, activePosition.value.lastMove!!.to) }
+        get() = activePosition.value.lastMovePositions
 
     var wrongMovePosition = mutableStateOf<List<Coordinate>?>(null)
 
@@ -93,11 +92,11 @@ class UIViewModel (
                 if (activePositionIndex == gameTimeline.positionsTimeline.lastIndex) {
                     clickSquareAction(square)
                 }
-            JetpackChessMode.PUZZLE, JetpackChessMode.OPENING_TEST  ->
+            JetpackChessMode.PUZZLE ->
                 if (activePositionIndex == maxSeenPosition && activePositionIndex !=gameTimeline.positionsTimeline.lastIndex) {
                     clickSquareAction(square)
                 }
-            JetpackChessMode.OPENING_SCROLL -> {}
+            JetpackChessMode.SCROLL -> {}
 
         }
 
@@ -108,7 +107,6 @@ class UIViewModel (
 
             if (turnPlayerPiecesPositions.contains(square.coordinate)) {
                 selectedSquare.value = square.coordinate
-                calculatePossibleMove(square)
             }
 
         } else {
@@ -139,7 +137,7 @@ class UIViewModel (
             JetpackChessMode.GAME -> // TODO (IF LEGAL ?? + CASTLE POSSIBLE
                 applyMove(proposedMove.from, proposedMove.to, proposedMove.promotionTo)
 
-            JetpackChessMode.PUZZLE, JetpackChessMode.OPENING_TEST ->
+            JetpackChessMode.PUZZLE ->
                 if (proposedMove.from == activePosition.value.nextMove!!.from && proposedMove.to == activePosition.value.nextMove!!.to && proposedMove.promotionTo == activePosition.value.nextMove!!.promotionTo){
                     resetWrongMoveDecorator()
                     applyAutoMove()
@@ -148,7 +146,7 @@ class UIViewModel (
                     setWrongMoveDecorator(proposedMove)
                     statusMistake()
                 }
-            JetpackChessMode.OPENING_SCROLL -> {}
+            JetpackChessMode.SCROLL -> {}
 
         }
 
@@ -167,9 +165,9 @@ class UIViewModel (
     fun applyAutoMove() {
         forwardActivePosition()
 
-        if (activePositionIndex < gameTimeline.positionsTimeline.lastIndex) // AVOID BUG IF OWN MOVE WAS LAST{
+        if (activePositionIndex < gameTimeline.positionsTimeline.lastIndex) // Stop if in last position
             viewModelScope.launch(Dispatchers.IO) {
-                delay(500L) // delay the show fo next move
+                delay(500L) // delay before auto-applying the next move
                 forwardActivePosition()
             }
     }
@@ -211,7 +209,6 @@ class UIViewModel (
 
     fun backActivePosition() {
         changeActivePosition(activePositionIndex - 1)
-        //updateMaxSeenPosition() - Not necessary ? to delete if no bug detected
     }
 
     private fun resetSelectedSquare() {
@@ -251,7 +248,7 @@ enum class STATUS{
     IN_PROGRESS_GAME,
     IN_PROGRESS_OK,
     IN_PROGRESS_WRONG,
-    FINISH_GAME,
+    FINISH_GAME, // FOR END OF A GAME - BY_CHECKMATE, ...
     FINISH_OK,
     FINISH_WRONG,
 }

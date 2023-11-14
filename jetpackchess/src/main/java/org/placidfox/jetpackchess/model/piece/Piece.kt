@@ -18,7 +18,7 @@ interface Piece {
     val value: Int
 
 
-    /** List of accessible squares without Illegal Moves (ifChecked or Pinned Pieces) **/
+    // List of square where the piece can move (without check validation)
     fun accessibleSquares(gamePosition: GamePosition): List<Square> = emptyList()
 
 

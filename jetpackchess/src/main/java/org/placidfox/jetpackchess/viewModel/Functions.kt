@@ -3,8 +3,6 @@ package org.placidfox.jetpackchess.viewModel
 import org.placidfox.jetpackchess.controller.JetpackChessMode
 import org.placidfox.jetpackchess.model.board.Board
 import org.placidfox.jetpackchess.model.board.Coordinate
-import org.placidfox.jetpackchess.model.board.Square
-import org.placidfox.jetpackchess.model.board.positionArray
 import org.placidfox.jetpackchess.model.game.GamePosition
 import org.placidfox.jetpackchess.model.game.parameters.CastleType
 import org.placidfox.jetpackchess.model.game.parameters.CastlingStatus
@@ -20,11 +18,11 @@ fun UIViewModel.updateButtonState(){
     isFirstPosition.value = activePositionIndex != 0
 
     when(mode){
-        JetpackChessMode.GAME, JetpackChessMode.OPENING_SCROLL -> {
+        JetpackChessMode.GAME, JetpackChessMode.SCROLL -> {
             isActivePositionLast.value = activePositionIndex < gameTimeline.positionsTimeline.lastIndex
             isLastPosition.value = (activePositionIndex != gameTimeline.positionsTimeline.lastIndex)
         }
-        JetpackChessMode.PUZZLE, JetpackChessMode.OPENING_TEST -> {
+        JetpackChessMode.PUZZLE -> {
             isActivePositionLast.value = activePositionIndex < maxSeenPosition
             isLastPosition.value = maxSeenPosition == gameTimeline.positionsTimeline.lastIndex && activePositionIndex < gameTimeline.positionsTimeline.lastIndex
         }
@@ -36,14 +34,14 @@ fun UIViewModel.updateButtonState(){
 fun UIViewModel.initStatus(){
     when(mode){
         JetpackChessMode.GAME -> status.value = STATUS.IN_PROGRESS_GAME
-        JetpackChessMode.PUZZLE, JetpackChessMode.OPENING_TEST  -> status.value = STATUS.IN_PROGRESS_OK
-        JetpackChessMode.OPENING_SCROLL -> status.value = STATUS.SCROLLING
+        JetpackChessMode.PUZZLE  -> status.value = STATUS.IN_PROGRESS_OK
+        JetpackChessMode.SCROLL -> status.value = STATUS.SCROLLING
     }
 }
 
 fun UIViewModel.statusMistake(){
     when(mode){
-        JetpackChessMode.PUZZLE, JetpackChessMode.OPENING_TEST -> status.value = STATUS.IN_PROGRESS_WRONG
+        JetpackChessMode.PUZZLE -> status.value = STATUS.IN_PROGRESS_WRONG
         else -> {} // Nothing to do in Game & Scroll Mode
 
     }
@@ -53,14 +51,14 @@ fun UIViewModel.checkEndStatus(){
 
     when(mode){
         JetpackChessMode.GAME -> {} //TODO() CHECK IF CHECKMATE OR STALEMATE OR GIVE UP
-        JetpackChessMode.PUZZLE, JetpackChessMode.OPENING_TEST  -> if(activePositionIndex == gameTimeline.positionsTimeline.lastIndex){
+        JetpackChessMode.PUZZLE -> if(activePositionIndex == gameTimeline.positionsTimeline.lastIndex){
             if (status.value == STATUS.IN_PROGRESS_OK){
                 status.value = STATUS.FINISH_OK
             } else {
                 status.value = STATUS.FINISH_WRONG
             }
         }
-        JetpackChessMode.OPENING_SCROLL -> {} // Nothing to do in Scrolling Mode
+        JetpackChessMode.SCROLL -> {} // Nothing to do in Scrolling Mode
     }
 
 }
@@ -72,41 +70,6 @@ fun UIViewModel.setWrongMoveDecorator(proposedMove: ProposedMove){
 fun UIViewModel.resetWrongMoveDecorator(){
     wrongMovePosition.value = null
 }
-
-
-fun UIViewModel.calculatePossibleMove(square: Square){
-
-    val coordinate = square.coordinate
-    val piece = activePosition.value.board.findPiece(coordinate)
-
-    val position = coordinate.position
-
-    val possibleDestination: List<Int> = calculateDestinationPosition(position, targetsKnight)
-
-}
-
-val targetsKnight = listOf( // test purpose
-    -8,
-    +8,
-    +12,
-    -12,
-    -19,
-    +19,
-    -21,
-    +21
-)
-
-fun calculateDestinationPosition(position: Int, targets: List<Int>): List<Int>{
-    val destinationPosition = emptyList <Int>().toMutableList()
-    targets.forEach {
-        if (positionArray.contains(it + position)){
-            destinationPosition += it + position
-        }
-    }
-
-    return  destinationPosition
-}
-
 
 
 fun UIViewModel.askPromotion(){
@@ -128,13 +91,11 @@ fun calculateNewPosition(gamePosition: GamePosition, moveUCI: AppliedMove): Game
 
     newMap.keys.remove(moveUCI.from)
 
-    newMap[moveUCI.to] = moveUCI.pieceToMove // permet de garder la ref de la même pièce et remplacer la pièce prise
-
-    // Deplacement de la pièce + Promotion (Auto en Dame pour le moment)
+    //Move the piece & change it if promotion
     when (moveUCI.isPromotionMove) {
-        true -> newMap[moveUCI.to] = moveUCI.piecePromoteTo // doublon dans la fonction mais fonctionne ?
+        true -> newMap[moveUCI.to] = moveUCI.piecePromoteTo
         else -> newMap[moveUCI.to] =
-            moveUCI.pieceToMove // permet de garder la ref de la même pièce et remplacer la pièce prise
+            moveUCI.pieceToMove // keep same piece ref when moved
 
     }
 

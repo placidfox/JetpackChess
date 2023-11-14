@@ -19,10 +19,10 @@ fun splitCastlingPossibilities(castlingPossibilities: String): CastlingStatus{
 
     val splitCastlingList = castlingPossibilities.split("")
 
-    var whiteShortCastling: Boolean = false
-    var whiteLongCastling: Boolean = false
-    var blackShortCastling: Boolean = false
-    var blackLongCastling: Boolean = false
+    var whiteShortCastling = false
+    var whiteLongCastling = false
+    var blackShortCastling = false
+    var blackLongCastling = false
 
 
     for (value in splitCastlingList){
