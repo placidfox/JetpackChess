@@ -51,6 +51,7 @@ dependencies {
 
     //implementation("com.android.tools.build:gradle:7.1.3")
     //implementation("org.jetbrains.kotlin:kotlin-gradle-plugin")
+    //Needed only for Publishing to Jitpack - Bug to Fix
 
 }
 
