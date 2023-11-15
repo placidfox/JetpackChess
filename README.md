@@ -5,7 +5,7 @@ Chess Board Library for Jetpack Compose \
 
 The initial goal of JetpackChess is to serve as an interactive board to train with puzzle or practice your opening lines.
 
-## v1.0.0
+## v1.0
 
 ### Puzzle Mode :
 - import base position + list of moves in UCI format. Exemple : 1.e4 c6 = 'e2e4 c7c6'
