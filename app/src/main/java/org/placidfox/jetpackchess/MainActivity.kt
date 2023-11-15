@@ -9,7 +9,6 @@ import androidx.compose.material3.Surface
 
 import androidx.compose.ui.Modifier
 import org.placidfox.jetpackchess.controller.FEN_DEFAULT_POSITION
-import org.placidfox.jetpackchess.controller.GameController
 import org.placidfox.jetpackchess.controller.PuzzleController
 import org.placidfox.jetpackchess.model.piece.PlayerColor
 import org.placidfox.jetpackchess.ui.theme.JetpackChessTheme
