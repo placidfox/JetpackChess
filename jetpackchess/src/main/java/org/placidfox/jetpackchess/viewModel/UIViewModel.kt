@@ -211,7 +211,7 @@ class UIViewModel (
         changeActivePosition(activePositionIndex - 1)
     }
 
-    private fun resetSelectedSquare() {
+    fun resetSelectedSquare() {
         selectedSquare.value = null
         destinationSquare.value = null
     }

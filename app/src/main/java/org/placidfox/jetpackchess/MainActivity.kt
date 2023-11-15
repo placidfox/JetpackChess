@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
 
         val controller = PuzzleController()
 
-        controller.newPuzzle(openingblack[0], openingblack[1], PlayerColor.BLACK, 1)
+        controller.newPuzzle(puzzlewhitepromotion[0], puzzlewhitepromotion[1], PlayerColor.WHITE, 1)
 
 
         super.onCreate(savedInstanceState)

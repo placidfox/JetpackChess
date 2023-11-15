@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import org.placidfox.jetpackchess.model.piece.*
 import org.placidfox.jetpackchess.viewModel.UIViewModel
+import org.placidfox.jetpackchess.viewModel.cancelPromotion
 import org.placidfox.jetpackchess.viewModel.promotionChoice
 
 
@@ -21,7 +22,7 @@ fun PromotionDialog(
     uiState: UIViewModel,
 ){
     Dialog(
-        onDismissRequest = {},
+        onDismissRequest = {uiState.cancelPromotion()},
         ) {
         Card(
             modifier = Modifier

@@ -76,6 +76,11 @@ fun UIViewModel.askPromotion(){
     showPromotionDialog.value = true
 }
 
+fun UIViewModel.cancelPromotion(){
+    showPromotionDialog.value = false
+    resetSelectedSquare()
+}
+
 fun UIViewModel.promotionChoice(chosenPiece: Class<out Piece>){
     proposedMove!!.promotionTo = chosenPiece
     validateMove(proposedMove!!)
