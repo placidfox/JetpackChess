@@ -75,7 +75,7 @@ interface Controller {
 
 
 }
-/*class GameController : Controller { //TODO(NEED MOVE VALIDATION & CHECK / CHECKMATE)
+class GameController : Controller { //TODO(NEED MOVE VALIDATION & CHECK / CHECKMATE)
 
     override val mode: JetpackChessMode = JetpackChessMode.GAME
     override var uiState: UIViewModel = UIViewModel(
@@ -93,7 +93,7 @@ interface Controller {
     }
 
 
-}*/
+}
 
 class PuzzleController : Controller {
 
