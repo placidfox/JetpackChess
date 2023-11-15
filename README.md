@@ -9,13 +9,4 @@ At the moment JetpackChess allow you to to import a base position, a succession 
 
 
 
-
-
-
-
-
-To-Do :
-GameMode
-Move Validation / Legal MOves
-Check if a king is in Check / Checkmate
-
+Change Board Layout ?
