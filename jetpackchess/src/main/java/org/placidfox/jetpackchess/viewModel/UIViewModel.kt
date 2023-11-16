@@ -87,10 +87,6 @@ class UIViewModel (
 
     fun clickedSquare(square: Square) {
 
-
-        println(square.piece?.reachableSqCoordinates(activePosition.value))
-
-
         when (mode) {
             JetpackChessMode.GAME ->
                 if (activePositionIndex == gameTimeline.positionsTimeline.lastIndex) {
