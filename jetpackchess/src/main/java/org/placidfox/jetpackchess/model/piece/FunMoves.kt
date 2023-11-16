@@ -1,38 +1,198 @@
 package org.placidfox.jetpackchess.model.piece
 
-import org.placidfox.jetpackchess.model.board.Square
+import org.placidfox.jetpackchess.model.board.Coordinate
+import org.placidfox.jetpackchess.model.board.Coordinate.Companion.toNum
+
+import org.placidfox.jetpackchess.model.board.positions
 import org.placidfox.jetpackchess.model.game.GamePosition
+import org.placidfox.jetpackchess.model.piece.Pawn.Companion.captureTargets
+import org.placidfox.jetpackchess.model.piece.Pawn.Companion.targetInitRank
 
-fun Piece.accessibleSquares(
-    chessPosition: GamePosition
-): List<Square>{
 
-    val squares = mutableListOf<Square>()
+fun Piece.reachableSqCoordinates(    // List of square where the piece can move (without check validation)
+    position: GamePosition
+): List<Coordinate>{
 
-    var pieceCoordinate: Int
+    val reachableSquares = emptyList<Coordinate>().toMutableList()
+    val piecePosition = position.board.findSquare(this)!!.coordinate.position
 
-    when(this::class){
+    val sameColorPiecesPosition = position.board.piecesColorPosition(this.color).keys.toList().map { it.toNum() }
+    val opponentColorPiecesPosition = position.board.piecesColorPosition(this.color.opponent()).keys.toList().map { it.toNum() }
+
+
+    val listPositions = emptyList<Int>().toMutableList()
+
+    when(this::class) {
         Bishop::class ->
-            TODO()
-        King::class ->
-            TODO()
+            Bishop.directions.forEach {
+                var positionTest = piecePosition + it
+
+                while (positionTest in positions) {
+
+                    if (positionTest in opponentColorPiecesPosition) {
+                        listPositions.add(positionTest)
+                        break
+                    }
+                    if (positionTest in sameColorPiecesPosition) {
+                        break
+                    }
+
+                    listPositions.add(positionTest)
+                    positionTest += it
+
+                }
+
+            }
+
+        King::class -> {
+            King.targets.forEach {
+                val positionTest = piecePosition + it
+
+                if (positionTest in positions && positionTest !in sameColorPiecesPosition ) {
+                    listPositions.add(positionTest)
+                }
+            }
+            when(this.color){
+                PlayerColor.WHITE -> {
+                    if (position.castlingStatus.whiteShortCastlePossible && position.board.getSquare(Coordinate.F1).isEmpty && position.board.getSquare(Coordinate.G1).isEmpty) {
+                        listPositions.add(piecePosition + King.shortCastleTargets)
+                    }
+                    if (position.castlingStatus.whiteLongCastlePossible && position.board.getSquare(Coordinate.B1).isEmpty && position.board.getSquare(Coordinate.C1).isEmpty && position.board.getSquare(Coordinate.D1).isEmpty) {
+                        listPositions.add(piecePosition + King.longCastleTargets)
+                    }
+                }
+                PlayerColor.BLACK -> {
+                    if (position.castlingStatus.blackShortCastlePossible && position.board.getSquare(Coordinate.F8).isEmpty && position.board.getSquare(Coordinate.G8).isEmpty) {
+                        listPositions.add(piecePosition + King.shortCastleTargets)
+                    }
+                    if (position.castlingStatus.blackLongCastlePossible && position.board.getSquare(Coordinate.B8).isEmpty && position.board.getSquare(Coordinate.C8).isEmpty && position.board.getSquare(Coordinate.D8).isEmpty) {
+                        listPositions.add(piecePosition + King.longCastleTargets)
+                    }
+                }
+            }
+
+        }
         Knight::class ->
-            TODO()
+            Knight.targets.forEach {
+                val positionTest = piecePosition + it
 
-        Pawn::class ->
-            TODO()
+                if (positionTest in positions && positionTest !in sameColorPiecesPosition ) {
+                    listPositions.add(positionTest)
+                }
+            }
+
+        Pawn::class -> { // TODO SIMPLIFY ?
+            when(this.color){
+                PlayerColor.WHITE -> {
+                    if (piecePosition % 10  == 2){ // TODO TO RANK CHECK INSTEAD
+                        targetInitRank.forEach{
+                            val positionTest = piecePosition + it
+
+                            if (positionTest in positions && (positionTest !in sameColorPiecesPosition + opponentColorPiecesPosition) && (piecePosition + Pawn.target[0] !in sameColorPiecesPosition + opponentColorPiecesPosition)) {
+                                listPositions.add(positionTest)
+                            }
+                        }
+                    }
+
+                    Pawn.target.forEach{
+                        val positionTest = piecePosition + it
+
+                        if (positionTest in positions && (positionTest !in sameColorPiecesPosition + opponentColorPiecesPosition)) {
+                            listPositions.add(positionTest)
+                        }
+                    }
+
+
+                    captureTargets.forEach{
+                        val positionTest = piecePosition + it
+                        if (positionTest in opponentColorPiecesPosition){
+                            listPositions.add(positionTest)
+                        }
+                        if (positionTest == position.enPassantStatus.enPassantCoordinate?.toNum())    {
+                            listPositions.add(positionTest)
+                        }
+                    }
+                }
+                PlayerColor.BLACK -> {
+                    if (piecePosition % 10  == 7){ // TODO TO RANK CHECK INSTEAD
+                        targetInitRank.forEach{
+                            val positionTest = piecePosition - it
+
+                            if (positionTest in positions && (positionTest !in sameColorPiecesPosition + opponentColorPiecesPosition) && (piecePosition - Pawn.target[0] !in sameColorPiecesPosition + opponentColorPiecesPosition)) {
+                                listPositions.add(positionTest)
+                            }
+                        }
+                    }
+
+                    Pawn.target.forEach{
+                        val positionTest = piecePosition - it
+
+                        if (positionTest in positions && (positionTest !in sameColorPiecesPosition + opponentColorPiecesPosition)) {
+                            listPositions.add(positionTest)
+                        }
+                    }
+
+                    captureTargets.forEach{
+                        val positionTest = piecePosition - it
+                        if (positionTest in opponentColorPiecesPosition){
+                            listPositions.add(positionTest)
+                        }
+                        if (positionTest == position.enPassantStatus.enPassantCoordinate?.toNum())    {
+                            listPositions.add(positionTest)
+                        }
+                    }
+                }
+            }
+
+        }
+
+
+
         Queen::class ->
-            TODO()
+            Queen.directions.forEach {
+                var positionTest = piecePosition + it
+
+                while (positionTest in positions) {
+
+                    if (positionTest in opponentColorPiecesPosition) {
+                        listPositions.add(positionTest)
+                        break
+                    }
+                    if (positionTest in sameColorPiecesPosition) {
+                        break
+                    }
+
+                    listPositions.add(positionTest)
+                    positionTest += it
+
+                }
+
+            }
         Rook::class ->
-            TODO()
+            Rook.directions.forEach {
+                var positionTest = piecePosition + it
 
+                while (positionTest in positions) {
+
+                    if (positionTest in opponentColorPiecesPosition) {
+                        listPositions.add(positionTest)
+                        break
+                    }
+                    if (positionTest in sameColorPiecesPosition) {
+                        break
+                    }
+
+                    listPositions.add(positionTest)
+                    positionTest += it
+
+                }
+
+            }
     }
 
-    fun getAllSquares(){
-
-
-
+    listPositions.forEach {
+        reachableSquares.add(Coordinate.fromNumCoordinate(it.toString()[0].digitToInt(), it.toString()[1].digitToInt()))
     }
 
-    return squares
+    return reachableSquares
 }

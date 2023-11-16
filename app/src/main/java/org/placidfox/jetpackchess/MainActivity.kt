@@ -1,14 +1,22 @@
 package org.placidfox.jetpackchess
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.unit.dp
 import org.placidfox.jetpackchess.controller.FEN_DEFAULT_POSITION
+import org.placidfox.jetpackchess.controller.GameController
 import org.placidfox.jetpackchess.controller.PuzzleController
 import org.placidfox.jetpackchess.model.piece.PlayerColor
 import org.placidfox.jetpackchess.ui.theme.JetpackChessTheme
@@ -16,18 +24,31 @@ import org.placidfox.jetpackchess.ui.theme.JetpackChessTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        val controller = PuzzleController()
+        val controller = GameController()
 
-        controller.newPuzzle(openingblack[0], openingblack[1], PlayerColor.BLACK, 1)
+        //controller.newPuzzle(openingblack[0], openingblack[1], PlayerColor.BLACK, 1)
 
 
         super.onCreate(savedInstanceState)
         setContent {
             JetpackChessTheme {
 
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
+                Surface(modifier = Modifier.fillMaxSize()) {
 
-                    JetpackChess(controller)
+                    Column (verticalArrangement = Arrangement.SpaceBetween) {
+                        Row(modifier = Modifier.fillMaxHeight(0.9f)) {
+                            JetpackChess(controller)
+                        }
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                            Button(onClick = { controller.reset() }) {
+                                Text("Reset")
+                            }
+                        }
+                    }
+
+
+
+
 
                 }
             }

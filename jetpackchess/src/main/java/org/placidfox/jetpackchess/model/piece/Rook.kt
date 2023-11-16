@@ -27,13 +27,10 @@ class Rook(override val color: PlayerColor) : Piece {
 
     override val value: Int = 5
 
-
     companion object {
         val directions = listOf(
-            -10,
-            +10,
-            -1,
-            +1
+            -10, +10,
+            -1, +1
         )
     }
 

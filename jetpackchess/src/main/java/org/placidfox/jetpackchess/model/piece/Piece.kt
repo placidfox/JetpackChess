@@ -18,11 +18,6 @@ interface Piece {
     val value: Int
 
 
-    // List of square where the piece can move (without check validation)
-    fun accessibleSquares(gamePosition: GamePosition): List<Square> = emptyList()
-
-
-
 }
 
 

@@ -30,13 +30,18 @@ class Pawn(override val color: PlayerColor) : Piece {
 
 
 
-
     companion object {
-        val directions = listOf(
-            +10,
-            //+20, ( avoir comment gérer le premiers coup ?
-            -9,
-            +11
+
+        val targetInitRank = listOf(
+            +2
+        )
+
+        val target = listOf(
+            +1,
+        )
+
+        val captureTargets = listOf(
+            -9, +11
         )
     }
 

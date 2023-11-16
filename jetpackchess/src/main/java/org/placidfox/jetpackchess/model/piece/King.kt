@@ -27,15 +27,7 @@ class King(override val color: PlayerColor) : Piece {
 
     override val value: Int = 0 // Value utile pour Roi ?
 
-
-
-
-    // faire des fonctions de moves pour les roques aussi
-
     companion object {
-
-        val type = this.javaClass.typeName
-
         val targets = listOf(
             -11,
             +11,
@@ -46,7 +38,12 @@ class King(override val color: PlayerColor) : Piece {
             -1,
             +1
         )
+
+        val shortCastleTargets = 20 // TO CHECK - FCT TO TEST IF CASTEL NOT POSSIBLE (CONTROLLED SQUARED INSIDE CASTEL MOVEMENT)
+
+        val longCastleTargets = -20 // TO CHECK - FCT TO TEST IF CASTEL NOT POSSIBLE (CONTROLLED SQUARED INSIDE CASTEL MOVEMENT)
     }
+
 
 
 }
