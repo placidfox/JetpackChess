@@ -25,6 +25,7 @@ fun DecoratorSelected(uiState: UIViewModel, square: Square){
 
 }
 
+/*
 @Composable
 fun DecoratorDestination(uiState: UIViewModel, square: Square){
 
@@ -37,6 +38,44 @@ fun DecoratorDestination(uiState: UIViewModel, square: Square){
         }
         )
     }
+
+}
+
+*/
+
+
+@Composable
+fun DecoratorPossibleDestination(uiState: UIViewModel, square: Square){ // TODO TO REFACTOR
+
+    if (uiState.kingCheckedSquare.value == square.coordinate){
+        Box(modifier = Modifier.fillMaxSize(0.25f).drawBehind {
+            drawCircle(
+                color = DecoratorColor.CHECK_COLOR.color,
+                alpha = if (square.isLight) {0.8f}else{0.75f}
+            )
+        })
+    } else {
+        if (uiState.captureMoveSquares.value?.contains(square.coordinate) == true){
+            Box(modifier = Modifier.fillMaxSize(0.25f).drawBehind {
+                drawCircle(
+                    color = DecoratorColor.POSSIBLE_DESTINATION_CAPTURE_COLOR.color,
+                    alpha = if (square.isLight) {0.8f}else{0.75f}
+                )
+            })
+        } else {
+            if (uiState.reachableSquares.value?.contains(square.coordinate) == true){
+                Box(modifier = Modifier.fillMaxSize(0.25f).drawBehind {
+                    drawCircle(
+                        color = DecoratorColor.POSSIBLE_DESTINATION_COLOR.color,
+                        alpha = if (square.isLight) {0.6f}else{0.75f}
+                    )
+                })
+            }
+        }
+    }
+
+
+
 
 }
 
@@ -75,6 +114,8 @@ enum class DecoratorColor (val color: Color){
     SELECTED_SQUARE(Color.Blue),
     PREVIOUS_MOVE_COLOR(Color.Yellow),
     WRONG_MOVE_COLOR(Color.Red),
-    CHECK_COLOR(Color.Magenta)
+    POSSIBLE_DESTINATION_COLOR(Color.DarkGray),
+    POSSIBLE_DESTINATION_CAPTURE_COLOR(Color.Cyan),
+    CHECK_COLOR(Color.Red)
 }
 

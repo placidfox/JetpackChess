@@ -196,3 +196,31 @@ fun Piece.reachableSqCoordinates(    // List of square where the piece can move 
 
     return reachableSquares
 }
+
+fun Piece.reachableCaptureCoordinate(position: GamePosition): List<Coordinate>{
+
+    val captureMoveSquares = emptyList<Coordinate>().toMutableList()
+
+    this.reachableSqCoordinates(position).forEach {
+        if(position.board.isOccupied(it)) {
+            captureMoveSquares.add(it)
+        }
+    }
+
+
+    return captureMoveSquares
+}
+
+fun Piece.canKingBeCapturedCoordinate(position: GamePosition): Coordinate?{
+
+    var kingCheckedSquare : Coordinate? = null
+
+    this.reachableCaptureCoordinate(position).forEach {
+        if(position.board.getSquare(it).piece!!::class.java == King::class.java) {
+            kingCheckedSquare = it
+        }
+    }
+
+    return kingCheckedSquare
+}
+

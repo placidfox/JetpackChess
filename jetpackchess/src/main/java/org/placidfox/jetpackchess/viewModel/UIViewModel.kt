@@ -66,17 +66,21 @@ class UIViewModel (
 
 
 
-    val possibleDestination: List<Coordinate>
-        get() = activePosition.value.board.emptySquares() + activePosition.value.board.piecesColorPositionMinusKing(activePlayer.value.opponent()).map { it.key }
-        //TODO() // activePlayer Coordinate - pin - check ?
+    // TODO AS A MAP - FOR ONLY 1 VARIABLE ?
+    val reachableSquares = mutableStateOf<List<Coordinate>?>(null)
+    val captureMoveSquares = mutableStateOf<List<Coordinate>?>(null)
+    val kingCheckedSquare = mutableStateOf<Coordinate?>(null)
 
+    private fun getReachableSquare(pieceCoordinate: Coordinate) { // TODO() ADD CHECK VALIDATION ? & PIN ?
+        reachableSquares.value = activePosition.value.board.getSquare(pieceCoordinate).piece!!.reachableSqCoordinates(activePosition.value)
+        captureMoveSquares.value = activePosition.value.board.getSquare(pieceCoordinate).piece!!.reachableCaptureCoordinate(activePosition.value)
+        kingCheckedSquare.value = activePosition.value.board.getSquare(pieceCoordinate).piece!!.canKingBeCapturedCoordinate(activePosition.value)
+    }
 
-    val selectablePosition: List<Coordinate> = emptyList()
-    //TODO() // activePlayer Coordinate - pin - check ?
-
-
-    fun calculatePossibleDestination() { //TODO() with Move Validation ? activePlayer Coordinate + possible move from piece without pin or check ?
-
+    private fun resetReachableSquare(){
+        reachableSquares.value = null
+        captureMoveSquares.value = null
+        kingCheckedSquare.value = null
     }
 
 
@@ -107,14 +111,15 @@ class UIViewModel (
 
             if (turnPlayerPiecesPositions.contains(square.coordinate)) {
                 selectedSquare.value = square.coordinate
+                getReachableSquare(selectedSquare.value!!)
             }
 
         } else {
             if (square.coordinate == selectedSquare.value) {
                 selectedSquare.value = null
-
+                resetReachableSquare()
             } else {
-                if (possibleDestination.contains(square.coordinate)) {
+                if (reachableSquares.value!!.contains(square.coordinate)) {
                     destinationSquare.value = square.coordinate
 
                     proposedMove = ProposedMove(selectedSquare.value!!, destinationSquare.value!!, activePosition.value)
@@ -160,6 +165,7 @@ class UIViewModel (
     ) {
         val move = AppliedMove(from, to, activePosition.value, typePiecePromoteTo)
         addGamePositionInTimeline(calculateNewPosition(activePosition.value, move))
+        resetReachableSquare()
     }
 
     fun applyAutoMove() {
