@@ -115,7 +115,7 @@ enum class DecoratorColor (val color: Color){
     PREVIOUS_MOVE_COLOR(Color.Yellow),
     WRONG_MOVE_COLOR(Color.Red),
     POSSIBLE_DESTINATION_COLOR(Color.DarkGray),
-    POSSIBLE_DESTINATION_CAPTURE_COLOR(Color.Cyan),
+    POSSIBLE_DESTINATION_CAPTURE_COLOR(Color.Red),
     CHECK_COLOR(Color.Red)
 }
 

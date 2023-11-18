@@ -67,7 +67,7 @@ class UIViewModel (
 
 
     // TODO AS A MAP - FOR ONLY 1 VARIABLE ?
-    val reachableSquares = mutableStateOf<List<Coordinate>?>(null)
+    val reachableSquares = mutableStateOf<List<Coordinate>?>(null) // TODO piece reachableSqCoordinates - Check Contraint
     val captureMoveSquares = mutableStateOf<List<Coordinate>?>(null)
     val kingCheckedSquare = mutableStateOf<Coordinate?>(null)
 
