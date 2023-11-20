@@ -43,6 +43,8 @@ class UIViewModel (
     private val isMaxSeenPosition: MutableState<Boolean> = mutableStateOf(false)
 
     val status: MutableState<STATUS> = mutableStateOf(STATUS.PENDING)
+    val isKingCheck: Boolean
+        get() = activePosition.value.isActivePlayerKingInCheck
 
     var activePlayer = mutableStateOf(PlayerColor.WHITE)
 
@@ -65,22 +67,76 @@ class UIViewModel (
         get() = activePosition.value.board.piecesColorPosition(activePlayer.value).map { it.key }
 
 
-
-    // TODO AS A MAP - FOR ONLY 1 VARIABLE ?
-    val reachableSquares = mutableStateOf<List<Coordinate>?>(null) // TODO piece reachableSqCoordinates - Check Contraint
+    val reachableSquares = mutableStateOf<List<Coordinate>?>(null)
     val captureMoveSquares = mutableStateOf<List<Coordinate>?>(null)
-    val kingCheckedSquare = mutableStateOf<Coordinate?>(null)
 
-    private fun getReachableSquare(pieceCoordinate: Coordinate) { // TODO() ADD CHECK VALIDATION ? & PIN ?
-        reachableSquares.value = activePosition.value.board.getSquare(pieceCoordinate).piece!!.reachableSqCoordinates(activePosition.value)
-        captureMoveSquares.value = activePosition.value.board.getSquare(pieceCoordinate).piece!!.reachableCaptureCoordinate(activePosition.value)
-        kingCheckedSquare.value = activePosition.value.board.getSquare(pieceCoordinate).piece!!.canKingBeCapturedCoordinate(activePosition.value)
+    private fun getReachableSquare(pieceCoordinate: Coordinate) {
+
+        val calculateReachableSquares = activePosition.value.board.getSquare(pieceCoordinate).piece!!.reachableSqCoordinates(activePosition.value)
+        val calculateCaptureMoveSquares = activePosition.value.board.getSquare(pieceCoordinate).piece!!.reachableCaptureCoordinate(activePosition.value)
+        val unavailablePinnedSquared = emptyList<Coordinate>().toMutableList()
+
+
+        // Pinned validation
+        calculateReachableSquares.forEach {
+            val potentialPosition = calculateNewPosition(activePosition.value, moveUCI = AppliedMove(pieceCoordinate, it, activePosition.value))
+
+            var calculateOwnKingWillBeCheck: Boolean = false
+
+            potentialPosition.board.piecesColorPosition(activePlayer.value.opponent()).forEach {  // opponent() because turn as been made
+                    entry -> if(entry.value.canKingBeCaptured(potentialPosition)){
+                        calculateOwnKingWillBeCheck = true
+                    }
+            }
+
+            if (calculateOwnKingWillBeCheck){
+                unavailablePinnedSquared.add(it)
+            }
+        }
+
+        // Castle Menace Validation // TODO - SIMPLIFY
+        val listPositionsMenaced = emptyList<Coordinate>().toMutableList()
+        val unavailableCastleSquares = emptyList<Coordinate>().toMutableList()
+
+        activePosition.value.board.piecesColorPosition(activePlayer.value.opponent()).forEach {  // opponent() because turn as been made
+            entry -> entry.value.reachableSqCoordinates(activePosition.value).forEach {
+                listPositionsMenaced.add(it)
+            }
+        }
+
+        if (activePosition.value.board.getSquare(pieceCoordinate).piece!!::class.java == King::class.java){
+
+            when (pieceCoordinate){
+                Coordinate.E1  -> {
+                    if (listPositionsMenaced.contains(Coordinate.F1)){
+                        unavailableCastleSquares.add(Coordinate.G1)
+                    }
+                    if (listPositionsMenaced.contains(Coordinate.D1)){
+                        unavailableCastleSquares.add(Coordinate.C1)
+                    }
+                }
+                Coordinate.E8 -> {
+                    if (listPositionsMenaced.contains(Coordinate.F8)){
+                        unavailableCastleSquares.add(Coordinate.G8)
+                    }
+                    if (listPositionsMenaced.contains(Coordinate.D8)){
+                        unavailableCastleSquares.add(Coordinate.C8)
+                    }
+                }
+                else -> {}
+            }
+
+
+        }
+
+        reachableSquares.value = calculateReachableSquares - unavailablePinnedSquared.toSet() - unavailableCastleSquares.toSet()
+        captureMoveSquares.value = calculateCaptureMoveSquares - unavailablePinnedSquared.toSet()
+
     }
 
     private fun resetReachableSquare(){
         reachableSquares.value = null
         captureMoveSquares.value = null
-        kingCheckedSquare.value = null
     }
 
 
@@ -93,7 +149,7 @@ class UIViewModel (
 
         when (mode) {
             JetpackChessMode.GAME ->
-                if (activePositionIndex == gameTimeline.positionsTimeline.lastIndex) {
+                if (activePositionIndex == gameTimeline.positionsTimeline.lastIndex) { // TODO - && IF NOT CHECKMATE
                     clickSquareAction(square)
                 }
             JetpackChessMode.PUZZLE ->
@@ -139,7 +195,8 @@ class UIViewModel (
         proposedMove: ProposedMove
     ){
         when (mode){
-            JetpackChessMode.GAME -> // TODO (IF LEGAL ?? + CASTLE POSSIBLE
+            JetpackChessMode.GAME ->
+
                 applyMove(proposedMove.from, proposedMove.to, proposedMove.promotionTo)
 
             JetpackChessMode.PUZZLE ->
@@ -155,6 +212,17 @@ class UIViewModel (
 
         }
 
+    }
+
+    fun updateCheckStatus(){
+        var calculateIsKingChecked: Boolean = false
+
+        activePosition.value.board.piecesColorPosition(activePlayer.value.opponent()).forEach {  // opponent() because turn as been made
+            entry -> if(entry.value.canKingBeCaptured(activePosition.value)){
+                calculateIsKingChecked = true
+            }
+        }
+        activePosition.value.isActivePlayerKingInCheck = calculateIsKingChecked
 
     }
 
@@ -164,8 +232,10 @@ class UIViewModel (
         typePiecePromoteTo: Class<out Piece>? = null
     ) {
         val move = AppliedMove(from, to, activePosition.value, typePiecePromoteTo)
-        addGamePositionInTimeline(calculateNewPosition(activePosition.value, move))
-        resetReachableSquare()
+        val newPosition = calculateNewPosition(activePosition.value, move)
+        addMoveMadeGamePosition(move)
+        addGamePositionInTimeline(newPosition)
+        updateCheckStatus()
     }
 
     fun applyAutoMove() {
@@ -179,6 +249,9 @@ class UIViewModel (
     }
 
 
+    fun addMoveMadeGamePosition(moveUCI: AppliedMove) {
+        gameTimeline.positionsTimeline[gameTimeline.positionsTimeline.lastIndex].nextMove = moveUCI // TODO - SIMPLIFY ?
+    }
 
 
     fun switchOrientation() {
@@ -204,6 +277,7 @@ class UIViewModel (
 
     fun changeActivePosition(index: Int) {
         resetSelectedSquare()
+        resetReachableSquare()
         resetWrongMoveDecorator()
         activePositionIndex = index
     }

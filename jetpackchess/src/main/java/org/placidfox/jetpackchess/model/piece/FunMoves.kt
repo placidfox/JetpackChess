@@ -1,5 +1,6 @@
 package org.placidfox.jetpackchess.model.piece
 
+import android.icu.text.Transliterator.Position
 import org.placidfox.jetpackchess.model.board.Coordinate
 import org.placidfox.jetpackchess.model.board.Coordinate.Companion.toNum
 
@@ -18,6 +19,7 @@ fun Piece.reachableSqCoordinates(    // List of square where the piece can move 
 
     val sameColorPiecesPosition = position.board.piecesColorPosition(this.color).keys.toList().map { it.toNum() }
     val opponentColorPiecesPosition = position.board.piecesColorPosition(this.color.opponent()).keys.toList().map { it.toNum() }
+
 
 
     val listPositions = emptyList<Int>().toMutableList()
@@ -211,13 +213,14 @@ fun Piece.reachableCaptureCoordinate(position: GamePosition): List<Coordinate>{
     return captureMoveSquares
 }
 
-fun Piece.canKingBeCapturedCoordinate(position: GamePosition): Coordinate?{
 
-    var kingCheckedSquare : Coordinate? = null
+fun Piece.canKingBeCaptured(position: GamePosition): Boolean{
+
+    var kingCheckedSquare : Boolean = false
 
     this.reachableCaptureCoordinate(position).forEach {
         if(position.board.getSquare(it).piece!!::class.java == King::class.java) {
-            kingCheckedSquare = it
+            kingCheckedSquare = true
         }
     }
 

@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import org.placidfox.jetpackchess.controller.FEN_DEFAULT_POSITION
 import org.placidfox.jetpackchess.controller.GameController
 import org.placidfox.jetpackchess.controller.PuzzleController
+import org.placidfox.jetpackchess.controller.ScrollController
 import org.placidfox.jetpackchess.model.piece.PlayerColor
 import org.placidfox.jetpackchess.ui.theme.JetpackChessTheme
 
@@ -26,7 +27,7 @@ class MainActivity : ComponentActivity() {
 
         val controller = GameController()
 
-        //controller.newPuzzle(openingblack[0], openingblack[1], PlayerColor.BLACK, 1)
+        //controller.newPuzzle(openingblack[0], openingblack[1], PlayerColor.BLACK,1 )
 
 
         super.onCreate(savedInstanceState)

@@ -25,58 +25,42 @@ fun DecoratorSelected(uiState: UIViewModel, square: Square){
 
 }
 
-/*
 @Composable
-fun DecoratorDestination(uiState: UIViewModel, square: Square){
+fun DecoratorKingCheck(uiState: UIViewModel, square: Square){
 
-    if (square.coordinate == uiState.destinationSquare.value){
-        Box(modifier = Modifier.fillMaxSize().drawBehind {
-            drawRect(
-                color = DecoratorColor.SELECTED_SQUARE.color,
-                alpha = if (square.isLight) {0.9f}else{0.9f}
-            )
-        }
-        )
-    }
-
-}
-
-*/
-
-
-@Composable
-fun DecoratorPossibleDestination(uiState: UIViewModel, square: Square){ // TODO TO REFACTOR
-
-    if (uiState.kingCheckedSquare.value == square.coordinate){
-        Box(modifier = Modifier.fillMaxSize(0.25f).drawBehind {
+    if(square.hasColorKing(uiState.activePlayer.value) && uiState.isKingCheck){
+        Box(modifier = Modifier.fillMaxSize(0.5f).drawBehind {
             drawCircle(
                 color = DecoratorColor.CHECK_COLOR.color,
                 alpha = if (square.isLight) {0.8f}else{0.75f}
             )
         })
-    } else {
-        if (uiState.captureMoveSquares.value?.contains(square.coordinate) == true){
-            Box(modifier = Modifier.fillMaxSize(0.25f).drawBehind {
-                drawCircle(
-                    color = DecoratorColor.POSSIBLE_DESTINATION_CAPTURE_COLOR.color,
-                    alpha = if (square.isLight) {0.8f}else{0.75f}
-                )
-            })
-        } else {
-            if (uiState.reachableSquares.value?.contains(square.coordinate) == true){
-                Box(modifier = Modifier.fillMaxSize(0.25f).drawBehind {
-                    drawCircle(
-                        color = DecoratorColor.POSSIBLE_DESTINATION_COLOR.color,
-                        alpha = if (square.isLight) {0.6f}else{0.75f}
-                    )
-                })
-            }
-        }
     }
 
 
+}
 
 
+@Composable
+fun DecoratorPossibleDestination(uiState: UIViewModel, square: Square){ // TODO TO REFACTOR
+
+    if (uiState.captureMoveSquares.value?.contains(square.coordinate) == true){
+        Box(modifier = Modifier.fillMaxSize(0.25f).drawBehind {
+            drawCircle(
+                color = DecoratorColor.POSSIBLE_DESTINATION_CAPTURE_COLOR.color,
+                alpha = if (square.isLight) {0.8f}else{0.75f}
+            )
+        })
+    } else {
+        if (uiState.reachableSquares.value?.contains(square.coordinate) == true){
+           Box(modifier = Modifier.fillMaxSize(0.25f).drawBehind {
+                drawCircle(
+                    color = DecoratorColor.POSSIBLE_DESTINATION_COLOR.color,
+                    alpha = if (square.isLight) {0.6f}else{0.75f}
+                )
+           })
+        }
+    }
 }
 
 @Composable

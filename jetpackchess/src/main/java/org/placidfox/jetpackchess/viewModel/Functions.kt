@@ -82,9 +82,7 @@ fun UIViewModel.promotionChoice(chosenPiece: Class<out Piece>){
     switchPromotionDialog()
 }
 
-fun addMoveMadeGamePosition(gamePosition: GamePosition, moveUCI: AppliedMove) {
-    gamePosition.nextMove = moveUCI
-}
+
 fun calculateNewPosition(gamePosition: GamePosition, moveUCI: AppliedMove): GamePosition {
 
     val newMap: MutableMap<Coordinate, Piece> = gamePosition.board.piecesPosition.toMutableMap()
@@ -152,7 +150,8 @@ fun calculateNewPosition(gamePosition: GamePosition, moveUCI: AppliedMove): Game
 
 
     //Fct calculatenewCastleStatus
-    var newCastlingStatus: CastlingStatus = gamePosition.castlingStatus
+    val newCastlingStatus = gamePosition.castlingStatus.copy()
+
     when (moveUCI.pieceToMoveClass to moveUCI.pieceToMoveColor) {
         King::class.java to PlayerColor.WHITE -> newCastlingStatus.whiteKingAsMoved()
         King::class.java to PlayerColor.BLACK -> newCastlingStatus.blackKingAsMoved()
@@ -172,7 +171,8 @@ fun calculateNewPosition(gamePosition: GamePosition, moveUCI: AppliedMove): Game
             }
     }
 
-    addMoveMadeGamePosition(gamePosition, moveUCI)
+
+
 
     return GamePosition(
         board = Board(newMap),
@@ -191,6 +191,6 @@ fun calculateNewPosition(gamePosition: GamePosition, moveUCI: AppliedMove): Game
         enPassantStatus = enPassantStatus,
         lastMove = moveUCI,
         nextMove = null,
-        capturedPieces = gamePosition.capturedPieces + moveUCI.pieceCapturedList
+        capturedPieces = gamePosition.capturedPieces + moveUCI.pieceCapturedList,
     )
 }
