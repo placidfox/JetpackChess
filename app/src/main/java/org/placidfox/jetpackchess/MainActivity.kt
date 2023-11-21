@@ -25,9 +25,9 @@ import org.placidfox.jetpackchess.ui.theme.JetpackChessTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        val controller = PuzzleController()
+        val controller = GameController()
 
-        controller.newPuzzle(puzzleblack[0], puzzleblack[1], PlayerColor.BLACK,1)
+        //controller.newPuzzle(puzzleblack[0], puzzleblack[1], PlayerColor.BLACK,1)
 
 
         super.onCreate(savedInstanceState)

@@ -80,7 +80,7 @@ class UIViewModel (
         val allLegalCoordinate = emptyList<Coordinate>().toMutableList()
 
         activePosition.value.board.piecesColorPosition(activePlayer.value).forEach {
-                entry -> getReachableSquare(entry.key).forEach {
+                entry -> getReachableandCaptureSquares(entry.key).first.forEach {
                     allLegalCoordinate.add(it)
                 }
         }
@@ -88,7 +88,12 @@ class UIViewModel (
         return allLegalCoordinate
     }
 
-    private fun getReachableSquare(pieceCoordinate: Coordinate) : List<Coordinate>{
+    private fun setReachableSquare(pieceCoordinate: Coordinate){
+        reachableSquares.value = getReachableandCaptureSquares(pieceCoordinate).first
+        captureMoveSquares.value = getReachableandCaptureSquares(pieceCoordinate).second
+    }
+
+    private fun getReachableandCaptureSquares(pieceCoordinate: Coordinate) : Pair<List<Coordinate>,List<Coordinate>> {
 
         val calculateReachableSquares = activePosition.value.board.getSquare(pieceCoordinate).piece!!.reachableSqCoordinates(activePosition.value)
         val calculateCaptureMoveSquares = activePosition.value.board.getSquare(pieceCoordinate).piece!!.reachableCaptureCoordinate(activePosition.value)
@@ -147,10 +152,7 @@ class UIViewModel (
 
         }
 
-        reachableSquares.value = calculateReachableSquares - unavailablePinnedSquared.toSet() - unavailableCastleSquares.toSet()
-        captureMoveSquares.value = calculateCaptureMoveSquares - unavailablePinnedSquared.toSet()
-
-        return calculateReachableSquares - unavailablePinnedSquared.toSet() - unavailableCastleSquares.toSet()
+        return calculateReachableSquares - unavailablePinnedSquared.toSet() - unavailableCastleSquares.toSet() to calculateCaptureMoveSquares - unavailablePinnedSquared.toSet()
 
     }
 
@@ -187,7 +189,7 @@ class UIViewModel (
 
             if (turnPlayerPiecesPositions.contains(square.coordinate)) {
                 selectedSquare.value = square.coordinate
-                getReachableSquare(selectedSquare.value!!)
+                setReachableSquare(selectedSquare.value!!)
             }
 
         } else {
