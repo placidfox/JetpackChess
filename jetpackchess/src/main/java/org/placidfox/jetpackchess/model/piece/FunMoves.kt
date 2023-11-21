@@ -15,6 +15,7 @@ fun Piece.reachableSqCoordinates(    // List of square where the piece can move 
 ): List<Coordinate>{
 
     val reachableSquares = emptyList<Coordinate>().toMutableList()
+
     val piecePosition = position.board.findSquare(this)!!.coordinate.position
 
     val sameColorPiecesPosition = position.board.piecesColorPosition(this.color).keys.toList().map { it.toNum() }
@@ -207,6 +208,14 @@ fun Piece.reachableCaptureCoordinate(position: GamePosition): List<Coordinate>{
         if(position.board.isOccupied(it)) {
             captureMoveSquares.add(it)
         }
+
+        if (this::class == Pawn::class){
+            if (position.enPassantStatus.enPassantCoordinate?.toNum() == it.position){
+                captureMoveSquares.add(it)
+            }
+        }
+
+
     }
 
 
@@ -219,8 +228,10 @@ fun Piece.canKingBeCaptured(position: GamePosition): Boolean{
     var kingCheckedSquare : Boolean = false
 
     this.reachableCaptureCoordinate(position).forEach {
-        if(position.board.getSquare(it).piece!!::class.java == King::class.java) {
-            kingCheckedSquare = true
+        if (position.board.isOccupied(it)){ // to avoid crash null pointer if enPassant = getSquare(it).pieces! is empty
+            if(position.board.getSquare(it).piece!!::class.java == King::class.java) {
+                kingCheckedSquare = true
+            }
         }
     }
 

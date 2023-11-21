@@ -42,7 +42,7 @@ class TestUI {
 
 
     @Test
-    fun myTest() {
+    fun testCastleStatusCheck() {
 
         composeTestRule.setContent {
 
@@ -50,21 +50,73 @@ class TestUI {
         }
 
         composeTestRule.onNodeWithTag("e2").performClick()
-        composeTestRule.onNodeWithTag("e3").performClick()
+        composeTestRule.onNodeWithTag("e4").performClick()
 
+        composeTestRule.onNodeWithTag("d7").performClick()
+        composeTestRule.onNodeWithTag("d6").performClick()
+
+        composeTestRule.onNodeWithTag("e1").performClick()
+        composeTestRule.onNodeWithTag("e2").performClick()
+
+        composeTestRule.onNodeWithTag("c8").performClick()
+        composeTestRule.onNodeWithTag("g4").performClick()
+
+
+        assert(!controller.uiState.activePosition.value.board.isOccupied(Coordinate.E1))
+        assert(!controller.uiState.activePosition.value.castlingStatus.whiteShortCastlePossible)
+        assert(!controller.uiState.activePosition.value.castlingStatus.whiteLongCastlePossible)
+        assert(controller.uiState.activePosition.value.castlingStatus.blackShortCastlePossible)
+        assert(controller.uiState.isKingCheck)
 
     }
+
+
+
+}
+
+class TestUICastleRookMoved {
+
+    @get:Rule
+    val composeTestRule = createComposeRule()
 
 
     @Test
-    fun testE2() {
-        assert(controller.uiState.activePosition.value.board.isOccupied(Coordinate.E2))
+    fun testCastleStatusCheck() {
+
+        composeTestRule.setContent {
+
+            JetpackChess(controller)
+        }
+
+        composeTestRule.onNodeWithTag("e2").performClick()
+        composeTestRule.onNodeWithTag("e4").performClick()
+
+        composeTestRule.onNodeWithTag("d7").performClick()
+        composeTestRule.onNodeWithTag("d6").performClick()
+
+        composeTestRule.onNodeWithTag("g1").performClick()
+        composeTestRule.onNodeWithTag("f3").performClick()
+
+        composeTestRule.onNodeWithTag("e7").performClick()
+        composeTestRule.onNodeWithTag("e6").performClick()
+
+        composeTestRule.onNodeWithTag("f1").performClick()
+        composeTestRule.onNodeWithTag("b5").performClick()
+
+        composeTestRule.onNodeWithTag("c8").performClick()
+        composeTestRule.onNodeWithTag("d7").performClick()
+
+        composeTestRule.onNodeWithTag("h1").performClick()
+        composeTestRule.onNodeWithTag("f1").performClick()
+
+        assert(!controller.uiState.activePosition.value.board.isOccupied(Coordinate.H1))
+        assert(!controller.uiState.activePosition.value.castlingStatus.whiteShortCastlePossible)
+        assert(controller.uiState.activePosition.value.castlingStatus.whiteLongCastlePossible)
+        assert(controller.uiState.activePosition.value.castlingStatus.blackShortCastlePossible)
+        assert(!controller.uiState.isKingCheck)
+
     }
 
-    @Test
-    fun testE3(){
-        assert(controller.uiState.activePosition.value.board.isOccupied(Coordinate.E3))
-    }
 
 
 

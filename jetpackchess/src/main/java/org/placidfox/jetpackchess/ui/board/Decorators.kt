@@ -1,11 +1,17 @@
 package org.placidfox.jetpackchess.ui.board
 
+import androidx.compose.foundation.border
+import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawStyle
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.unit.dp
 import org.placidfox.jetpackchess.model.board.Square
 import org.placidfox.jetpackchess.viewModel.UIViewModel
 
@@ -29,10 +35,10 @@ fun DecoratorSelected(uiState: UIViewModel, square: Square){
 fun DecoratorKingCheck(uiState: UIViewModel, square: Square){
 
     if(square.hasColorKing(uiState.activePlayer.value) && uiState.isKingCheck){
-        Box(modifier = Modifier.fillMaxSize(0.5f).drawBehind {
-            drawCircle(
+        Box(modifier = Modifier.fillMaxSize(0.91f).drawBehind {
+            drawRect(
                 color = DecoratorColor.CHECK_COLOR.color,
-                alpha = if (square.isLight) {0.8f}else{0.75f}
+                style = Stroke(width = size.width / 10)
             )
         })
     }
@@ -45,9 +51,13 @@ fun DecoratorKingCheck(uiState: UIViewModel, square: Square){
 fun DecoratorPossibleDestination(uiState: UIViewModel, square: Square){ // TODO TO REFACTOR
 
     if (uiState.captureMoveSquares.value?.contains(square.coordinate) == true){
-        Box(modifier = Modifier.fillMaxSize(0.25f).drawBehind {
-            drawCircle(
-                color = DecoratorColor.POSSIBLE_DESTINATION_CAPTURE_COLOR.color,
+        Box(modifier = Modifier.fillMaxSize(0.7f).drawBehind {
+            drawArc(
+                color = DecoratorColor.POSSIBLE_DESTINATION_COLOR.color,
+                startAngle = 0f,
+                sweepAngle = 360f,
+                useCenter = true,
+                style = Stroke(width = size.width / 8),
                 alpha = if (square.isLight) {0.8f}else{0.75f}
             )
         })
