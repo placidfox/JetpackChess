@@ -75,7 +75,7 @@ interface Controller {
 
 
 }
-class GameController : Controller { //TODO(NEED MOVE VALIDATION & CHECK / CHECKMATE)
+class GameController : Controller {
 
     override val mode: JetpackChessMode = JetpackChessMode.GAME
     override var uiState: UIViewModel = UIViewModel(
@@ -87,8 +87,9 @@ class GameController : Controller { //TODO(NEED MOVE VALIDATION & CHECK / CHECKM
 
     fun newGame(
         playerSide: PlayerColor,
+        initialFEN: String = FEN_DEFAULT_POSITION,
     ) {
-        importFen(FEN_DEFAULT_POSITION)
+        importFen(initialFEN)
         uiState.boardOrientationState.value = playerSide
     }
 

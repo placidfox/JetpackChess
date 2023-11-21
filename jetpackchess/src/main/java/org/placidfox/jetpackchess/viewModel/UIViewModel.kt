@@ -49,6 +49,9 @@ class UIViewModel (
     val isKingCheckmate: Boolean
         get() = activePosition.value.isActivePlayerKingInCheckmate
 
+    val isKingStalemate: Boolean
+        get() = activePosition.value.isActivePlayerKingInStalemate
+
     var activePlayer = mutableStateOf(PlayerColor.WHITE)
 
     val boardOrientationState = mutableStateOf(boardOrientation)
@@ -248,9 +251,13 @@ class UIViewModel (
 
     }
 
-    private fun updateCheckmateStatus(){
-        activePosition.value.isActivePlayerKingInCheckmate = allLegalDestination.isEmpty()
-        resetReachableSquare()
+    private fun updateCheckmateAndStalemateStatus(){
+        activePosition.value.isActivePlayerKingInCheckmate = allLegalDestination.isEmpty() && isKingCheck
+        activePosition.value.isActivePlayerKingInStalemate = allLegalDestination.isEmpty() && !isKingCheck
+        resetReachableSquare() // TODO USELESS ??
+
+        println(activePosition.value.isActivePlayerKingInCheckmate)
+        println(activePosition.value.isActivePlayerKingInStalemate)
     }
 
     fun applyMove(
@@ -307,7 +314,7 @@ class UIViewModel (
         resetWrongMoveDecorator()
         activePositionIndex = index
         updateCheckStatus()
-        updateCheckmateStatus()
+        updateCheckmateAndStalemateStatus()
         checkEndStatus()
     }
 

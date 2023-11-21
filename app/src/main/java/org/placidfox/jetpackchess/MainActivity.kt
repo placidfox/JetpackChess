@@ -27,6 +27,8 @@ class MainActivity : ComponentActivity() {
 
         val controller = GameController()
 
+        //controller.newGame(PlayerColor.WHITE, testStalemate[0])
+
         //controller.newPuzzle(puzzleblack[0], puzzleblack[1], PlayerColor.BLACK,1)
 
 
@@ -44,6 +46,9 @@ class MainActivity : ComponentActivity() {
                             Button(onClick = { controller.reset() }) {
                                 Text("Reset")
                             }
+                            Button(onClick = { controller.newGame(PlayerColor.WHITE, testStalemate[0]) }) {
+                                Text("Test Stalemate")
+                            }
                             Text(controller.uiState.status.value.toString())
                         }
                     }
@@ -60,6 +65,8 @@ class MainActivity : ComponentActivity() {
 
 
 // Test values & variation
+
+val testStalemate = listOf("8/8/8/K1Q5/8/8/8/k7 w - - 2 27", "c5c2")
 
 val puzzlewhite = listOf("2r3k1/1q3ppp/B3pbb1/2Rp4/P7/1Q2P2P/1P4P1/6K1 b - - 2 27", "b7b3 c5c8 f6d8 c8d8")
 val puzzleblack = listOf("8/2r3k1/5p2/3Q4/P2P4/4PN2/5PPP/6K1 w - - 3 31", "d5e4 c7c1 f3e1 c1e1")

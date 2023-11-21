@@ -54,6 +54,10 @@ fun UIViewModel.checkEndStatus(){
             if (isKingCheckmate){
                 status.value = STATUS.FINISH_CHECKMATE
             }
+
+            if (isKingStalemate){
+                status.value = STATUS.FINISH_STALEMATE
+            }
         } //TODO() CHECK IF CHECKMATE OR STALEMATE OR GIVE UP
         JetpackChessMode.PUZZLE -> if(activePositionIndex == gameTimeline.positionsTimeline.lastIndex){
             if (status.value == STATUS.IN_PROGRESS_OK){

@@ -27,6 +27,8 @@ data class GamePosition(
 
     var isActivePlayerKingInCheckmate: Boolean = false,
 
+    var isActivePlayerKingInStalemate: Boolean = false,
+
     ){
         val lastMovePositions: List<Coordinate>? = lastMove?.let { listOf(it.from, it.to) }
 
