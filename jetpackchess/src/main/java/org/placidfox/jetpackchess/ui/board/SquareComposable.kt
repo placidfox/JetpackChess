@@ -33,10 +33,11 @@ fun SquareComposable(uiState: UIViewModel, square: Square){
         DecoratorPreviousMoves(uiState, square)
         DecoratorWrongMove(uiState, square)
         DecoratorSelected(uiState, square)
+        DecoratorKingCheck(uiState, square)
+        DecoratorKingCheckmate(uiState, square)
         Coordinate(uiState, square)
         PieceComposable(uiState, square)
         DecoratorPossibleDestination(uiState, square) // to be in front of the piece asset
-        DecoratorKingCheck(uiState, square)
     }
 
 }

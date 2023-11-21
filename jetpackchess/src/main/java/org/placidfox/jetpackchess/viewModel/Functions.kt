@@ -50,7 +50,11 @@ fun UIViewModel.statusMistake(){
 fun UIViewModel.checkEndStatus(){
 
     when(mode){
-        JetpackChessMode.GAME -> {} //TODO() CHECK IF CHECKMATE OR STALEMATE OR GIVE UP
+        JetpackChessMode.GAME -> {
+            if (isKingCheckmate){
+                status.value = STATUS.FINISH_CHECKMATE
+            }
+        } //TODO() CHECK IF CHECKMATE OR STALEMATE OR GIVE UP
         JetpackChessMode.PUZZLE -> if(activePositionIndex == gameTimeline.positionsTimeline.lastIndex){
             if (status.value == STATUS.IN_PROGRESS_OK){
                 status.value = STATUS.FINISH_OK

@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
 
         val controller = PuzzleController()
 
-        controller.newPuzzle(puzzlewhitepromotion[0], puzzlewhitepromotion[1], PlayerColor.WHITE,1)
+        controller.newPuzzle(puzzleblack[0], puzzleblack[1], PlayerColor.BLACK,1)
 
 
         super.onCreate(savedInstanceState)
@@ -44,6 +44,7 @@ class MainActivity : ComponentActivity() {
                             Button(onClick = { controller.reset() }) {
                                 Text("Reset")
                             }
+                            Text(controller.uiState.status.value.toString())
                         }
                     }
 

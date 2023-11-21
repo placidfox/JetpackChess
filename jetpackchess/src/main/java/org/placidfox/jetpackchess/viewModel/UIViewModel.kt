@@ -46,6 +46,9 @@ class UIViewModel (
     val isKingCheck: Boolean
         get() = activePosition.value.isActivePlayerKingInCheck
 
+    val isKingCheckmate: Boolean
+        get() = activePosition.value.isActivePlayerKingInCheckmate
+
     var activePlayer = mutableStateOf(PlayerColor.WHITE)
 
     val boardOrientationState = mutableStateOf(boardOrientation)
@@ -70,7 +73,22 @@ class UIViewModel (
     val reachableSquares = mutableStateOf<List<Coordinate>?>(null)
     val captureMoveSquares = mutableStateOf<List<Coordinate>?>(null)
 
-    private fun getReachableSquare(pieceCoordinate: Coordinate) {
+    val allLegalDestination: List<Coordinate>
+        get() = getAllLegalMoves()
+
+    fun getAllLegalMoves(): List<Coordinate>{
+        val allLegalCoordinate = emptyList<Coordinate>().toMutableList()
+
+        activePosition.value.board.piecesColorPosition(activePlayer.value).forEach {
+                entry -> getReachableSquare(entry.key).forEach {
+                    allLegalCoordinate.add(it)
+                }
+        }
+
+        return allLegalCoordinate
+    }
+
+    private fun getReachableSquare(pieceCoordinate: Coordinate) : List<Coordinate>{
 
         val calculateReachableSquares = activePosition.value.board.getSquare(pieceCoordinate).piece!!.reachableSqCoordinates(activePosition.value)
         val calculateCaptureMoveSquares = activePosition.value.board.getSquare(pieceCoordinate).piece!!.reachableCaptureCoordinate(activePosition.value)
@@ -132,6 +150,8 @@ class UIViewModel (
         reachableSquares.value = calculateReachableSquares - unavailablePinnedSquared.toSet() - unavailableCastleSquares.toSet()
         captureMoveSquares.value = calculateCaptureMoveSquares - unavailablePinnedSquared.toSet()
 
+        return calculateReachableSquares - unavailablePinnedSquared.toSet() - unavailableCastleSquares.toSet()
+
     }
 
     private fun resetReachableSquare(){
@@ -149,7 +169,7 @@ class UIViewModel (
 
         when (mode) {
             JetpackChessMode.GAME ->
-                if (activePositionIndex == gameTimeline.positionsTimeline.lastIndex) { // TODO - && IF NOT CHECKMATE
+                if (activePositionIndex == gameTimeline.positionsTimeline.lastIndex && !isKingCheckmate) {
                     clickSquareAction(square)
                 }
             JetpackChessMode.PUZZLE ->
@@ -226,6 +246,11 @@ class UIViewModel (
 
     }
 
+    private fun updateCheckmateStatus(){
+        activePosition.value.isActivePlayerKingInCheckmate = allLegalDestination.isEmpty()
+        resetReachableSquare()
+    }
+
     fun applyMove(
         from: Coordinate,
         to: Coordinate,
@@ -235,7 +260,6 @@ class UIViewModel (
         val newPosition = calculateNewPosition(activePosition.value, move)
         addMoveMadeGamePosition(move)
         addGamePositionInTimeline(newPosition)
-        updateCheckStatus()
     }
 
     fun applyAutoMove() {
@@ -280,6 +304,9 @@ class UIViewModel (
         resetReachableSquare()
         resetWrongMoveDecorator()
         activePositionIndex = index
+        updateCheckStatus()
+        updateCheckmateStatus()
+        checkEndStatus()
     }
 
     fun forwardActivePosition() {
@@ -315,7 +342,6 @@ class UIViewModel (
         activePlayer.value = activePosition.value.activePlayer
         score.value = activePosition.value.calculateScore(boardOrientation) // copy from getter() ?
         updateButtonState()
-        checkEndStatus()
      }
 
 }
@@ -328,7 +354,8 @@ enum class STATUS{
     IN_PROGRESS_GAME,
     IN_PROGRESS_OK,
     IN_PROGRESS_WRONG,
-    FINISH_GAME, // FOR END OF A GAME - BY_CHECKMATE, ...
+    FINISH_CHECKMATE,
+    FINISH_STALEMATE,
     FINISH_OK,
     FINISH_WRONG,
 }
