@@ -9,19 +9,22 @@ import org.placidfox.jetpackchess.model.game.GamePosition
 import org.placidfox.jetpackchess.model.piece.Pawn.Companion.captureTargets
 import org.placidfox.jetpackchess.model.piece.Pawn.Companion.targetInitRank
 
+var init = 0
 
 fun Piece.reachableSqCoordinates(    // List of square where the piece can move (without check validation)
     position: GamePosition
-): List<Coordinate>{
+): Pair<List<Coordinate>,List<Coordinate>>{
 
     val reachableSquares = emptyList<Coordinate>().toMutableList()
+    val captureMoveSquares = emptyList<Coordinate>().toMutableList()
 
     val piecePosition = position.board.findSquare(this)!!.coordinate.position
 
     val sameColorPiecesPosition = position.board.piecesColorPosition(this.color).keys.toList().map { it.toNum() }
     val opponentColorPiecesPosition = position.board.piecesColorPosition(this.color.opponent()).keys.toList().map { it.toNum() }
 
-
+    println("Execute : $init")
+    init += 1
 
     val listPositions = emptyList<Int>().toMutableList()
 
@@ -197,14 +200,7 @@ fun Piece.reachableSqCoordinates(    // List of square where the piece can move 
         reachableSquares.add(Coordinate.fromNumCoordinate(it.toString()[0].digitToInt(), it.toString()[1].digitToInt()))
     }
 
-    return reachableSquares
-}
-
-fun Piece.reachableCaptureCoordinate(position: GamePosition): List<Coordinate>{
-
-    val captureMoveSquares = emptyList<Coordinate>().toMutableList()
-
-    this.reachableSqCoordinates(position).forEach {
+    reachableSquares.forEach {
         if(position.board.isOccupied(it)) {
             captureMoveSquares.add(it)
         }
@@ -218,8 +214,7 @@ fun Piece.reachableCaptureCoordinate(position: GamePosition): List<Coordinate>{
 
     }
 
-
-    return captureMoveSquares
+    return reachableSquares to captureMoveSquares
 }
 
 
@@ -227,7 +222,7 @@ fun Piece.canKingBeCaptured(position: GamePosition): Boolean{
 
     var kingCheckedSquare : Boolean = false
 
-    this.reachableCaptureCoordinate(position).forEach {
+    this.reachableSqCoordinates(position).first.forEach {
         if (position.board.isOccupied(it)){ // to avoid crash null pointer if enPassant = getSquare(it).pieces! is empty
             if(position.board.getSquare(it).piece!!::class.java == King::class.java) {
                 kingCheckedSquare = true

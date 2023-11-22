@@ -83,7 +83,8 @@ class UIViewModel (
         val allLegalCoordinate = emptyList<Coordinate>().toMutableList()
 
         activePosition.value.board.piecesColorPosition(activePlayer.value).forEach {
-                entry -> getReachableandCaptureSquares(entry.key).first.forEach {
+             entry ->
+                getReachableandCaptureSquares(entry.key).first.forEach {
                     allLegalCoordinate.add(it)
                 }
         }
@@ -92,14 +93,17 @@ class UIViewModel (
     }
 
     private fun setReachableSquare(pieceCoordinate: Coordinate){
-        reachableSquares.value = getReachableandCaptureSquares(pieceCoordinate).first
-        captureMoveSquares.value = getReachableandCaptureSquares(pieceCoordinate).second
+        val fetchedPairList = getReachableandCaptureSquares(pieceCoordinate)
+        reachableSquares.value = fetchedPairList.first
+        captureMoveSquares.value = fetchedPairList.second
     }
 
     private fun getReachableandCaptureSquares(pieceCoordinate: Coordinate) : Pair<List<Coordinate>,List<Coordinate>> {
 
-        val calculateReachableSquares = activePosition.value.board.getSquare(pieceCoordinate).piece!!.reachableSqCoordinates(activePosition.value)
-        val calculateCaptureMoveSquares = activePosition.value.board.getSquare(pieceCoordinate).piece!!.reachableCaptureCoordinate(activePosition.value)
+        val fetchedPairList = activePosition.value.board.getSquare(pieceCoordinate).piece!!.reachableSqCoordinates(activePosition.value)
+
+        val calculateReachableSquares = fetchedPairList.first
+        val calculateCaptureMoveSquares = fetchedPairList.second
         val unavailablePinnedSquared = emptyList<Coordinate>().toMutableList()
 
 
@@ -124,8 +128,9 @@ class UIViewModel (
         val listPositionsMenaced = emptyList<Coordinate>().toMutableList()
         val unavailableCastleSquares = emptyList<Coordinate>().toMutableList()
 
+
         activePosition.value.board.piecesColorPosition(activePlayer.value.opponent()).forEach {  // opponent() because turn as been made
-            entry -> entry.value.reachableSqCoordinates(activePosition.value).forEach {
+            entry -> entry.value.reachableSqCoordinates(activePosition.value).first.forEach {
                 listPositionsMenaced.add(it)
             }
         }
@@ -174,7 +179,7 @@ class UIViewModel (
 
         when (mode) {
             JetpackChessMode.GAME ->
-                if (activePositionIndex == gameTimeline.positionsTimeline.lastIndex && !isKingCheckmate) {
+                if (activePositionIndex == gameTimeline.positionsTimeline.lastIndex && !isKingCheckmate && !isKingStalemate) {
                     clickSquareAction(square)
                 }
             JetpackChessMode.PUZZLE ->
@@ -252,12 +257,10 @@ class UIViewModel (
     }
 
     private fun updateCheckmateAndStalemateStatus(){
-        activePosition.value.isActivePlayerKingInCheckmate = allLegalDestination.isEmpty() && isKingCheck
-        activePosition.value.isActivePlayerKingInStalemate = allLegalDestination.isEmpty() && !isKingCheck
+        val calculateLegalDestination = allLegalDestination
+        activePosition.value.isActivePlayerKingInCheckmate = calculateLegalDestination.isEmpty() && isKingCheck
+        activePosition.value.isActivePlayerKingInStalemate = calculateLegalDestination.isEmpty() && !isKingCheck
         resetReachableSquare() // TODO USELESS ??
-
-        println(activePosition.value.isActivePlayerKingInCheckmate)
-        println(activePosition.value.isActivePlayerKingInStalemate)
     }
 
     fun applyMove(
