@@ -5,7 +5,12 @@ Chess Board Library for Jetpack Compose \
 
 The initial goal of JetpackChess is to serve as an interactive board to train with puzzle or practice your opening lines.
 
-## v1.0
+## v1.1
+
+Move Validation added.
++ Check / Checkmate / Stalemate Status update
+
+Some performance issue during checkmate validation with latency if many pieces on the board
 
 ### Puzzle Mode :
 - import base position + list of moves in UCI format. Exemple : 1.e4 c6 = 'e2e4 c7c6'
@@ -63,5 +68,5 @@ newVariation()
 
 
 ## Not yet implemented :
-- Move Validation // Check or Checkmate 
+- GameController for multiplayer
 - Animation when a piece move
