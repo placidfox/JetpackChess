@@ -20,6 +20,9 @@ The initial goal of JetpackChess is to serve as an interactive board to train wi
 
 #### Can be use to see and study a specific opening line
 
+Wrong Move in Puzzle Mode / Good Move in Puzzle Mode : \
+![My Image](pics/capture1.png)
+![My Image](pics/capture2.png)
 
 ## Controller Documentation 
 
