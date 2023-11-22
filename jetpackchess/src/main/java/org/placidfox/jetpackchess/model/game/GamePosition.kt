@@ -21,8 +21,13 @@ data class GamePosition(
     var lastMove: AppliedMove? = null,
     var nextMove: AppliedMove? = null,
 
-    val capturedPieces: List<Piece?> = emptyList()
+    val capturedPieces: List<Piece?> = emptyList(),
 
+    var isActivePlayerKingInCheck: Boolean = false,
+
+    var isActivePlayerKingInCheckmate: Boolean = false,
+
+    var isActivePlayerKingInStalemate: Boolean = false,
 
     ){
         val lastMovePositions: List<Coordinate>? = lastMove?.let { listOf(it.from, it.to) }

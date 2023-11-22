@@ -29,7 +29,6 @@ class Knight(override val color: PlayerColor) : Piece {
 
     override val value: Int = 3
 
-
     companion object {
         val targets = listOf(
             -8,
@@ -42,6 +41,4 @@ class Knight(override val color: PlayerColor) : Piece {
             +21
         )
     }
-
-
 }

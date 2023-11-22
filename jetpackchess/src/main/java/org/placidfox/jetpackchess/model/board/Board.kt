@@ -35,9 +35,6 @@ data class Board(
     fun findSquare(piece: Piece): Square? =
         squares.values.firstOrNull { it.piece == piece }
 
-    fun newPieces(coordinate: Coordinate): Map<Coordinate, Piece> =
-        piecesPosition.filter { (key) ->  key != coordinate }
-
 }
 
 

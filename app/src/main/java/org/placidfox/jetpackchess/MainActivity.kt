@@ -1,33 +1,61 @@
 package org.placidfox.jetpackchess
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.unit.dp
 import org.placidfox.jetpackchess.controller.FEN_DEFAULT_POSITION
+import org.placidfox.jetpackchess.controller.GameController
 import org.placidfox.jetpackchess.controller.PuzzleController
+import org.placidfox.jetpackchess.controller.ScrollController
 import org.placidfox.jetpackchess.model.piece.PlayerColor
 import org.placidfox.jetpackchess.ui.theme.JetpackChessTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        val controller = PuzzleController()
+        val controller = GameController()
 
-        controller.newPuzzle(puzzlewhitepromotion[0], puzzlewhitepromotion[1], PlayerColor.WHITE, 1)
+        //controller.newGame(PlayerColor.WHITE, testStalemate[0])
+
+        //controller.newPuzzle(openingwhite[0], openingwhite[1], PlayerColor.WHITE,0)
 
 
         super.onCreate(savedInstanceState)
         setContent {
             JetpackChessTheme {
 
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.primary) {
+                Surface(modifier = Modifier.fillMaxSize()) {
 
-                    JetpackChess(controller)
+                    Column (verticalArrangement = Arrangement.SpaceBetween) {
+                        Row(modifier = Modifier.fillMaxHeight(0.9f)) {
+                            JetpackChess(controller)
+                        }
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                            Button(onClick = { controller.reset() }) {
+                                Text("Reset")
+                            }
+                            Button(onClick = { controller.newGame(PlayerColor.WHITE, testStalemate[0]) }) {
+                                Text("Test Stalemate")
+                            }
+                            Text(controller.uiState.status.value.toString())
+                        }
+                    }
+
+
+
+
 
                 }
             }
@@ -37,6 +65,8 @@ class MainActivity : ComponentActivity() {
 
 
 // Test values & variation
+
+val testStalemate = listOf("8/8/8/K1Q5/8/8/8/k7 w - - 2 27", "c5c2")
 
 val puzzlewhite = listOf("2r3k1/1q3ppp/B3pbb1/2Rp4/P7/1Q2P2P/1P4P1/6K1 b - - 2 27", "b7b3 c5c8 f6d8 c8d8")
 val puzzleblack = listOf("8/2r3k1/5p2/3Q4/P2P4/4PN2/5PPP/6K1 w - - 3 31", "d5e4 c7c1 f3e1 c1e1")

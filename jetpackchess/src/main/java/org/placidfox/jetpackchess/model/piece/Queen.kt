@@ -28,14 +28,8 @@ class Queen(override val color: PlayerColor) : Piece {
 
     override val value: Int = 9
 
-
-
-
     companion object {
-        val directions = listOf(
-            Bishop.directions + Rook.directions
-        )
+        val directions = Bishop.directions + Rook.directions
     }
-
 
 }

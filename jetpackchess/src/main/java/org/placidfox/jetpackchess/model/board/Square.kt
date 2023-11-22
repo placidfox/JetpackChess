@@ -3,6 +3,7 @@ package org.placidfox.jetpackchess.model.board
 
 import org.placidfox.jetpackchess.model.board.Coordinate.Companion.isDarkSquare
 import org.placidfox.jetpackchess.model.board.Coordinate.Companion.isLightSquare
+import org.placidfox.jetpackchess.model.piece.King
 import org.placidfox.jetpackchess.model.piece.Piece
 import org.placidfox.jetpackchess.model.piece.PlayerColor
 
@@ -39,6 +40,10 @@ data class Square(
 
     val hasBlackPiece: Boolean
         get() = piece?.color == PlayerColor.BLACK
+
+
+    fun hasColorKing(color: PlayerColor): Boolean =
+        piece?.color == color && piece::class.java == King::class.java
 
 
     fun hasColorPiece(color: PlayerColor): Boolean =

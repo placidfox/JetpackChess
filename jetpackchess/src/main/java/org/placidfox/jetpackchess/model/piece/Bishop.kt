@@ -28,14 +28,12 @@ class Bishop(override val color: PlayerColor) : Piece {
 
 
 
-
     companion object {
         val directions = listOf(
-            -9,
-            +9,
-            -11,
-            +11
+            -9, +9,
+            -11, +11
         )
     }
+
 
 }
