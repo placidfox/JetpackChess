@@ -23,9 +23,6 @@ fun Piece.reachableSqCoordinates(    // List of square where the piece can move 
     val sameColorPiecesPosition = position.board.piecesColorPosition(this.color).keys.toList().map { it.toNum() }
     val opponentColorPiecesPosition = position.board.piecesColorPosition(this.color.opponent()).keys.toList().map { it.toNum() }
 
-    println("Execute : $init")
-    init += 1
-
     val listPositions = emptyList<Int>().toMutableList()
 
     when(this::class) {
