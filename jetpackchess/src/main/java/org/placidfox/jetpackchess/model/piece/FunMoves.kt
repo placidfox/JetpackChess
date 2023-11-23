@@ -25,6 +25,9 @@ fun Piece.reachableSqCoordinates(    // List of square where the piece can move 
 
     val listPositions = emptyList<Int>().toMutableList()
 
+    println(init)
+    init += 1
+
     when(this::class) {
         Bishop::class ->
             Bishop.directions.forEach {

@@ -128,36 +128,43 @@ class UIViewModel (
         val listPositionsMenaced = emptyList<Coordinate>().toMutableList()
         val unavailableCastleSquares = emptyList<Coordinate>().toMutableList()
 
+        if (activePosition.value.board.getSquare(pieceCoordinate).piece!!::class.java == King::class.java) { // TODO SIMPLIFY- DON'T WORK IN Piece.FunMoves??
 
-        activePosition.value.board.piecesColorPosition(activePlayer.value.opponent()).forEach {  // opponent() because turn as been made
-            entry -> entry.value.reachableSqCoordinates(activePosition.value).first.forEach {
-                listPositionsMenaced.add(it)
-            }
-        }
 
-        if (activePosition.value.board.getSquare(pieceCoordinate).piece!!::class.java == King::class.java){
-
-            when (pieceCoordinate){
-                Coordinate.E1  -> {
-                    if (listPositionsMenaced.contains(Coordinate.F1)){
-                        unavailableCastleSquares.add(Coordinate.G1)
-                    }
-                    if (listPositionsMenaced.contains(Coordinate.D1)){
-                        unavailableCastleSquares.add(Coordinate.C1)
+            activePosition.value.board.piecesColorPosition(activePlayer.value.opponent())
+                .forEach {  // opponent() because turn as been made
+                        entry ->
+                    entry.value.reachableSqCoordinates(activePosition.value).first.forEach {
+                        listPositionsMenaced.add(it)
                     }
                 }
-                Coordinate.E8 -> {
-                    if (listPositionsMenaced.contains(Coordinate.F8)){
-                        unavailableCastleSquares.add(Coordinate.G8)
+
+            if (activePosition.value.board.getSquare(pieceCoordinate).piece!!::class.java == King::class.java) {
+
+                when (pieceCoordinate) {
+                    Coordinate.E1 -> {
+                        if (listPositionsMenaced.contains(Coordinate.F1)) {
+                            unavailableCastleSquares.add(Coordinate.G1)
+                        }
+                        if (listPositionsMenaced.contains(Coordinate.D1)) {
+                            unavailableCastleSquares.add(Coordinate.C1)
+                        }
                     }
-                    if (listPositionsMenaced.contains(Coordinate.D8)){
-                        unavailableCastleSquares.add(Coordinate.C8)
+
+                    Coordinate.E8 -> {
+                        if (listPositionsMenaced.contains(Coordinate.F8)) {
+                            unavailableCastleSquares.add(Coordinate.G8)
+                        }
+                        if (listPositionsMenaced.contains(Coordinate.D8)) {
+                            unavailableCastleSquares.add(Coordinate.C8)
+                        }
                     }
+
+                    else -> {}
                 }
-                else -> {}
+
+
             }
-
-
         }
 
         return calculateReachableSquares - unavailablePinnedSquared.toSet() - unavailableCastleSquares.toSet() to calculateCaptureMoveSquares - unavailablePinnedSquared.toSet()
