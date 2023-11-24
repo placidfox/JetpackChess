@@ -29,13 +29,7 @@ class MainActivity : ComponentActivity() {
 
         val controller = GameController()
 
-        //controller.newGame(PlayerColor.WHITE, testStalemate[0])
-
         //controller.newPuzzle(openingwhite[0], openingwhite[1], PlayerColor.WHITE,0)
-
-        println(controller.uiState.activePosition.value.board.findPiece(Coordinate.A2)!!.reachableSqCoordinates(controller.uiState.activePosition.value))
-        println(controller.uiState.activePosition.value.board.findPiece(Coordinate.B8)!!.reachableSqCoordinates(controller.uiState.activePosition.value))
-        println(controller.uiState.activePosition.value.board.findPiece(Coordinate.E1)!!.reachableSqCoordinates(controller.uiState.activePosition.value))
 
 
         super.onCreate(savedInstanceState)

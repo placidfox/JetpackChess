@@ -42,6 +42,30 @@ data class GamePosition(
                     board.piecesColorPosition(playerColor).values.sumOf {it.value} - board.piecesColorPosition(playerColor.opponent()).values.sumOf {it.value}
             }
 
+
+        fun isKingCheck(color: PlayerColor) : Boolean{
+
+            var calculateIsKingChecked = false
+            val kingCoordinate = board.kingPosition(color)
+
+            board.piecesColorPosition(color.opponent()).forEach {
+                entry -> if(entry.value.reachableSquares(this).contains(kingCoordinate)) {
+                    calculateIsKingChecked = true
+                }
+            }
+
+            return calculateIsKingChecked
+        }
+
+        fun isCastleSquareMenaced() : List<Coordinate> {
+
+
+            return emptyList()
+        }
+
+
+
+
         /* TODO
 
         fun isLegalDestination(playerColor: PlayerColor): Boolean {

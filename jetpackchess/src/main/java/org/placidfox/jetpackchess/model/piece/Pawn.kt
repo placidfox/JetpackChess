@@ -3,7 +3,7 @@ package org.placidfox.jetpackchess.model.piece
 import org.placidfox.jetpackchess.R
 import org.placidfox.jetpackchess.model.board.Coordinate
 import org.placidfox.jetpackchess.model.board.Coordinate.Companion.toNum
-import org.placidfox.jetpackchess.model.board.positions
+import org.placidfox.jetpackchess.model.board.boardCoordinateNum
 import org.placidfox.jetpackchess.model.game.GamePosition
 
 class Pawn(override val color: PlayerColor) : Piece {
@@ -32,39 +32,38 @@ class Pawn(override val color: PlayerColor) : Piece {
 
     override val value: Int = 1
 
-    override fun reachableSqCoordinates(position: GamePosition): Pair<List<Coordinate>, List<Coordinate>> {
+    override fun reachableSquares(position: GamePosition): List<Coordinate> {
 
-        val reachableSquares = emptyList<Coordinate>().toMutableList()
-        val captureMoveSquares = emptyList<Coordinate>().toMutableList()
+        val moveSquares = emptyList<Coordinate>().toMutableList()
 
-        val piecePosition = position.board.findSquare(this)!!.coordinate.position
+        val pieceLocation = position.board.findSquare(this)!!.coordinate.coordinateInt
 
-        val sameColorPiecesPosition = position.board.piecesColorPosition(this.color).keys.toList().map { it.toNum() }
-        val opponentColorPiecesPosition = position.board.piecesColorPosition(this.color.opponent()).keys.toList().map { it.toNum() }
+        val sameColorPiecesLocation = position.board.piecesColorPosition(this.color).keys.toList().map { it.toNum() }
+        val opponentColorPiecesLocation = position.board.piecesColorPosition(this.color.opponent()).keys.toList().map { it.toNum() }
 
         when(this.color){ // TODO TO SIMPLIFY 1 LOOP ONLY ?
             PlayerColor.WHITE -> {
-                if (piecePosition % 10 == 2) { // TODO TO RANK CHECK INSTEAD
+                if (pieceLocation % 10 == 2) { // TODO TO RANK CHECK INSTEAD
                     targetInitRank.forEach {
-                        val positionTest = piecePosition + it
+                        val positionTest = pieceLocation + it
                         val coordinateTest = Coordinate.fromNumCoordinate(
                             positionTest.toString()[0].digitToInt(),
                             positionTest.toString()[1].digitToInt()
                         )
 
-                        if (!position.board.isOccupied(coordinateTest) && positionTest in positions && piecePosition + target[0] !in sameColorPiecesPosition + opponentColorPiecesPosition) { // TODO  SIMPLIFY same color + opponent color
-                            reachableSquares.add(coordinateTest)
+                        if (!position.board.isOccupied(coordinateTest) && positionTest in boardCoordinateNum && pieceLocation + target[0] !in sameColorPiecesLocation + opponentColorPiecesLocation) { // TODO  SIMPLIFY same color + opponent color
+                            moveSquares.add(coordinateTest)
                         }
                     }
                 }
 
 
                 target.forEach {
-                        val positionTest = piecePosition + it
+                        val positionTest = pieceLocation + it
                         val coordinateTest = Coordinate.fromNumCoordinate(positionTest.toString()[0].digitToInt(), positionTest.toString()[1].digitToInt())
 
-                        if (positionTest in positions && (!position.board.isOccupied(coordinateTest))) {
-                            reachableSquares.add(coordinateTest)
+                        if (positionTest in boardCoordinateNum && (!position.board.isOccupied(coordinateTest))) {
+                            moveSquares.add(coordinateTest)
                         }
                 }
 
@@ -72,71 +71,71 @@ class Pawn(override val color: PlayerColor) : Piece {
 
                 captureTargets.forEach{
 
-                    val positionTest = piecePosition + it
+                    val positionTest = pieceLocation + it
 
 
-                    if (positionTest in opponentColorPiecesPosition){
+                    if (positionTest in opponentColorPiecesLocation){
                         val coordinateTest = Coordinate.fromNumCoordinate(
                             positionTest.toString()[0].digitToInt(),
                             positionTest.toString()[1].digitToInt()
                         )
-                        captureMoveSquares.add(coordinateTest)
+                        moveSquares.add(coordinateTest)
                     }
                     if (positionTest == position.enPassantStatus.enPassantCoordinate?.toNum()) {
                         val coordinateTest = Coordinate.fromNumCoordinate(
                             positionTest.toString()[0].digitToInt(),
                             positionTest.toString()[1].digitToInt()
                         )
-                        captureMoveSquares.add(coordinateTest)
+                        moveSquares.add(coordinateTest)
                     }
                 }
 
 
             }
             PlayerColor.BLACK -> {
-                if (piecePosition % 10 == 7) { // TODO TO RANK CHECK INSTEAD
+                if (pieceLocation % 10 == 7) { // TODO TO RANK CHECK INSTEAD
                     targetInitRank.forEach {
-                        val positionTest = piecePosition - it
+                        val positionTest = pieceLocation - it
                         val coordinateTest = Coordinate.fromNumCoordinate(
                             positionTest.toString()[0].digitToInt(),
                             positionTest.toString()[1].digitToInt()
                         )
 
-                        if (!position.board.isOccupied(coordinateTest) && positionTest in positions && piecePosition - target[0] !in sameColorPiecesPosition + opponentColorPiecesPosition) { // TODO  SIMPLIFY same color + opponent color
-                            reachableSquares.add(coordinateTest)
+                        if (!position.board.isOccupied(coordinateTest) && positionTest in boardCoordinateNum && pieceLocation - target[0] !in sameColorPiecesLocation + opponentColorPiecesLocation) { // TODO  SIMPLIFY same color + opponent color
+                            moveSquares.add(coordinateTest)
                         }
                     }
                 }
 
                 target.forEach {
-                        val positionTest = piecePosition - it
+                        val positionTest = pieceLocation - it
                         val coordinateTest = Coordinate.fromNumCoordinate(
                             positionTest.toString()[0].digitToInt(),
                             positionTest.toString()[1].digitToInt()
                         )
 
-                        if (positionTest in positions && (!position.board.isOccupied(coordinateTest))) {
-                            reachableSquares.add(coordinateTest)
+                        if (positionTest in boardCoordinateNum && (!position.board.isOccupied(coordinateTest))) {
+                            moveSquares.add(coordinateTest)
                         }
                 }
 
 
                 captureTargets.forEach {
-                    val positionTest = piecePosition - it
+                    val positionTest = pieceLocation - it
 
-                    if (positionTest in opponentColorPiecesPosition) {
+                    if (positionTest in opponentColorPiecesLocation) {
                         val coordinateTest = Coordinate.fromNumCoordinate(
                             positionTest.toString()[0].digitToInt(),
                             positionTest.toString()[1].digitToInt()
                         )
-                        captureMoveSquares.add(coordinateTest)
+                        moveSquares.add(coordinateTest)
                     }
                     if (positionTest == position.enPassantStatus.enPassantCoordinate?.toNum()) {
                         val coordinateTest = Coordinate.fromNumCoordinate(
                             positionTest.toString()[0].digitToInt(),
                             positionTest.toString()[1].digitToInt()
                         )
-                        captureMoveSquares.add(coordinateTest)
+                        moveSquares.add(coordinateTest)
                     }
                 }
 
@@ -144,7 +143,7 @@ class Pawn(override val color: PlayerColor) : Piece {
             }
         }
 
-        return reachableSquares + captureMoveSquares to captureMoveSquares // +captureMoveSquares specific to Pawn (can move only if is a capture)
+        return moveSquares // +captureMoveSquares specific to Pawn (can move only if is a capture)
     }
 
     companion object {

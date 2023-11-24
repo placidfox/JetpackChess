@@ -70,7 +70,7 @@ fun DecoratorKingStalemate(uiState: UIViewModel, square: Square){
 @Composable
 fun DecoratorPossibleDestination(uiState: UIViewModel, square: Square){ // TODO : TO REFACTOR
 
-    if (uiState.captureMoveSquares.value?.contains(square.coordinate) == true){
+    if (uiState.reachableSquares.value?.contains(square.coordinate) == true && (square.isNotEmpty || square.coordinate == uiState.activePosition.value.enPassantStatus.enPassantCoordinate)){
         Box(modifier = Modifier
             .fillMaxSize(0.7f)
             .drawBehind {

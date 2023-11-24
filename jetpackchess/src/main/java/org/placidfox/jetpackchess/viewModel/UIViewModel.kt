@@ -84,7 +84,7 @@ class UIViewModel (
 
         activePosition.value.board.piecesColorPosition(activePlayer.value).forEach {
                 entry ->
-            getReachableandCaptureSquares(entry.key).first.forEach {
+            getReachableandCaptureSquares(entry.key).forEach {
                 allLegalCoordinate.add(it)
             }
         }
@@ -94,19 +94,27 @@ class UIViewModel (
 
     private fun setReachableSquare(pieceCoordinate: Coordinate){
         val fetchedPairList = getReachableandCaptureSquares(pieceCoordinate)
-        reachableSquares.value = fetchedPairList.first
-        captureMoveSquares.value = fetchedPairList.second
+        reachableSquares.value = fetchedPairList
     }
 
-    private fun getReachableandCaptureSquares(pieceCoordinate: Coordinate) : Pair<List<Coordinate>,List<Coordinate>> {
 
-        val fetchedPairList = activePosition.value.board.getSquare(pieceCoordinate).piece!!.reachableSqCoordinates(activePosition.value)
-
-        val calculateReachableSquares = fetchedPairList.first
-        val calculateCaptureMoveSquares = fetchedPairList.second
-        val unavailablePinnedSquared = emptyList<Coordinate>().toMutableList()
+    private fun getReachableandCaptureSquares(pieceCoordinate: Coordinate) : List<Coordinate> {
 
 
+        val fetchedPairList = activePosition.value.board.getSquare(pieceCoordinate).piece!!.reachableSquares(activePosition.value)
+
+        val calculateReachableSquares = fetchedPairList.filter {
+            val potentialPosition = calculateNewPosition(
+                activePosition.value,
+                AppliedMove(pieceCoordinate, it, activePosition.value)
+            )
+
+            !potentialPosition.isKingCheck(activePlayer.value)
+        }
+
+
+
+        /*
         // Pinned validation
         calculateReachableSquares.forEach {
             val potentialPosition = calculateNewPosition(activePosition.value, moveUCI = AppliedMove(pieceCoordinate, it, activePosition.value))
@@ -116,7 +124,7 @@ class UIViewModel (
             val kingCoordinate = potentialPosition.board.kingPosition(activePlayer.value)
 
             potentialPosition.board.piecesColorPosition(activePlayer.value.opponent()).forEach {  // opponent() because turn as been made
-                    entry -> if(entry.value.reachableSqCoordinates(potentialPosition).second.contains(kingCoordinate)){
+                    entry -> if(entry.value.reachableSquares(potentialPosition).second.contains(kingCoordinate)){
                 calculateOwnKingWillBeCheck = true
             }
             }
@@ -125,6 +133,8 @@ class UIViewModel (
                 unavailablePinnedSquared.add(it)
             }
         }
+        */
+
 
         // Castle Menace Validation // TODO - SIMPLIFY
         val listPositionsMenaced = emptyList<Coordinate>().toMutableList()
@@ -136,7 +146,7 @@ class UIViewModel (
             activePosition.value.board.piecesColorPosition(activePlayer.value.opponent())
                 .forEach {  // opponent() because turn as been made
                         entry ->
-                    entry.value.reachableSqCoordinates(activePosition.value).first.forEach {
+                    entry.value.reachableSquares(activePosition.value).forEach {
                         listPositionsMenaced.add(it)
                     }
                 }
@@ -169,7 +179,7 @@ class UIViewModel (
             }
         }
 
-        return calculateReachableSquares - unavailablePinnedSquared.toSet() - unavailableCastleSquares.toSet() to calculateCaptureMoveSquares - unavailablePinnedSquared.toSet()
+        return calculateReachableSquares - unavailableCastleSquares.toSet()
 
     }
 
@@ -259,7 +269,7 @@ class UIViewModel (
         val kingCoordinate = activePosition.value.board.kingPosition(activePlayer.value)
 
         activePosition.value.board.piecesColorPosition(activePlayer.value.opponent()).forEach {  // opponent() because turn as been made
-            entry -> if(entry.value.reachableSqCoordinates(activePosition.value).second.contains(kingCoordinate)){
+            entry -> if(entry.value.reachableSquares(activePosition.value).contains(kingCoordinate)){
                 calculateIsKingChecked = true
             }
         }

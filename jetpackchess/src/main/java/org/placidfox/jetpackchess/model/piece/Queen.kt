@@ -3,7 +3,7 @@ package org.placidfox.jetpackchess.model.piece
 import org.placidfox.jetpackchess.R
 import org.placidfox.jetpackchess.model.board.Coordinate
 import org.placidfox.jetpackchess.model.board.Coordinate.Companion.toNum
-import org.placidfox.jetpackchess.model.board.positions
+import org.placidfox.jetpackchess.model.board.boardCoordinateNum
 import org.placidfox.jetpackchess.model.game.GamePosition
 
 class Queen(override val color: PlayerColor) : Piece {
@@ -32,37 +32,35 @@ class Queen(override val color: PlayerColor) : Piece {
 
     override val value: Int = 9
 
-    override fun reachableSqCoordinates(position: GamePosition): Pair<List<Coordinate>, List<Coordinate>> {
-        val reachableSquares = emptyList<Coordinate>().toMutableList()
-        val captureMoveSquares = emptyList<Coordinate>().toMutableList()
+    override fun reachableSquares(position: GamePosition): List<Coordinate> {
+        val moveSquares = emptyList<Coordinate>().toMutableList()
 
-        val piecePosition = position.board.findSquare(this)!!.coordinate.position
-        val sameColorPiecesPosition = position.board.piecesColorPosition(this.color).keys.toList().map { it.toNum() }
+        val pieceLocation = position.board.findSquare(this)!!.coordinate.coordinateInt
+        val sameColorPiecesLocation = position.board.piecesColorPosition(this.color).keys.toList().map { it.toNum() }
 
         directions.forEach {
-            var positionTest = piecePosition + it
+            var positionTest = pieceLocation + it
 
-            while (positionTest in positions) {
+            while (positionTest in boardCoordinateNum) {
 
                 val coordinateTest = Coordinate.fromNumCoordinate(positionTest.toString()[0].digitToInt(), positionTest.toString()[1].digitToInt())
 
-                if (position.board.isOccupied(coordinateTest) && positionTest !in sameColorPiecesPosition) {
-                    reachableSquares.add(coordinateTest)
-                    captureMoveSquares.add(coordinateTest)
+                if (position.board.isOccupied(coordinateTest) && positionTest !in sameColorPiecesLocation) {
+                    moveSquares.add(coordinateTest)
                     break
                 }
-                if (positionTest in sameColorPiecesPosition) {
+                if (positionTest in sameColorPiecesLocation) {
                     break
                 }
 
-                reachableSquares.add(coordinateTest)
+                moveSquares.add(coordinateTest)
                 positionTest += it
 
             }
 
         }
 
-        return reachableSquares to captureMoveSquares
+        return moveSquares
     }
     companion object {
         val directions = Bishop.directions + Rook.directions

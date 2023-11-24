@@ -1,6 +1,5 @@
 package org.placidfox.jetpackchess.model.piece
 import org.placidfox.jetpackchess.model.board.Coordinate
-import org.placidfox.jetpackchess.model.board.Square
 import org.placidfox.jetpackchess.model.game.GamePosition
 
 
@@ -18,11 +17,22 @@ interface Piece {
 
     val value: Int
 
-    fun reachableSqCoordinates(position: GamePosition): Pair<List<Coordinate>,List<Coordinate>>  // List of square where the piece can move (without check validation)
+    fun reachableSquares(position: GamePosition): List<Coordinate>  // List of square where the piece can move (without check validation)
 
 }
 
 
 
 
+enum class PlayerColor {
+    WHITE,
+    BLACK;
+
+    fun opponent(): PlayerColor {
+        return when(this){
+            WHITE -> BLACK
+            BLACK -> WHITE
+        }
+    }
+}
 

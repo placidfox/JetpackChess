@@ -3,7 +3,7 @@ package org.placidfox.jetpackchess.model.piece
 import org.placidfox.jetpackchess.R
 import org.placidfox.jetpackchess.model.board.Coordinate
 import org.placidfox.jetpackchess.model.board.Coordinate.Companion.toNum
-import org.placidfox.jetpackchess.model.board.positions
+import org.placidfox.jetpackchess.model.board.boardCoordinateNum
 import org.placidfox.jetpackchess.model.game.GamePosition
 
 class King(override val color: PlayerColor) : Piece {
@@ -32,48 +32,45 @@ class King(override val color: PlayerColor) : Piece {
     override val value: Int = 0 // Useless for the King ?
 
 
-    override fun reachableSqCoordinates(position: GamePosition): Pair<List<Coordinate>, List<Coordinate>> {
-        val reachableSquares = emptyList<Coordinate>().toMutableList()
-        val captureMoveSquares = emptyList<Coordinate>().toMutableList()
+    override fun reachableSquares(position: GamePosition):List<Coordinate> {
 
-        val piecePosition = position.board.findSquare(this)!!.coordinate.position
-        val sameColorPiecesPosition = position.board.piecesColorPosition(this.color).keys.toList().map { it.toNum() }
+        val moveSquares = emptyList<Coordinate>().toMutableList()
+
+        val pieceLocation = position.board.findSquare(this)!!.coordinate.coordinateInt
+        val sameColorPiecesLocation = position.board.piecesColorPosition(this.color).keys.toList().map { it.toNum() }
 
         targets.forEach {
-            val positionTest = piecePosition + it
+            val positionTest = pieceLocation + it
 
-            if (positionTest in positions && positionTest !in sameColorPiecesPosition ) {
+            if (positionTest in boardCoordinateNum && positionTest !in sameColorPiecesLocation ) {
 
                 val coordinateTest = Coordinate.fromNumCoordinate(positionTest.toString()[0].digitToInt(), positionTest.toString()[1].digitToInt())
-                reachableSquares.add(coordinateTest)
+                moveSquares.add(coordinateTest)
 
-                if(position.board.isOccupied(coordinateTest)) {
-                    captureMoveSquares.add(coordinateTest)
-                }
             }
         }
 
         when(this.color){ // TODO TO SIMPLIFY
             PlayerColor.WHITE -> {
                 if (position.castlingStatus.whiteShortCastlePossible && position.board.getSquare(Coordinate.F1).isEmpty && position.board.getSquare(Coordinate.G1).isEmpty) {
-                    reachableSquares.add(Coordinate.fromNumCoordinate(piecePosition + shortCastleTargets.toString()[0].digitToInt(), piecePosition + shortCastleTargets.toString()[1].digitToInt()))
+                    moveSquares.add(Coordinate.fromNumCoordinate(pieceLocation + shortCastleTargets.toString()[0].digitToInt(), pieceLocation + shortCastleTargets.toString()[1].digitToInt()))
                 }
                 if (position.castlingStatus.whiteLongCastlePossible && position.board.getSquare(Coordinate.B1).isEmpty && position.board.getSquare(Coordinate.C1).isEmpty && position.board.getSquare(Coordinate.D1).isEmpty) {
-                    reachableSquares.add(Coordinate.fromNumCoordinate(piecePosition + longCastleTargets.toString()[0].digitToInt(), piecePosition + longCastleTargets.toString()[1].digitToInt()))
+                    moveSquares.add(Coordinate.fromNumCoordinate(pieceLocation + longCastleTargets.toString()[0].digitToInt(), pieceLocation + longCastleTargets.toString()[1].digitToInt()))
                 }
             }
             PlayerColor.BLACK -> {
                 if (position.castlingStatus.blackShortCastlePossible && position.board.getSquare(Coordinate.F8).isEmpty && position.board.getSquare(Coordinate.G8).isEmpty) {
-                    reachableSquares.add(Coordinate.fromNumCoordinate(piecePosition + shortCastleTargets.toString()[0].digitToInt(), piecePosition + shortCastleTargets.toString()[1].digitToInt()))
+                    moveSquares.add(Coordinate.fromNumCoordinate(pieceLocation + shortCastleTargets.toString()[0].digitToInt(), pieceLocation + shortCastleTargets.toString()[1].digitToInt()))
                 }
                 if (position.castlingStatus.blackLongCastlePossible && position.board.getSquare(Coordinate.B8).isEmpty && position.board.getSquare(Coordinate.C8).isEmpty && position.board.getSquare(Coordinate.D8).isEmpty) {
-                    reachableSquares.add(Coordinate.fromNumCoordinate(piecePosition + longCastleTargets.toString()[0].digitToInt(), piecePosition + longCastleTargets.toString()[1].digitToInt()))
+                    moveSquares.add(Coordinate.fromNumCoordinate(pieceLocation + longCastleTargets.toString()[0].digitToInt(), pieceLocation + longCastleTargets.toString()[1].digitToInt()))
                 }
             }
         }
 
 
-        return reachableSquares to captureMoveSquares
+        return moveSquares
     }
 
     companion object {
