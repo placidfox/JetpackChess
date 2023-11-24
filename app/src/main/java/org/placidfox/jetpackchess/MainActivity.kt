@@ -19,6 +19,8 @@ import org.placidfox.jetpackchess.controller.FEN_DEFAULT_POSITION
 import org.placidfox.jetpackchess.controller.GameController
 import org.placidfox.jetpackchess.controller.PuzzleController
 import org.placidfox.jetpackchess.controller.ScrollController
+import org.placidfox.jetpackchess.model.board.Coordinate
+import org.placidfox.jetpackchess.model.game.GamePosition
 import org.placidfox.jetpackchess.model.piece.PlayerColor
 import org.placidfox.jetpackchess.ui.theme.JetpackChessTheme
 
@@ -31,10 +33,15 @@ class MainActivity : ComponentActivity() {
 
         //controller.newPuzzle(openingwhite[0], openingwhite[1], PlayerColor.WHITE,0)
 
+        println(controller.uiState.activePosition.value.board.findPiece(Coordinate.A2)!!.reachableSqCoordinates(controller.uiState.activePosition.value))
+        println(controller.uiState.activePosition.value.board.findPiece(Coordinate.B8)!!.reachableSqCoordinates(controller.uiState.activePosition.value))
+        println(controller.uiState.activePosition.value.board.findPiece(Coordinate.E1)!!.reachableSqCoordinates(controller.uiState.activePosition.value))
+
 
         super.onCreate(savedInstanceState)
         setContent {
             JetpackChessTheme {
+
 
                 Surface(modifier = Modifier.fillMaxSize()) {
 

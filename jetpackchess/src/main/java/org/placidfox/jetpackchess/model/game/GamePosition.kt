@@ -8,6 +8,7 @@ import org.placidfox.jetpackchess.model.move.AppliedMove
 import org.placidfox.jetpackchess.model.piece.Piece
 import org.placidfox.jetpackchess.model.piece.PlayerColor
 
+
 data class GamePosition(
     val board: Board,
     val activePlayer: PlayerColor,
@@ -41,7 +42,68 @@ data class GamePosition(
                     board.piecesColorPosition(playerColor).values.sumOf {it.value} - board.piecesColorPosition(playerColor.opponent()).values.sumOf {it.value}
             }
 
+        /* TODO
+
+        fun isLegalDestination(playerColor: PlayerColor): Boolean {
+            val allLegalDestination = emptyList<Coordinate>().toMutableList()
+
+            board.piecesColorPosition(playerColor).forEach {
+                entry ->
+                    allLegalDestination += pieceAllLegalDestination(entry.value)
+            }
+
+            return allLegalDestination.isNotEmpty()
+        }
+
+        fun pieceAllLegalDestination(piece: Piece): List<Coordinate> {
+            val pieceReachableDestinations = pieceReachableDestinations(piece)
+            return applyCheckAndPinnedConstraints(getPieceCoordinate(piece), pieceReachableDestinations.first)
+        }
+
+        private fun pieceReachableDestinations(piece: Piece): Pair<List<Coordinate>,List<Coordinate>> {
+            return piece.reachableSqCoordinates(this)
+        }
 
 
-    }
+        private fun applyCheckAndPinnedConstraints(piecePosition : Coordinate, possibleDestination : List<Coordinate>): List<Coordinate>{
+            // Pinned validation
+            val unavailablePinnedSquared = emptyList<Coordinate>().toMutableList()
+
+            possibleDestination.forEach {
+                val potentialPosition = calculateNewPosition(this, moveUCI = AppliedMove(piecePosition, it, this))
+
+                var calculateOwnKingWillBeCheck: Boolean = false
+
+                val kingCoordinate = board.kingPosition(activePlayer)
+
+                board.piecesColorPosition(activePlayer.opponent()).forEach {  // opponent() because turn as been made
+                    entry -> if(entry.value.reachableSqCoordinates(this).second.contains(kingCoordinate)){
+                        calculateOwnKingWillBeCheck = true
+                    }
+                }
+
+                potentialPosition.board.piecesColorPosition(activePlayer.opponent()).forEach {  // opponent() because turn as been made
+                        entry -> if(entry.value.canKingBeCaptured(potentialPosition)){
+                            calculateOwnKingWillBeCheck = true
+                        }
+                }
+
+                if (calculateOwnKingWillBeCheck){
+                    unavailablePinnedSquared.add(it)
+                }
+            }
+
+
+            return possibleDestination - unavailablePinnedSquared.toSet()
+        }
+
+        fun getPieceCoordinate(piece: Piece) : Coordinate{
+            return board.findSquare(piece)!!.coordinate
+        }
+
+         */
+
+
+
+}
 

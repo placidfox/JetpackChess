@@ -83,10 +83,10 @@ class UIViewModel (
         val allLegalCoordinate = emptyList<Coordinate>().toMutableList()
 
         activePosition.value.board.piecesColorPosition(activePlayer.value).forEach {
-             entry ->
-                getReachableandCaptureSquares(entry.key).first.forEach {
-                    allLegalCoordinate.add(it)
-                }
+                entry ->
+            getReachableandCaptureSquares(entry.key).first.forEach {
+                allLegalCoordinate.add(it)
+            }
         }
 
         return allLegalCoordinate
@@ -113,10 +113,12 @@ class UIViewModel (
 
             var calculateOwnKingWillBeCheck: Boolean = false
 
+            val kingCoordinate = potentialPosition.board.kingPosition(activePlayer.value)
+
             potentialPosition.board.piecesColorPosition(activePlayer.value.opponent()).forEach {  // opponent() because turn as been made
-                    entry -> if(entry.value.canKingBeCaptured(potentialPosition)){
-                        calculateOwnKingWillBeCheck = true
-                    }
+                    entry -> if(entry.value.reachableSqCoordinates(potentialPosition).second.contains(kingCoordinate)){
+                calculateOwnKingWillBeCheck = true
+            }
             }
 
             if (calculateOwnKingWillBeCheck){
@@ -254,8 +256,10 @@ class UIViewModel (
     fun updateCheckStatus(){
         var calculateIsKingChecked: Boolean = false
 
+        val kingCoordinate = activePosition.value.board.kingPosition(activePlayer.value)
+
         activePosition.value.board.piecesColorPosition(activePlayer.value.opponent()).forEach {  // opponent() because turn as been made
-            entry -> if(entry.value.canKingBeCaptured(activePosition.value)){
+            entry -> if(entry.value.reachableSqCoordinates(activePosition.value).second.contains(kingCoordinate)){
                 calculateIsKingChecked = true
             }
         }
