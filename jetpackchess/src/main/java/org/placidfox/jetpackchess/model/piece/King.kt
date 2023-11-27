@@ -31,6 +31,18 @@ class King(override val color: PlayerColor) : Piece {
 
     override val value: Int = 0 // Useless for the King ?
 
+    private fun squaresMenaced(position: GamePosition): List<Coordinate>{ // to Check if Castle is Possible
+        val listPositionsMenaced = emptyList<Coordinate>().toMutableList()
+        position.board.piecesColorPosition(position.activePlayer.opponent())
+            .forEach {  // opponent() because turn as been made
+                    entry ->
+                entry.value.reachableSquares(position).forEach {
+                    listPositionsMenaced.add(it)
+                }
+            }
+
+        return listPositionsMenaced
+    }
 
     override fun reachableSquares(position: GamePosition):List<Coordinate> {
 
@@ -53,18 +65,46 @@ class King(override val color: PlayerColor) : Piece {
         when(this.color){ // TODO TO SIMPLIFY
             PlayerColor.WHITE -> {
                 if (position.castlingStatus.whiteShortCastlePossible && position.board.getSquare(Coordinate.F1).isEmpty && position.board.getSquare(Coordinate.G1).isEmpty) {
-                    moveSquares.add(Coordinate.fromNumCoordinate(pieceLocation + shortCastleTargets.toString()[0].digitToInt(), pieceLocation + shortCastleTargets.toString()[1].digitToInt()))
+                    if(!squaresMenaced(position).contains(Coordinate.F1)) { // TODO TO SIMPLIFY
+                        val positionTest = pieceLocation + shortCastleTargets
+                        val coordinateTest = Coordinate.fromNumCoordinate(
+                            positionTest.toString()[0].digitToInt(),
+                            positionTest.toString()[1].digitToInt()
+                        )
+                        moveSquares.add(coordinateTest)
+                    }
                 }
                 if (position.castlingStatus.whiteLongCastlePossible && position.board.getSquare(Coordinate.B1).isEmpty && position.board.getSquare(Coordinate.C1).isEmpty && position.board.getSquare(Coordinate.D1).isEmpty) {
-                    moveSquares.add(Coordinate.fromNumCoordinate(pieceLocation + longCastleTargets.toString()[0].digitToInt(), pieceLocation + longCastleTargets.toString()[1].digitToInt()))
+                    if(!squaresMenaced(position).contains(Coordinate.D1)) { // TODO TO SIMPLIFY
+                        val positionTest = pieceLocation + longCastleTargets
+                        val coordinateTest = Coordinate.fromNumCoordinate(
+                            positionTest.toString()[0].digitToInt(),
+                            positionTest.toString()[1].digitToInt()
+                        )
+                        moveSquares.add(coordinateTest)
+                    }
                 }
             }
             PlayerColor.BLACK -> {
                 if (position.castlingStatus.blackShortCastlePossible && position.board.getSquare(Coordinate.F8).isEmpty && position.board.getSquare(Coordinate.G8).isEmpty) {
-                    moveSquares.add(Coordinate.fromNumCoordinate(pieceLocation + shortCastleTargets.toString()[0].digitToInt(), pieceLocation + shortCastleTargets.toString()[1].digitToInt()))
+                    if(!squaresMenaced(position).contains(Coordinate.F8)) { // TODO TO SIMPLIFY
+                        val positionTest = pieceLocation + shortCastleTargets
+                        val coordinateTest = Coordinate.fromNumCoordinate(
+                            positionTest.toString()[0].digitToInt(),
+                            positionTest.toString()[1].digitToInt()
+                        )
+                        moveSquares.add(coordinateTest)
+                    }
                 }
                 if (position.castlingStatus.blackLongCastlePossible && position.board.getSquare(Coordinate.B8).isEmpty && position.board.getSquare(Coordinate.C8).isEmpty && position.board.getSquare(Coordinate.D8).isEmpty) {
-                    moveSquares.add(Coordinate.fromNumCoordinate(pieceLocation + longCastleTargets.toString()[0].digitToInt(), pieceLocation + longCastleTargets.toString()[1].digitToInt()))
+                    if(!squaresMenaced(position).contains(Coordinate.D8)) { // TODO TO SIMPLIFY
+                        val positionTest = pieceLocation + longCastleTargets
+                        val coordinateTest = Coordinate.fromNumCoordinate(
+                            positionTest.toString()[0].digitToInt(),
+                            positionTest.toString()[1].digitToInt()
+                        )
+                        moveSquares.add(coordinateTest)
+                    }
                 }
             }
         }

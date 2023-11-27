@@ -13,9 +13,6 @@ data class Board(
     fun piecesColorPosition(color: PlayerColor): Map<Coordinate, Piece> =
         piecesPosition.filter { (_, piece) -> piece.color == color }
 
-    fun piecesColorPositionMinusKing(color: PlayerColor): Map<Coordinate, Piece> =
-        piecesColorPosition(color).filter { it.value::class.java != King::class.java }
-
 
     fun kingPosition(color: PlayerColor): Coordinate =
         piecesColorPosition(color).filter { it.value::class.java == King::class.java }.keys.first()

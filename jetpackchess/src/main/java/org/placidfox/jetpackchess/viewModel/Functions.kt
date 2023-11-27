@@ -14,17 +14,17 @@ import org.placidfox.jetpackchess.model.piece.*
 
 fun UIViewModel.updateButtonState(){
 
-    isActivePositionFirst.value = activePositionIndex > 0
-    isFirstPosition.value = activePositionIndex != 0
+    isActivePositionFirst = activePositionIndex > 0
+    isFirstPosition = activePositionIndex != 0
 
     when(mode){
         JetpackChessMode.GAME, JetpackChessMode.SCROLL -> {
-            isActivePositionLast.value = activePositionIndex < gameTimeline.positionsTimeline.lastIndex
-            isLastPosition.value = (activePositionIndex != gameTimeline.positionsTimeline.lastIndex)
+            isActivePositionLast = activePositionIndex < gameTimeline.positionsTimeline.lastIndex
+            isLastPosition = (activePositionIndex != gameTimeline.positionsTimeline.lastIndex)
         }
         JetpackChessMode.PUZZLE -> {
-            isActivePositionLast.value = activePositionIndex < maxSeenPosition
-            isLastPosition.value = maxSeenPosition == gameTimeline.positionsTimeline.lastIndex && activePositionIndex < gameTimeline.positionsTimeline.lastIndex
+            isActivePositionLast = activePositionIndex < maxSeenPosition
+            isLastPosition = maxSeenPosition == gameTimeline.positionsTimeline.lastIndex && activePositionIndex < gameTimeline.positionsTimeline.lastIndex
         }
 
     }

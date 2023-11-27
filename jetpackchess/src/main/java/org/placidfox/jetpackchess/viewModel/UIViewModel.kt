@@ -1,7 +1,10 @@
 package org.placidfox.jetpackchess.viewModel
 
 import androidx.compose.runtime.MutableState
+
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -34,23 +37,23 @@ class UIViewModel (
 
     val activePosition: MutableState<GamePosition> = mutableStateOf(gameTimeline.positionsTimeline[activePositionIndex])
 
-    val isActivePositionFirst: MutableState<Boolean> = mutableStateOf(false)
-    val isActivePositionLast: MutableState<Boolean> = mutableStateOf(false)
+    var isActivePositionFirst by mutableStateOf(false)
+    var isActivePositionLast by mutableStateOf(false)
 
-    val isFirstPosition: MutableState<Boolean> = mutableStateOf(false)
-    val isLastPosition: MutableState<Boolean> = mutableStateOf(false)
+    var isFirstPosition by mutableStateOf(false)
+    var isLastPosition by mutableStateOf(false)
 
     private val isMaxSeenPosition: MutableState<Boolean> = mutableStateOf(false)
 
     val status: MutableState<STATUS> = mutableStateOf(STATUS.PENDING)
     val isKingCheck: Boolean
-        get() = activePosition.value.isActivePlayerKingInCheck
+        get() = activePosition.value.isActiveKingCheck
 
     val isKingCheckmate: Boolean
-        get() = activePosition.value.isActivePlayerKingInCheckmate
+        get() = activePosition.value.isCheckmate
 
     val isKingStalemate: Boolean
-        get() = activePosition.value.isActivePlayerKingInStalemate
+        get() = activePosition.value.isStalemate
 
     var activePlayer = mutableStateOf(PlayerColor.WHITE)
 
@@ -263,24 +266,10 @@ class UIViewModel (
 
     }
 
-    fun updateCheckStatus(){
-        var calculateIsKingChecked: Boolean = false
-
-        val kingCoordinate = activePosition.value.board.kingPosition(activePlayer.value)
-
-        activePosition.value.board.piecesColorPosition(activePlayer.value.opponent()).forEach {  // opponent() because turn as been made
-            entry -> if(entry.value.reachableSquares(activePosition.value).contains(kingCoordinate)){
-                calculateIsKingChecked = true
-            }
-        }
-        activePosition.value.isActivePlayerKingInCheck = calculateIsKingChecked
-
-    }
-
     private fun updateCheckmateAndStalemateStatus(){
         val calculateLegalDestination = allLegalDestination
-        activePosition.value.isActivePlayerKingInCheckmate = calculateLegalDestination.isEmpty() && isKingCheck
-        activePosition.value.isActivePlayerKingInStalemate = calculateLegalDestination.isEmpty() && !isKingCheck
+        //activePosition.value.isActivePlayerKingInCheckmate = calculateLegalDestination.isEmpty() && isKingCheck
+        //activePosition.value.isActivePlayerKingInStalemate = calculateLegalDestination.isEmpty() && !isKingCheck
         resetReachableSquare() // TODO USELESS ??
     }
 
@@ -337,7 +326,6 @@ class UIViewModel (
         resetReachableSquare()
         resetWrongMoveDecorator()
         activePositionIndex = index
-        updateCheckStatus()
         updateCheckmateAndStalemateStatus()
         checkEndStatus()
     }
