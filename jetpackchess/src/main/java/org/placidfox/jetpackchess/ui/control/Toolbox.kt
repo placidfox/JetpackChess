@@ -42,10 +42,10 @@ enum class ArrowButtonType(val icon: ImageVector, val description: String){
 }
 
 @Composable
-fun ArrowButton(arrowButton: ArrowButtonType, action: () -> Unit, enabler: MutableState<Boolean>){
+fun ArrowButton(arrowButton: ArrowButtonType, action: () -> Unit, enabler: Boolean){
     Button(
         onClick = action,
-        enabled = enabler.value
+        enabled = enabler
 
     ){
         Icon(arrowButton.icon, contentDescription = arrowButton.description)

@@ -95,7 +95,7 @@ class TestPositionState {
 
         assert(!positionCheckmate.isLegalMoves())
 
-        assert(positionCheckmate.isCheckmate())
+        assert(positionCheckmate.isCheckmate)
 
     }
 
@@ -119,7 +119,7 @@ class TestPositionState {
 
         assert(!positionStalemate.isLegalMoves())
 
-        assert(positionStalemate.isStalemate())
+        assert(positionStalemate.isStalemate)
 
     }
 
