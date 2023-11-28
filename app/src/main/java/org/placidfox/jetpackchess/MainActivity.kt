@@ -10,6 +10,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,27 +39,25 @@ class MainActivity : ComponentActivity() {
 
                 Surface(modifier = Modifier.fillMaxSize()) {
 
-                    Column (verticalArrangement = Arrangement.SpaceBetween) {
-                        Row(modifier = Modifier.fillMaxHeight(0.9f)) {
-                            JetpackChess(controller)
+                    Column (verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+
+                        JetpackChess(controller)
+
+
+                        Button(onClick = { controller.reset() }) {
+                            Text("Reset")
                         }
-                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                            Button(onClick = { controller.reset() }) {
-                                Text("Reset")
-                            }
-                            Button(onClick = { controller.newGame(PlayerColor.WHITE, testStalemate[0]) }) {
-                                Text("Test Stalemate")
-                            }
-                            Text(controller.uiState.status.value.toString())
+                        Button(onClick = { controller.newGame(PlayerColor.WHITE, testStalemate[0]) }) {
+                            Text("Test Stalemate")
                         }
-                    }
-
-
-
-
-
+                        Text(controller.uiState.status.value.toString())
+                        }
                 }
+
+
+
             }
+
         }
     }
 }
