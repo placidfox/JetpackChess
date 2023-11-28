@@ -14,7 +14,7 @@ import org.placidfox.jetpackchess.viewModel.calculateNewPosition
 
 data class GamePosition(
     val board: Board,
-    val activePlayer: PlayerColor,
+    var activePlayer: PlayerColor,
 
     val castlingStatus: CastlingStatus,
     val enPassantStatus: EnPassantStatus,
@@ -25,14 +25,14 @@ data class GamePosition(
     var lastMove: AppliedMove? = null,
     var nextMove: AppliedMove? = null,
 
-    val capturedPieces: List<Piece?> = emptyList(),
+    val capturedPieces: List<Piece> = emptyList(),
 
     ){
 
         val lastMovePositions: List<Coordinate>? = lastMove?.let { listOf(it.from, it.to) }
 
-        val activePlayerScore: Int
-            get() = calculateScore(activePlayer)
+        val activePlayerScore: Int =
+            calculateScore(activePlayer)
 
         fun calculateScore(playerColor: PlayerColor): Int =
             board.piecesColorPosition(playerColor).values.sumOf {it.value} - board.piecesColorPosition(playerColor.opponent()).values.sumOf {it.value}
