@@ -12,12 +12,13 @@ import org.placidfox.jetpackchess.model.board.Coordinate.Companion.isLightSquare
 import org.placidfox.jetpackchess.model.board.Square
 import org.placidfox.jetpackchess.model.piece.PlayerColor
 import org.placidfox.jetpackchess.viewModel.GameViewModel
+import org.placidfox.jetpackchess.viewModel.UIState
 
 
 @Composable
 fun Coordinate(viewModel: GameViewModel, square: Square){
 
-    when (viewModel.boardOrientationState.value){
+    when (viewModel.uiState.boardOrientation){
 
         PlayerColor.WHITE -> {
 
@@ -31,9 +32,9 @@ fun Coordinate(viewModel: GameViewModel, square: Square){
                         fontSize = boxWithConstraintsScope.maxHeight.value.sp / 5,
                         fontWeight = FontWeight.Bold,
                         color = if (square.isLight) {
-                            viewModel.boardColorState.value.darkSquareColor
+                            viewModel.uiState.boardColor.darkSquareColor
                         } else {
-                            viewModel.boardColorState.value.lightSquareColor
+                            viewModel.uiState.boardColor.lightSquareColor
                         }
                     )
 
@@ -52,9 +53,9 @@ fun Coordinate(viewModel: GameViewModel, square: Square){
                         fontSize = boxWithConstraintsScope.maxHeight.value.sp / 5,
                         fontWeight = FontWeight.Bold,
                         color = if (square.coordinate.isLightSquare()) {
-                            viewModel.boardColorState.value.darkSquareColor
+                            viewModel.uiState.boardColor.darkSquareColor
                         } else {
-                            viewModel.boardColorState.value.lightSquareColor
+                            viewModel.uiState.boardColor.lightSquareColor
                         }
                     )
 
@@ -75,9 +76,9 @@ fun Coordinate(viewModel: GameViewModel, square: Square){
                         fontSize = boxWithConstraintsScope.maxHeight.value.sp / 5,
                         fontWeight = FontWeight.Bold,
                         color = if (square.isLight) {
-                            viewModel.boardColorState.value.darkSquareColor
+                            viewModel.uiState.boardColor.darkSquareColor
                         } else {
-                            viewModel.boardColorState.value.lightSquareColor
+                            viewModel.uiState.boardColor.lightSquareColor
                         }
                     )
 
@@ -99,9 +100,9 @@ fun Coordinate(viewModel: GameViewModel, square: Square){
                         fontSize = boxWithConstraintsScope.maxHeight.value.sp / 5,
                         fontWeight = FontWeight.Bold,
                         color = if (square.isLight) {
-                            viewModel.boardColorState.value.darkSquareColor
+                            viewModel.uiState.boardColor.darkSquareColor
                         } else {
-                            viewModel.boardColorState.value.lightSquareColor
+                            viewModel.uiState.boardColor.lightSquareColor
                         }
                     )
 

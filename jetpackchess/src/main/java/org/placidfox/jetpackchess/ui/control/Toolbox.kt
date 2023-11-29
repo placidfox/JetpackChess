@@ -23,11 +23,12 @@ fun Toolbar(viewModel: GameViewModel){
         horizontalArrangement = Arrangement.Center
         
     ){
-        ArrowButton(ArrowButtonType.FIRST_POSITION, { viewModel.changeActivePosition(0) }, viewModel.isFirstPosition)
-        ArrowButton(ArrowButtonType.PREVIOUS_POSITION, { viewModel.backActivePosition() }, viewModel.isActivePositionFirst)
+
+        ArrowButton(ArrowButtonType.FIRST_POSITION, { viewModel.changeActivePosition(0) }, !viewModel.uiState.isActivePositionFirst)
+        ArrowButton(ArrowButtonType.PREVIOUS_POSITION, { viewModel.backActivePosition() }, !viewModel.uiState.isActivePositionFirst)
         SwitchOrientation(viewModel)
-        ArrowButton(ArrowButtonType.NEXT_POSITION, { viewModel.forwardActivePosition() }, viewModel.isActivePositionLast)
-        ArrowButton(ArrowButtonType.LAST_POSITION, { viewModel.changeActivePosition(viewModel.gameTimeline.positionsTimeline.lastIndex) }, viewModel.isLastPosition)
+        ArrowButton(ArrowButtonType.NEXT_POSITION, { viewModel.forwardActivePosition() }, !viewModel.uiState.isActivePositionLast)
+        ArrowButton(ArrowButtonType.LAST_POSITION, { viewModel.changeActivePosition(viewModel.gameTimeline.positionsTimeline.lastIndex) }, !viewModel.uiState.isActivePositionLast)
 
     }
 
@@ -57,7 +58,9 @@ fun ArrowButton(arrowButton: ArrowButtonType, action: () -> Unit, enabler: Boole
 fun SwitchOrientation(viewModel: GameViewModel){
 
     Button(
-        onClick = {viewModel.switchOrientation()}
+        onClick = {
+            viewModel.switchBoardOrientation()
+        }
     ){
         Icon(Icons.Default.Refresh, contentDescription = "switch_Icon")
     }

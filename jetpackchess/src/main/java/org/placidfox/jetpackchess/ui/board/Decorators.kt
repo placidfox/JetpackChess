@@ -14,7 +14,7 @@ import org.placidfox.jetpackchess.viewModel.GameViewModel
 @Composable
 fun DecoratorSelected(viewModel: GameViewModel, square: Square){
 
-    if (square.coordinate == viewModel.selectedSquare.value){
+    if (viewModel.uiState.selectedSquare.contains(square.coordinate)){
         Box(modifier = Modifier
             .fillMaxSize()
             .drawBehind {
@@ -35,12 +35,12 @@ fun DecoratorSelected(viewModel: GameViewModel, square: Square){
 @Composable
 fun DecoratorKingCheck(viewModel: GameViewModel, square: Square){
 
-    if(square.hasColorKing(viewModel.activePlayer.value) && viewModel.isKingCheck){
+    if(square.hasColorKing(viewModel.uiState.activePosition.activePlayer) && viewModel.uiState.activePosition.isActiveKingCheck){
         Box(modifier = Modifier
             .fillMaxSize(0.91f)
             .drawBehind {
                 drawRect(
-                    color = if (viewModel.isKingCheckmate) {
+                    color = if (viewModel.gameTimeline.isCheckmate) {
                         DecoratorColor.CHECKMATE_COLOR.color
                     } else {
                         DecoratorColor.CHECK_COLOR.color
@@ -54,7 +54,7 @@ fun DecoratorKingCheck(viewModel: GameViewModel, square: Square){
 @Composable
 fun DecoratorKingStalemate(viewModel: GameViewModel, square: Square){
 
-    if(square.hasColorKing(viewModel.activePlayer.value) && viewModel.isKingStalemate){
+    if(square.hasColorKing(viewModel.uiState.activePosition.activePlayer) && viewModel.gameTimeline.isStalemate){
         Box(modifier = Modifier
             .fillMaxSize(0.91f)
             .drawBehind {
@@ -70,7 +70,7 @@ fun DecoratorKingStalemate(viewModel: GameViewModel, square: Square){
 @Composable
 fun DecoratorPossibleDestination(viewModel: GameViewModel, square: Square){ // TODO : TO REFACTOR
 
-    if (viewModel.reachableSquares.value?.contains(square.coordinate) == true && (square.isNotEmpty || square.coordinate == viewModel.activePosition.value.enPassantStatus.enPassantCoordinate)){
+    if (viewModel.uiState.moveSquares.contains(square.coordinate) && (square.isNotEmpty || square.coordinate == viewModel.uiState.activePosition.enPassantStatus.enPassantCoordinate)){
         Box(modifier = Modifier
             .fillMaxSize(0.7f)
             .drawBehind {
@@ -88,7 +88,7 @@ fun DecoratorPossibleDestination(viewModel: GameViewModel, square: Square){ // T
                 )
             })
     } else {
-        if (viewModel.reachableSquares.value?.contains(square.coordinate) == true){
+        if (viewModel.uiState.moveSquares.contains(square.coordinate)){
            Box(modifier = Modifier
                .fillMaxSize(0.25f)
                .drawBehind {
@@ -108,7 +108,7 @@ fun DecoratorPossibleDestination(viewModel: GameViewModel, square: Square){ // T
 @Composable
 fun DecoratorPreviousMoves(viewModel: GameViewModel, square: Square){
 
-    if (viewModel.lastMovePosition?.contains(square.coordinate) == true){
+    if (viewModel.uiState.activePosition.lastMovePositions?.contains(square.coordinate) == true){
         Box(modifier = Modifier
             .fillMaxSize()
             .drawBehind {
@@ -128,7 +128,7 @@ fun DecoratorPreviousMoves(viewModel: GameViewModel, square: Square){
 @Composable
 fun DecoratorWrongMove(viewModel: GameViewModel, square: Square){
 
-    if (viewModel.wrongMovePosition.value?.contains(square.coordinate) == true){
+    if (viewModel.uiState.wrongChoiceSquares.contains(square.coordinate)){
         Box(modifier = Modifier
             .fillMaxSize()
             .drawBehind {

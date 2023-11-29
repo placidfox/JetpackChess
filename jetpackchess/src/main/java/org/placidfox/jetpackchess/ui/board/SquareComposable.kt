@@ -20,16 +20,19 @@ fun SquareComposable(viewModel: GameViewModel, square: Square){
             .aspectRatio(1f)
             .background(
                 color = if (square.isLight) {
-                    viewModel.boardColorState.value.lightSquareColor
+                    viewModel.uiState.boardColor.lightSquareColor
                 } else {
-                    viewModel.boardColorState.value.darkSquareColor
+                    viewModel.uiState.boardColor.darkSquareColor
                 }
             )
-            .clickable { viewModel.clickedSquare(square) },
+            .clickable {
+                //viewModel.clickedSquare(square)
+                       },
         contentAlignment = Alignment.Center
 
 
     ){
+
         DecoratorPreviousMoves(viewModel, square)
         DecoratorWrongMove(viewModel, square)
         DecoratorSelected(viewModel, square)
@@ -38,6 +41,8 @@ fun SquareComposable(viewModel: GameViewModel, square: Square){
         Coordinate(viewModel, square)
         PieceComposable(viewModel, square)
         DecoratorPossibleDestination(viewModel, square) // to be in front of the piece asset
+
+
     }
 
 }

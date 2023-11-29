@@ -1,33 +1,27 @@
 package org.placidfox.jetpackchess.viewModel
 
 
+import org.placidfox.jetpackchess.controller.initialGamePosition
 import org.placidfox.jetpackchess.model.board.Coordinate
 import org.placidfox.jetpackchess.model.game.GamePosition
-import org.placidfox.jetpackchess.model.piece.Piece
 import org.placidfox.jetpackchess.model.piece.PlayerColor
 import org.placidfox.jetpackchess.ui.board.BoardColor
 
-data class UIState(
-    var activePosition: GamePosition,
 
-    val isActivePositionFirst: Boolean,
-    val isActivePositionLast: Boolean,
+data class UIState (
 
-    val status: STATUS,
+    val activePosition: GamePosition = initialGamePosition,
 
-    val activePlayer: PlayerColor,
+    val boardOrientation: PlayerColor = PlayerColor.WHITE,
+    val boardColor: BoardColor = BoardColor.Blue,
 
-    var boardOrientation: PlayerColor,
-    var boardColor: BoardColor,
+    val selectedSquare: List<Coordinate> = emptyList(),
+    val moveSquares: List<Coordinate> = emptyList(),
+    val wrongChoiceSquares: List<Coordinate> = emptyList(),
 
-    var selectedSquare: Coordinate?,
-    var wrongMoveSquares: List<Coordinate>,
-    //val hintSquares: List<Coordinate>> // TODO ADD FEATURE
+    val showPromotionDialog: Boolean = false,
 
-    var moveDestinationSquares: List<Coordinate>,
+    val isActivePositionFirst: Boolean = true,
+    val isActivePositionLast: Boolean = true,
 
-    val showPromotionDialog: Boolean,
-    )
-
-
-
+)

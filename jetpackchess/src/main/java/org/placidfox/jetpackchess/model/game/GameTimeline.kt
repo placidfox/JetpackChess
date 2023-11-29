@@ -1,7 +1,7 @@
 package org.placidfox.jetpackchess.model.game
 
 import org.placidfox.jetpackchess.controller.JetpackChessMode
-import org.placidfox.jetpackchess.viewModel.STATUS
+
 
 
 data class GameTimeline (
@@ -85,3 +85,14 @@ data class GameTimeline (
 
 
 
+enum class STATUS{
+    PENDING,
+    SCROLLING,
+    IN_PROGRESS_GAME,
+    IN_PROGRESS_OK,
+    IN_PROGRESS_WRONG,
+    FINISH_CHECKMATE,
+    FINISH_STALEMATE,
+    FINISH_OK,
+    FINISH_WRONG,
+}

@@ -16,15 +16,15 @@ interface Controller {
 
     fun reset() {
         importFen(FEN_DEFAULT_POSITION)
-        viewModel.boardOrientationState.value = PlayerColor.WHITE
+        viewModel.setBoardOrientation(PlayerColor.WHITE)
     }
 
 
 
-    fun importFen(fen: String) {
+    fun importFen(fen: String) { //TODO adapt to new viewModel
 
         val splitFen = fen.split(" ")
-
+/*
         viewModel.initNewTimeline(
             GamePosition(
                 Board(splitFenPosition(splitFen[0])),
@@ -37,11 +37,13 @@ interface Controller {
         )
 
         viewModel.changeActivePosition(0)
+        */
+
 
     }
 
 
-    fun importFENandMoveList(fen: String, uciMoves: String, startIndex: Int = 0) {
+    fun importFENandMoveList(fen: String, uciMoves: String, startIndex: Int = 0) { //TODO adapt to new viewModel
         importFen(fen)
 
         val uciMovesString: List<String> =
@@ -66,10 +68,10 @@ interface Controller {
                 }
             }
 
-            viewModel.applyMove(Coordinate.fromString(from), Coordinate.fromString(to), piecePromote)
+            //viewModel.applyMove(Coordinate.fromString(from), Coordinate.fromString(to), piecePromote)
         }
 
-        viewModel.initStartActivePosition(startIndex)
+        //viewModel.initStartActivePosition(startIndex)
 
     }
 
@@ -81,16 +83,15 @@ class GameController : Controller {
     override var viewModel: GameViewModel = GameViewModel(
         mode,
         GameTimeline(mode, mutableListOf(initialGamePosition)),
-        PlayerColor.WHITE,
-        BoardColor.Wood
     )
+
 
     fun newGame(
         playerSide: PlayerColor,
         initialFEN: String = FEN_DEFAULT_POSITION,
     ) {
         importFen(initialFEN)
-        viewModel.boardOrientationState.value = playerSide
+        viewModel.setBoardOrientation(playerSide)
     }
 
 
@@ -102,8 +103,6 @@ class PuzzleController : Controller {
     override var viewModel: GameViewModel = GameViewModel(
         mode,
         GameTimeline(mode, mutableListOf(initialGamePosition)),
-        PlayerColor.WHITE,
-        BoardColor.Wood
     )
 
     fun newPuzzle(
@@ -117,7 +116,7 @@ class PuzzleController : Controller {
             uciMoves,
             firstDisplayedMove
         )
-        viewModel.boardOrientationState.value = playerSide
+        viewModel.setBoardOrientation(playerSide)
     }
 
     fun newPuzzleLichess(
@@ -131,7 +130,7 @@ class PuzzleController : Controller {
             uciMoves,
             1
         )
-        viewModel.boardOrientationState.value = turnFirstMoveVariation.opponent()
+        viewModel.setBoardOrientation(turnFirstMoveVariation.opponent())
     }
 
 }
@@ -143,8 +142,6 @@ class ScrollController : Controller {
     override var viewModel: GameViewModel = GameViewModel(
         mode,
         GameTimeline(mode, mutableListOf(initialGamePosition)),
-        PlayerColor.WHITE,
-        BoardColor.Wood
     )
 
     fun newVariation(
@@ -156,7 +153,7 @@ class ScrollController : Controller {
             fen,
             uciMoves
         )
-        viewModel.boardOrientationState.value = playerSide
+        viewModel.setBoardOrientation(playerSide)
     }
 
 
