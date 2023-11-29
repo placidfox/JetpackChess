@@ -6,11 +6,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import org.placidfox.jetpackchess.model.board.Square
-import org.placidfox.jetpackchess.viewModel.UIViewModel
+import org.placidfox.jetpackchess.viewModel.GameViewModel
 
 
 @Composable
-fun PieceComposable(uiState: UIViewModel, square: Square){
+fun PieceComposable(viewModel: GameViewModel, square: Square){
 
     if (square.isNotEmpty) {
         Image(

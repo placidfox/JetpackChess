@@ -29,7 +29,7 @@ class AppliedMove(
 
     val pieceCapturedList
         get() = if (pieceCaptured !== null) {
-            listOf(pieceCaptured)
+            listOf(pieceCaptured!!)
         }
         else {
             emptyList()

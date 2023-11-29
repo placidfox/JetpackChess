@@ -12,17 +12,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import org.placidfox.jetpackchess.model.piece.*
-import org.placidfox.jetpackchess.viewModel.UIViewModel
+import org.placidfox.jetpackchess.viewModel.GameViewModel
 import org.placidfox.jetpackchess.viewModel.cancelPromotion
 import org.placidfox.jetpackchess.viewModel.promotionChoice
 
 
 @Composable
 fun PromotionDialog(
-    uiState: UIViewModel,
+    viewModel: GameViewModel,
 ){
     Dialog(
-        onDismissRequest = {uiState.cancelPromotion()},
+        onDismissRequest = {viewModel.cancelPromotion()},
         ) {
         Card(
             modifier = Modifier
@@ -32,10 +32,10 @@ fun PromotionDialog(
             shape = RoundedCornerShape(16.dp),
         ) {
             Row (modifier = Modifier.fillMaxSize(), Arrangement.SpaceEvenly, Alignment.CenterVertically){
-                PieceIcon(Queen::class.java, uiState)
-                PieceIcon(Rook::class.java, uiState)
-                PieceIcon(Bishop::class.java, uiState)
-                PieceIcon(Knight::class.java, uiState)
+                PieceIcon(Queen::class.java, viewModel)
+                PieceIcon(Rook::class.java, viewModel)
+                PieceIcon(Bishop::class.java, viewModel)
+                PieceIcon(Knight::class.java, viewModel)
             }
         }
     }
@@ -43,13 +43,13 @@ fun PromotionDialog(
 }
 
 @Composable
-fun PieceIcon(pieceType: Class<out Piece>, uiState: UIViewModel){
+fun PieceIcon(pieceType: Class<out Piece>, viewModel: GameViewModel){
 
     val pieceIcon: Int = when(pieceType){
-        Queen::class.java -> Queen(uiState.activePlayer.value).asset
-        Rook::class.java -> Rook(uiState.activePlayer.value).asset
-        Bishop::class.java -> Bishop(uiState.activePlayer.value).asset
-        Knight::class.java -> Knight(uiState.activePlayer.value).asset
+        Queen::class.java -> Queen(viewModel.activePlayer).asset
+        Rook::class.java -> Rook(viewModel.activePlayer).asset
+        Bishop::class.java -> Bishop(viewModel.activePlayer).asset
+        Knight::class.java -> Knight(viewModel.activePlayer).asset
         else -> 0
     }
 
@@ -60,7 +60,7 @@ fun PieceIcon(pieceType: Class<out Piece>, uiState: UIViewModel){
 
             .fillMaxHeight(0.3f)
             .clickable {
-                uiState.promotionChoice(pieceType)
+                viewModel.promotionChoice(pieceType)
             }
 
     )

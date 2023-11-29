@@ -9,35 +9,35 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import org.placidfox.jetpackchess.model.board.Square
-import org.placidfox.jetpackchess.viewModel.UIViewModel
+import org.placidfox.jetpackchess.viewModel.GameViewModel
 
 
 @Composable
-fun SquareComposable(uiState: UIViewModel, square: Square){
+fun SquareComposable(viewModel: GameViewModel, square: Square){
     Box(
         modifier = Modifier
             .testTag(square.coordinate.textName) // TO DELETE ?
             .aspectRatio(1f)
             .background(
                 color = if (square.isLight) {
-                    uiState.boardColorState.value.lightSquareColor
+                    viewModel.boardColorState.value.lightSquareColor
                 } else {
-                    uiState.boardColorState.value.darkSquareColor
+                    viewModel.boardColorState.value.darkSquareColor
                 }
             )
-            .clickable { uiState.clickedSquare(square) },
+            .clickable { viewModel.clickedSquare(square) },
         contentAlignment = Alignment.Center
 
 
     ){
-        DecoratorPreviousMoves(uiState, square)
-        DecoratorWrongMove(uiState, square)
-        DecoratorSelected(uiState, square)
-        DecoratorKingCheck(uiState, square)
-        DecoratorKingStalemate(uiState, square)
-        Coordinate(uiState, square)
-        PieceComposable(uiState, square)
-        DecoratorPossibleDestination(uiState, square) // to be in front of the piece asset
+        DecoratorPreviousMoves(viewModel, square)
+        DecoratorWrongMove(viewModel, square)
+        DecoratorSelected(viewModel, square)
+        DecoratorKingCheck(viewModel, square)
+        DecoratorKingStalemate(viewModel, square)
+        Coordinate(viewModel, square)
+        PieceComposable(viewModel, square)
+        DecoratorPossibleDestination(viewModel, square) // to be in front of the piece asset
     }
 
 }

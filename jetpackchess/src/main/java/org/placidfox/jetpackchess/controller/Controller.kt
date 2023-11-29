@@ -11,12 +11,12 @@ import org.placidfox.jetpackchess.viewModel.*
 
 interface Controller {
     val mode: JetpackChessMode
-    var uiState: UIViewModel
+    var viewModel: GameViewModel
 
 
     fun reset() {
         importFen(FEN_DEFAULT_POSITION)
-        uiState.boardOrientationState.value = PlayerColor.WHITE
+        viewModel.boardOrientationState.value = PlayerColor.WHITE
     }
 
 
@@ -25,7 +25,7 @@ interface Controller {
 
         val splitFen = fen.split(" ")
 
-        uiState.initNewTimeline(
+        viewModel.initNewTimeline(
             GamePosition(
                 Board(splitFenPosition(splitFen[0])),
                 splitPlayerTurn(splitFen[1]),
@@ -36,7 +36,7 @@ interface Controller {
             )
         )
 
-        uiState.changeActivePosition(0)
+        viewModel.changeActivePosition(0)
 
     }
 
@@ -66,10 +66,10 @@ interface Controller {
                 }
             }
 
-            uiState.applyMove(Coordinate.fromString(from), Coordinate.fromString(to), piecePromote)
+            viewModel.applyMove(Coordinate.fromString(from), Coordinate.fromString(to), piecePromote)
         }
 
-        uiState.initStartActivePosition(startIndex)
+        viewModel.initStartActivePosition(startIndex)
 
     }
 
@@ -78,7 +78,7 @@ interface Controller {
 class GameController : Controller {
 
     override val mode: JetpackChessMode = JetpackChessMode.GAME
-    override var uiState: UIViewModel = UIViewModel(
+    override var viewModel: GameViewModel = GameViewModel(
         mode,
         GameTimeline(mode, mutableListOf(initialGamePosition)),
         PlayerColor.WHITE,
@@ -90,7 +90,7 @@ class GameController : Controller {
         initialFEN: String = FEN_DEFAULT_POSITION,
     ) {
         importFen(initialFEN)
-        uiState.boardOrientationState.value = playerSide
+        viewModel.boardOrientationState.value = playerSide
     }
 
 
@@ -99,7 +99,7 @@ class GameController : Controller {
 class PuzzleController : Controller {
 
     override val mode: JetpackChessMode = JetpackChessMode.PUZZLE
-    override var uiState: UIViewModel = UIViewModel(
+    override var viewModel: GameViewModel = GameViewModel(
         mode,
         GameTimeline(mode, mutableListOf(initialGamePosition)),
         PlayerColor.WHITE,
@@ -117,7 +117,7 @@ class PuzzleController : Controller {
             uciMoves,
             firstDisplayedMove
         )
-        uiState.boardOrientationState.value = playerSide
+        viewModel.boardOrientationState.value = playerSide
     }
 
     fun newPuzzleLichess(
@@ -131,7 +131,7 @@ class PuzzleController : Controller {
             uciMoves,
             1
         )
-        uiState.boardOrientationState.value = turnFirstMoveVariation.opponent()
+        viewModel.boardOrientationState.value = turnFirstMoveVariation.opponent()
     }
 
 }
@@ -140,7 +140,7 @@ class PuzzleController : Controller {
 class ScrollController : Controller {
 
     override val mode: JetpackChessMode = JetpackChessMode.SCROLL
-    override var uiState: UIViewModel = UIViewModel(
+    override var viewModel: GameViewModel = GameViewModel(
         mode,
         GameTimeline(mode, mutableListOf(initialGamePosition)),
         PlayerColor.WHITE,
@@ -156,7 +156,7 @@ class ScrollController : Controller {
             fen,
             uciMoves
         )
-        uiState.boardOrientationState.value = playerSide
+        viewModel.boardOrientationState.value = playerSide
     }
 
 

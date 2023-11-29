@@ -5,12 +5,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import org.placidfox.jetpackchess.model.piece.PlayerColor.*
-import org.placidfox.jetpackchess.viewModel.UIViewModel
+import org.placidfox.jetpackchess.viewModel.GameViewModel
 
 @Composable
-fun BoardComposable (uiState: UIViewModel){
+fun BoardComposable (viewModel: GameViewModel){
 
-    when(uiState.boardOrientationState.value) {
+    when(viewModel.boardOrientationState.value) {
 
         WHITE ->
             Box(Modifier.fillMaxWidth().aspectRatio(1f)) {
@@ -18,7 +18,7 @@ fun BoardComposable (uiState: UIViewModel){
                     for (file in 1..8) {
                         Column (modifier = Modifier.weight(1f)) {
                             for (rank in 8 downTo 1) {
-                                SquareComposable(uiState, uiState.activePosition.value.board.getSquare(file, rank))
+                                SquareComposable(viewModel, viewModel.activePosition.board.getSquare(file, rank))
                             }
                         }
 
@@ -32,7 +32,7 @@ fun BoardComposable (uiState: UIViewModel){
                     for (file in 8 downTo 1) {
                         Column(modifier = Modifier.weight(1f)) {
                             for (rank in 1..8) {
-                                SquareComposable(uiState, uiState.activePosition.value.board.getSquare(file, rank))
+                                SquareComposable(viewModel, viewModel.activePosition.board.getSquare(file, rank))
                             }
                         }
 

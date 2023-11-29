@@ -5,14 +5,13 @@ import org.placidfox.jetpackchess.model.board.Board
 import org.placidfox.jetpackchess.model.board.Coordinate
 import org.placidfox.jetpackchess.model.game.GamePosition
 import org.placidfox.jetpackchess.model.game.parameters.CastleType
-import org.placidfox.jetpackchess.model.game.parameters.CastlingStatus
 import org.placidfox.jetpackchess.model.game.parameters.EnPassantStatus
 import org.placidfox.jetpackchess.model.move.AppliedMove
 import org.placidfox.jetpackchess.model.move.ProposedMove
 import org.placidfox.jetpackchess.model.piece.*
 
 
-fun UIViewModel.updateButtonState(){
+fun GameViewModel.updateButtonState(){
 
     isActivePositionFirst = activePositionIndex > 0
     isFirstPosition = activePositionIndex != 0
@@ -31,7 +30,7 @@ fun UIViewModel.updateButtonState(){
 
 }
 
-fun UIViewModel.initStatus(){
+fun GameViewModel.initStatus(){
     when(mode){
         JetpackChessMode.GAME -> status.value = STATUS.IN_PROGRESS_GAME
         JetpackChessMode.PUZZLE  -> status.value = STATUS.IN_PROGRESS_OK
@@ -39,7 +38,7 @@ fun UIViewModel.initStatus(){
     }
 }
 
-fun UIViewModel.statusMistake(){
+fun GameViewModel.statusMistake(){
     when(mode){
         JetpackChessMode.PUZZLE -> status.value = STATUS.IN_PROGRESS_WRONG
         else -> {} // Nothing to do in Game & Scroll Mode
@@ -47,7 +46,7 @@ fun UIViewModel.statusMistake(){
     }
 }
 
-fun UIViewModel.checkEndStatus(){
+fun GameViewModel.checkEndStatus(){
 
     when(mode){
         JetpackChessMode.GAME -> {
@@ -71,25 +70,25 @@ fun UIViewModel.checkEndStatus(){
 
 }
 
-fun UIViewModel.setWrongMoveDecorator(proposedMove: ProposedMove){
+fun GameViewModel.setWrongMoveDecorator(proposedMove: ProposedMove){
     wrongMovePosition.value = listOf(proposedMove.from, proposedMove.to)
 }
 
-fun UIViewModel.resetWrongMoveDecorator(){
+fun GameViewModel.resetWrongMoveDecorator(){
     wrongMovePosition.value = null
 }
 
 
-fun UIViewModel.askPromotion(){
+fun GameViewModel.askPromotion(){
     showPromotionDialog.value = true
 }
 
-fun UIViewModel.cancelPromotion(){
+fun GameViewModel.cancelPromotion(){
     showPromotionDialog.value = false
     resetSelectedSquare()
 }
 
-fun UIViewModel.promotionChoice(chosenPiece: Class<out Piece>){
+fun GameViewModel.promotionChoice(chosenPiece: Class<out Piece>){
     proposedMove!!.promotionTo = chosenPiece
     validateMove(proposedMove!!)
     switchPromotionDialog()

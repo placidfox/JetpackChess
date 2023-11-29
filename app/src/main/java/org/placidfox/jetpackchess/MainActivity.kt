@@ -1,26 +1,16 @@
 package org.placidfox.jetpackchess
 
-import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalConsumer
-import androidx.compose.ui.unit.dp
 import org.placidfox.jetpackchess.controller.FEN_DEFAULT_POSITION
 import org.placidfox.jetpackchess.controller.GameController
-import org.placidfox.jetpackchess.controller.PuzzleController
-import org.placidfox.jetpackchess.controller.ScrollController
-import org.placidfox.jetpackchess.model.board.Coordinate
-import org.placidfox.jetpackchess.model.game.GamePosition
 import org.placidfox.jetpackchess.model.piece.PlayerColor
 import org.placidfox.jetpackchess.ui.theme.JetpackChessTheme
 
@@ -50,7 +40,7 @@ class MainActivity : ComponentActivity() {
                             Button(onClick = { controller.newGame(PlayerColor.WHITE, testStalemate[0]) }) {
                                 Text("Test Stalemate")
                             }
-                            Text(controller.uiState.status.value.toString())
+                            Text(controller.viewModel.status.value.toString())
                         }
                     }
 
