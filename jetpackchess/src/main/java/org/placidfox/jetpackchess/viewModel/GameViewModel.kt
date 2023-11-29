@@ -34,15 +34,10 @@ class GameViewModel (
             updateActivePosition()
         }
 
-    var activePositionIndexState by mutableStateOf(0)
-    
-    val activePosition
-        get() = gameTimeline.positionsTimeline[activePositionIndexState]
-        
-    
     var maxSeenPosition: Int = 0
 
-    //val activePosition: MutableState<GamePosition> = mutableStateOf(gameTimeline.positionsTimeline[activePositionIndexState])
+    val activePosition: MutableState<GamePosition> = mutableStateOf(gameTimeline.positionsTimeline[activePositionIndex])
+
 
     var isActivePositionFirst by mutableStateOf(false)
     var isActivePositionLast by mutableStateOf(false)
@@ -54,16 +49,16 @@ class GameViewModel (
 
     val status: MutableState<STATUS> = mutableStateOf(STATUS.PENDING)
     val isKingCheck: Boolean
-        get() = activePosition.isActiveKingCheck
+        get() = activePosition.value.isActiveKingCheck
 
     val isKingCheckmate: Boolean
-        get() = activePosition.isCheckmate
+        get() = activePosition.value.isCheckmate
 
     val isKingStalemate: Boolean
-        get() = activePosition.isStalemate
+        get() = activePosition.value.isStalemate
 
-    val activePlayer
-        get() = activePosition.activePlayer
+    var activePlayer = mutableStateOf(PlayerColor.WHITE)
+
 
     val boardOrientationState = mutableStateOf(boardOrientation)
     val boardColorState = mutableStateOf(boardColor)
@@ -72,16 +67,16 @@ class GameViewModel (
     val destinationSquare = mutableStateOf<Coordinate?>(null)
 
     val lastMovePosition: List<Coordinate>?
-        get() = activePosition.lastMovePositions
+        get() = activePosition.value.lastMovePositions
 
     var wrongMovePosition = mutableStateOf<List<Coordinate>?>(null)
 
     // calculate score from boardOrientation
-    val score = mutableStateOf(activePosition.calculateScore(boardOrientation))
+    val score = mutableStateOf(activePosition.value.calculateScore(boardOrientation))
 
 
     val turnPlayerPiecesPositions: List<Coordinate>
-        get() = activePosition.board.piecesColorPosition(activePlayer).map { it.key }
+        get() = activePosition.value.board.piecesColorPosition(activePlayer.value).map { it.key }
 
 
     val reachableSquares = mutableStateOf<List<Coordinate>?>(null)
@@ -93,7 +88,7 @@ class GameViewModel (
     fun getAllLegalMoves(): List<Coordinate>{
         val allLegalCoordinate = emptyList<Coordinate>().toMutableList()
 
-        activePosition.board.piecesColorPosition(activePlayer).forEach {
+        activePosition.value.board.piecesColorPosition(activePlayer.value).forEach {
                 entry ->
             getReachableandCaptureSquares(entry.key).forEach {
                 allLegalCoordinate.add(it)
@@ -112,15 +107,15 @@ class GameViewModel (
     private fun getReachableandCaptureSquares(pieceCoordinate: Coordinate) : List<Coordinate> {
 
 
-        val fetchedPairList = activePosition.board.getSquare(pieceCoordinate).piece!!.reachableSquares(activePosition)
+        val fetchedPairList = activePosition.value.board.getSquare(pieceCoordinate).piece!!.reachableSquares(activePosition.value)
 
         val calculateReachableSquares = fetchedPairList.filter {
             val potentialPosition = calculateNewPosition(
-                activePosition,
-                AppliedMove(pieceCoordinate, it, activePosition)
+                activePosition.value,
+                AppliedMove(pieceCoordinate, it, activePosition.value)
             )
 
-            !potentialPosition.isKingCheck(activePlayer)
+            !potentialPosition.isKingCheck(activePlayer.value)
         }
 
 
@@ -132,18 +127,18 @@ class GameViewModel (
         val listPositionsMenaced = emptyList<Coordinate>().toMutableList()
         val unavailableCastleSquares = emptyList<Coordinate>().toMutableList()
 
-        if (activePosition.board.getSquare(pieceCoordinate).piece!!::class.java == King::class.java) { // TODO SIMPLIFY- DON'T WORK IN Piece.FunMoves??
+        if (activePosition.value.board.getSquare(pieceCoordinate).piece!!::class.java == King::class.java) { // TODO SIMPLIFY- DON'T WORK IN Piece.FunMoves??
 
 
-            activePosition.board.piecesColorPosition(activePlayer.opponent())
+            activePosition.value.board.piecesColorPosition(activePlayer.value.opponent())
                 .forEach {  // opponent() because turn as been made
                         entry ->
-                    entry.value.reachableSquares(activePosition).forEach {
+                    entry.value.reachableSquares(activePosition.value).forEach {
                         listPositionsMenaced.add(it)
                     }
                 }
 
-            if (activePosition.board.getSquare(pieceCoordinate).piece!!::class.java == King::class.java) {
+            if (activePosition.value.board.getSquare(pieceCoordinate).piece!!::class.java == King::class.java) {
 
                 when (pieceCoordinate) {
                     Coordinate.E1 -> {
@@ -190,11 +185,11 @@ class GameViewModel (
 
         when (mode) {
             JetpackChessMode.GAME ->
-                if (gameTimeline.activePositionIndex == gameTimeline.positionsTimeline.lastIndex && !gameTimeline.isCheckmate && !gameTimeline.isStalemate) {
+                if (activePositionIndex == gameTimeline.positionsTimeline.lastIndex && !isKingCheckmate && !isKingStalemate) {
                     clickSquareAction(square)
                 }
             JetpackChessMode.PUZZLE ->
-                if (gameTimeline.activePositionIndex == maxSeenPosition && gameTimeline.activePositionIndex !=gameTimeline.positionsTimeline.lastIndex) {
+                if (activePositionIndex == maxSeenPosition && gameTimeline.activePositionIndex !=gameTimeline.positionsTimeline.lastIndex) {
                     clickSquareAction(square)
                 }
             JetpackChessMode.SCROLL -> {}
@@ -219,7 +214,7 @@ class GameViewModel (
                 if (reachableSquares.value!!.contains(square.coordinate)) {
                     destinationSquare.value = square.coordinate
 
-                    proposedMove = ProposedMove(selectedSquare.value!!, destinationSquare.value!!, activePosition)
+                    proposedMove = ProposedMove(selectedSquare.value!!, destinationSquare.value!!, activePosition.value)
 
                     if (proposedMove!!.isPromotionMove){
                         askPromotion()
@@ -241,7 +236,7 @@ class GameViewModel (
                 applyMove(proposedMove.from, proposedMove.to, proposedMove.promotionTo)
 
             JetpackChessMode.PUZZLE ->
-                if (proposedMove.from == activePosition.nextMove!!.from && proposedMove.to == activePosition.nextMove!!.to && proposedMove.promotionTo == activePosition.nextMove!!.promotionTo){
+                if (proposedMove.from == activePosition.value.nextMove!!.from && proposedMove.to == activePosition.value.nextMove!!.to && proposedMove.promotionTo == activePosition.value.nextMove!!.promotionTo){
                     resetWrongMoveDecorator()
                     applyAutoMove()
                 } else {
@@ -267,11 +262,10 @@ class GameViewModel (
         to: Coordinate,
         typePiecePromoteTo: Class<out Piece>? = null
     ) {
-        val move = AppliedMove(from, to, activePosition, typePiecePromoteTo)
-        val newPosition = calculateNewPosition(activePosition, move)
+        val move = AppliedMove(from, to, activePosition.value, typePiecePromoteTo)
+        val newPosition = calculateNewPosition(activePosition.value, move)
         addMoveMadeGamePosition(move)
         addGamePositionInTimeline(newPosition)
-        updateButtonState()
     }
 
     fun applyAutoMove() {

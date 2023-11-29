@@ -46,10 +46,10 @@ fun PromotionDialog(
 fun PieceIcon(pieceType: Class<out Piece>, viewModel: GameViewModel){
 
     val pieceIcon: Int = when(pieceType){
-        Queen::class.java -> Queen(viewModel.activePlayer).asset
-        Rook::class.java -> Rook(viewModel.activePlayer).asset
-        Bishop::class.java -> Bishop(viewModel.activePlayer).asset
-        Knight::class.java -> Knight(viewModel.activePlayer).asset
+        Queen::class.java -> Queen(viewModel.activePlayer.value).asset
+        Rook::class.java -> Rook(viewModel.activePlayer.value).asset
+        Bishop::class.java -> Bishop(viewModel.activePlayer.value).asset
+        Knight::class.java -> Knight(viewModel.activePlayer.value).asset
         else -> 0
     }
 

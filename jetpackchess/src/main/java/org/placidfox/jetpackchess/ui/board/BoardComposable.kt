@@ -18,7 +18,7 @@ fun BoardComposable (viewModel: GameViewModel){
                     for (file in 1..8) {
                         Column (modifier = Modifier.weight(1f)) {
                             for (rank in 8 downTo 1) {
-                                SquareComposable(viewModel, viewModel.activePosition.board.getSquare(file, rank))
+                                SquareComposable(viewModel, viewModel.activePosition.value.board.getSquare(file, rank))
                             }
                         }
 
@@ -32,7 +32,7 @@ fun BoardComposable (viewModel: GameViewModel){
                     for (file in 8 downTo 1) {
                         Column(modifier = Modifier.weight(1f)) {
                             for (rank in 1..8) {
-                                SquareComposable(viewModel, viewModel.activePosition.board.getSquare(file, rank))
+                                SquareComposable(viewModel, viewModel.activePosition.value.board.getSquare(file, rank))
                             }
                         }
 

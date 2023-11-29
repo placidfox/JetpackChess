@@ -35,7 +35,7 @@ fun DecoratorSelected(viewModel: GameViewModel, square: Square){
 @Composable
 fun DecoratorKingCheck(viewModel: GameViewModel, square: Square){
 
-    if(square.hasColorKing(viewModel.activePlayer) && viewModel.isKingCheck){
+    if(square.hasColorKing(viewModel.activePlayer.value) && viewModel.isKingCheck){
         Box(modifier = Modifier
             .fillMaxSize(0.91f)
             .drawBehind {
@@ -54,7 +54,7 @@ fun DecoratorKingCheck(viewModel: GameViewModel, square: Square){
 @Composable
 fun DecoratorKingStalemate(viewModel: GameViewModel, square: Square){
 
-    if(square.hasColorKing(viewModel.activePlayer) && viewModel.isKingStalemate){
+    if(square.hasColorKing(viewModel.activePlayer.value) && viewModel.isKingStalemate){
         Box(modifier = Modifier
             .fillMaxSize(0.91f)
             .drawBehind {
@@ -70,7 +70,7 @@ fun DecoratorKingStalemate(viewModel: GameViewModel, square: Square){
 @Composable
 fun DecoratorPossibleDestination(viewModel: GameViewModel, square: Square){ // TODO : TO REFACTOR
 
-    if (viewModel.reachableSquares.value?.contains(square.coordinate) == true && (square.isNotEmpty || square.coordinate == viewModel.activePosition.enPassantStatus.enPassantCoordinate)){
+    if (viewModel.reachableSquares.value?.contains(square.coordinate) == true && (square.isNotEmpty || square.coordinate == viewModel.activePosition.value.enPassantStatus.enPassantCoordinate)){
         Box(modifier = Modifier
             .fillMaxSize(0.7f)
             .drawBehind {
