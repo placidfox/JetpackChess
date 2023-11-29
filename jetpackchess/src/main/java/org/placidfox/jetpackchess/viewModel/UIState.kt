@@ -15,7 +15,7 @@ data class UIState (
     val boardOrientation: PlayerColor = PlayerColor.WHITE,
     val boardColor: BoardColor = BoardColor.Blue,
 
-    val selectedSquare: List<Coordinate> = emptyList(),
+    var selectedSquare: List<Coordinate> = emptyList(),
     val moveSquares: List<Coordinate> = emptyList(),
     val wrongChoiceSquares: List<Coordinate> = emptyList(),
 
@@ -24,4 +24,4 @@ data class UIState (
     val isActivePositionFirst: Boolean = true,
     val isActivePositionLast: Boolean = true,
 
-)
+    )

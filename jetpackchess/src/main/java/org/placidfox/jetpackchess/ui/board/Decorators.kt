@@ -8,6 +8,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import org.placidfox.jetpackchess.model.board.Square
+import org.placidfox.jetpackchess.model.game.Termination
 import org.placidfox.jetpackchess.viewModel.GameViewModel
 
 
@@ -40,7 +41,7 @@ fun DecoratorKingCheck(viewModel: GameViewModel, square: Square){
             .fillMaxSize(0.91f)
             .drawBehind {
                 drawRect(
-                    color = if (viewModel.gameTimeline.isCheckmate) {
+                    color = if (viewModel.uiState.activePosition.termination == Termination.CHECKMATE) {
                         DecoratorColor.CHECKMATE_COLOR.color
                     } else {
                         DecoratorColor.CHECK_COLOR.color
@@ -54,7 +55,7 @@ fun DecoratorKingCheck(viewModel: GameViewModel, square: Square){
 @Composable
 fun DecoratorKingStalemate(viewModel: GameViewModel, square: Square){
 
-    if(square.hasColorKing(viewModel.uiState.activePosition.activePlayer) && viewModel.gameTimeline.isStalemate){
+    if(square.hasColorKing(viewModel.uiState.activePosition.activePlayer) && viewModel.uiState.activePosition.termination == Termination.STALEMATE){
         Box(modifier = Modifier
             .fillMaxSize(0.91f)
             .drawBehind {

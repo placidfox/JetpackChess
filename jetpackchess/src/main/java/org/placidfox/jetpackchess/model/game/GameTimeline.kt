@@ -7,7 +7,7 @@ import org.placidfox.jetpackchess.controller.JetpackChessMode
 data class GameTimeline (
     val mode: JetpackChessMode,
     var positionsTimeline : MutableList<GamePosition>,
-    val status: STATUS = STATUS.PENDING
+    val status: STATUS = STATUS.IN_PROGRESS_GAME
     // TODO Metadata,
     ){
 
@@ -22,6 +22,9 @@ data class GameTimeline (
             JetpackChessMode.GAME, JetpackChessMode.SCROLL -> activePositionIndex == positionsTimeline.lastIndex
             JetpackChessMode.PUZZLE -> activePositionIndex == lastSeenPosition // TODO - TO TEST
         }
+
+    val lastPosition: GamePosition
+        get() = positionsTimeline.last()
 
 
     fun addGamePosition(gamePosition: GamePosition){
@@ -58,20 +61,15 @@ data class GameTimeline (
         }
     }
 
-    val isCheckmate : Boolean
-        get () = positionsTimeline.last().isCheckmate
 
-    val isStalemate : Boolean
-        get () = positionsTimeline.last().isStalemate
+    fun updateStatus(){ // TODO TO SIMPLIFY
 
-
-    fun updateStatus(){
         when(mode){
             JetpackChessMode.GAME -> {
-                if (isCheckmate) {
+                if (lastPosition.termination == Termination.CHECKMATE) {
                     STATUS.FINISH_CHECKMATE
                 }
-                if (isStalemate) {
+                if (lastPosition.termination == Termination.STALEMATE) {
                     STATUS.FINISH_STALEMATE
                 }
             }

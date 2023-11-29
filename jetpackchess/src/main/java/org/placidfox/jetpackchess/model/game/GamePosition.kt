@@ -37,14 +37,19 @@ data class GamePosition(
         fun calculateScore(playerColor: PlayerColor): Int =
             board.piecesColorPosition(playerColor).values.sumOf {it.value} - board.piecesColorPosition(playerColor.opponent()).values.sumOf {it.value}
 
-        val isCheckmate
-            get() = getIsCheckmate()
-
-        val isStalemate
-            get() = getIsStalemate()
 
         var isActiveKingCheck =
             isKingCheck(activePlayer)
+
+        var termination = Termination.IN_PROGRESS
+
+        fun getActivePiecesPosition(): Set<Coordinate>{
+            return getPiecesPosition(activePlayer)
+        }
+
+        fun getPiecesPosition(color: PlayerColor): Set<Coordinate>{
+            return board.piecesColorPosition(color).keys
+        }
 
         fun isKingCheck(color: PlayerColor) : Boolean{
 
@@ -73,15 +78,17 @@ data class GamePosition(
                 ).isKingCheck(activePlayer) // because turn has been made
             }
 
+        fun calculateTermination(){ // TODO TO SIMPIFY
 
-        private fun getIsCheckmate() = // Not calculate everytime for performance & pinned validation (sometime the King is Captures and don't exist) TODO FIX BUG
-            !isLegalMoves() && isActiveKingCheck
+            if (!isLegalMoves()){
+                termination = if(isActiveKingCheck){
+                    Termination.CHECKMATE
+                } else {
+                    Termination.STALEMATE
+                }
+            }
 
-
-        private fun getIsStalemate() = // Not calculate everytime for performance & pinned validation  (sometime the King is Captures and don't exist) TODO FIX BUG
-            !isLegalMoves() && !isActiveKingCheck
-
-
+        }
 
 
         fun isLegalMoves(): Boolean { // TODO SIMPLIFY ?

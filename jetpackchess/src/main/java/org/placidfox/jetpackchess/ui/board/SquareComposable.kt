@@ -25,9 +25,7 @@ fun SquareComposable(viewModel: GameViewModel, square: Square){
                     viewModel.uiState.boardColor.darkSquareColor
                 }
             )
-            .clickable {
-                //viewModel.clickedSquare(square)
-                       },
+            .clickable {viewModel.clickSquare(square)},
         contentAlignment = Alignment.Center
 
 
