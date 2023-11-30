@@ -12,7 +12,9 @@ import org.placidfox.jetpackchess.model.board.Square
 import org.placidfox.jetpackchess.model.game.GamePosition
 import org.placidfox.jetpackchess.model.game.GameTimeline
 import org.placidfox.jetpackchess.model.game.STATUS
+import org.placidfox.jetpackchess.model.move.AppliedMove
 import org.placidfox.jetpackchess.model.move.ProposedMove
+import org.placidfox.jetpackchess.model.piece.Piece
 import org.placidfox.jetpackchess.model.piece.PlayerColor
 import org.placidfox.jetpackchess.ui.board.BoardColor
 
@@ -23,20 +25,18 @@ class GameViewModel (
 
     var uiState by mutableStateOf(UIState())
 
-
-    // TODO using gameTimeline.lastPosition
-
-
+    var proposedMove: ProposedMove? = null
 
     fun clickSquare(square: Square) {
+
         when (mode) {
             JetpackChessMode.GAME ->
                 if (gameTimeline.activePositionIndex == gameTimeline.positionsTimeline.lastIndex && gameTimeline.status == STATUS.IN_PROGRESS_GAME) {
                     clickAction(square)
                 }
-            JetpackChessMode.PUZZLE -> {}
+            JetpackChessMode.PUZZLE -> {} // TODO
 
-            JetpackChessMode.SCROLL -> {}
+            JetpackChessMode.SCROLL -> {} // TODO
 
         }
 
@@ -58,12 +58,12 @@ class GameViewModel (
 
                 if (uiState.moveSquares.contains(square.coordinate)) {
 
-                    val proposedMove = ProposedMove(uiState.selectedSquare.first(), square.coordinate, uiState.activePosition)
+                    proposedMove = ProposedMove(uiState.selectedSquare.first(), square.coordinate, uiState.activePosition)
 
-                    if (proposedMove.isPromotionMove){
-                        //askPromotion()
+                    if (proposedMove!!.isPromotionMove){
+                        askPromotion()
                     } else {
-                        //validateMove(proposedMove) TODO
+                        validateMove(proposedMove!!)
                     }
 
 
@@ -72,6 +72,32 @@ class GameViewModel (
 
             }
         }
+    }
+
+    fun validateMove(
+        proposedMove: ProposedMove
+    ){
+        when (mode){
+            JetpackChessMode.GAME ->
+                applyMove(proposedMove.from, proposedMove.to, proposedMove.promotionTo)
+            JetpackChessMode.PUZZLE -> {}
+            JetpackChessMode.SCROLL -> {}
+
+        }
+
+    }
+
+    fun applyMove(
+        from: Coordinate,
+        to: Coordinate,
+        typePiecePromoteTo: Class<out Piece>? = null
+    ) {
+        val move = AppliedMove(from, to, uiState.activePosition, typePiecePromoteTo)
+        val newPosition = calculateNewPosition(uiState.activePosition, move)
+        addNextMoveToPosition(move)
+        gameTimeline.addGamePosition(newPosition)
+        gameTimeline.lastPosition.calculateTermination() // TODO BEST POSITION FOR CHECKMATE CHECK ?
+        forwardActivePosition()
     }
 
 
@@ -105,11 +131,15 @@ class GameViewModel (
         updateActivePosition()
     }
 
+    fun switchPromotionDialog(){
+        uiState = uiState.copy(showPromotionDialog = !uiState.showPromotionDialog)
+    }
+
     private fun setSelectedSquare(coordinate: Coordinate){
         uiState = uiState.copy(selectedSquare = listOf(coordinate))
     }
 
-    private fun resetSelectedSquare(){
+    fun resetSelectedSquare(){
         uiState = uiState.copy(selectedSquare = emptyList())
     }
 
@@ -117,9 +147,14 @@ class GameViewModel (
         uiState = uiState.copy(moveSquares = uiState.activePosition.pieceLegalDestinations(uiState.selectedSquare.first()))
     }
 
-    private fun resetMoveSquares(){
+    fun resetMoveSquares(){
         uiState = uiState.copy(moveSquares = emptyList())
     }
+
+    fun addNextMoveToPosition(move : AppliedMove){
+        uiState.activePosition.nextMove = move
+    }
+
 
 
     private fun updateActivePosition(){
@@ -132,12 +167,6 @@ class GameViewModel (
     }
 
 
-    @TestOnly
-    fun TESTaddposition(){
-        gameTimeline.addGamePosition(positionCheckmate)
-        gameTimeline.lastPosition.calculateTermination() // TODO BEST POSITION FOR CHECKMATE CHECK ?
-        forwardActivePosition()
-    }
 
 }
 

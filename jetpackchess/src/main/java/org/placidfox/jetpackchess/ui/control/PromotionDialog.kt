@@ -13,7 +13,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import org.placidfox.jetpackchess.model.piece.*
 import org.placidfox.jetpackchess.viewModel.GameViewModel
-
+import org.placidfox.jetpackchess.viewModel.cancelPromotion
+import org.placidfox.jetpackchess.viewModel.promotionChoice
 
 
 @Composable
@@ -21,9 +22,7 @@ fun PromotionDialog(
     viewModel: GameViewModel,
 ){
     Dialog(
-        onDismissRequest = {
-            //viewModel.cancelPromotion()
-                           },
+        onDismissRequest = {viewModel.cancelPromotion()},
         ) {
         Card(
             modifier = Modifier
@@ -61,7 +60,7 @@ fun PieceIcon(pieceType: Class<out Piece>, viewModel: GameViewModel){
 
             .fillMaxHeight(0.3f)
             .clickable {
-                //viewModel.promotionChoice(pieceType)
+                viewModel.promotionChoice(pieceType)
             }
 
     )

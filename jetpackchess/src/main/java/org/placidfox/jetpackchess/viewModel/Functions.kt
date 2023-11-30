@@ -11,6 +11,22 @@ import org.placidfox.jetpackchess.model.move.ProposedMove
 import org.placidfox.jetpackchess.model.piece.*
 
 
+fun GameViewModel.askPromotion(){
+    switchPromotionDialog()
+}
+
+fun GameViewModel.cancelPromotion(){
+    switchPromotionDialog()
+    resetSelectedSquare()
+    resetMoveSquares()
+}
+
+fun GameViewModel.promotionChoice(chosenPiece: Class<out Piece>){
+    proposedMove!!.promotionTo = chosenPiece
+    validateMove(proposedMove!!)
+    switchPromotionDialog()
+}
+
 
 fun calculateNewPosition(gamePosition: GamePosition, moveUCI: AppliedMove): GamePosition {
 

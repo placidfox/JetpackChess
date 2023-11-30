@@ -19,7 +19,7 @@ data class UIState (
     val moveSquares: List<Coordinate> = emptyList(),
     val wrongChoiceSquares: List<Coordinate> = emptyList(),
 
-    val showPromotionDialog: Boolean = false,
+    var showPromotionDialog: Boolean = false,
 
     val isActivePositionFirst: Boolean = true,
     val isActivePositionLast: Boolean = true,

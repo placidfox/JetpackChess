@@ -33,12 +33,29 @@ class King(override val color: PlayerColor) : Piece {
 
     private fun squaresMenaced(position: GamePosition): List<Coordinate>{ // to Check if Castle is Possible
         val listPositionsMenaced = emptyList<Coordinate>().toMutableList()
-        position.board.piecesColorPosition(position.activePlayer.opponent())
+        position.board.piecesColorPositionMinusKing(position.activePlayer.opponent()) // Minus King to Avoid Infinite Loop - not possible to stop castle with King
             .forEach {  // opponent() because turn as been made
                     entry ->
-                entry.value.reachableSquares(position).forEach {
-                    listPositionsMenaced.add(it)
-                }
+                        entry.value.reachableSquares(position).forEach {
+                            listPositionsMenaced.add(it)
+                        }
+                        if(entry.value::class.java == Pawn::class.java){ // TODO FIND A BETTER WAY TO AVOID CASTLE IF PAWN IS MENACING - NOT CALCULATED IN PAWN BECAUSE NO PIECE
+                            when(entry.value.color to entry.key){
+                                PlayerColor.WHITE to Coordinate.G7 -> {listPositionsMenaced.add(Coordinate.F8)}
+                                PlayerColor.WHITE to Coordinate.E7 -> {
+                                    listPositionsMenaced.add(Coordinate.F8)
+                                    listPositionsMenaced.add(Coordinate.D8)
+                                }
+                                PlayerColor.WHITE to Coordinate.C7 -> {listPositionsMenaced.add(Coordinate.D8)}
+
+                                PlayerColor.BLACK to Coordinate.G2 -> {listPositionsMenaced.add(Coordinate.F1)}
+                                PlayerColor.BLACK to Coordinate.E2 -> {
+                                    listPositionsMenaced.add(Coordinate.F1)
+                                    listPositionsMenaced.add(Coordinate.D1)
+                                }
+                                PlayerColor.BLACK to Coordinate.C2 -> {listPositionsMenaced.add(Coordinate.D1)}
+                            }
+                        }
             }
 
         return listPositionsMenaced

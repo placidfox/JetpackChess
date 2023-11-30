@@ -60,10 +60,16 @@ class Pawn(override val color: PlayerColor) : Piece {
 
                 target.forEach {
                         val positionTest = pieceLocation + it
-                        val coordinateTest = Coordinate.fromNumCoordinate(positionTest.toString()[0].digitToInt(), positionTest.toString()[1].digitToInt())
+                        if (positionTest in boardCoordinateNum) { // to avoir crash when creating coordinateTest in fromNumCoordinate if is outside of board
 
-                        if (positionTest in boardCoordinateNum && (!position.board.isOccupied(coordinateTest))) {
-                            moveSquares.add(coordinateTest)
+                            val coordinateTest = Coordinate.fromNumCoordinate(
+                                positionTest.toString()[0].digitToInt(),
+                                positionTest.toString()[1].digitToInt()
+                            )
+
+                            if (!position.board.isOccupied(coordinateTest)) {
+                                moveSquares.add(coordinateTest)
+                            }
                         }
                 }
 
@@ -109,14 +115,18 @@ class Pawn(override val color: PlayerColor) : Piece {
 
                 target.forEach {
                         val positionTest = pieceLocation - it
-                        val coordinateTest = Coordinate.fromNumCoordinate(
-                            positionTest.toString()[0].digitToInt(),
-                            positionTest.toString()[1].digitToInt()
-                        )
+                        if (positionTest in boardCoordinateNum) { // to avoir crash when creating coordinateTest in fromNumCoordinate if is outside of board
 
-                        if (positionTest in boardCoordinateNum && (!position.board.isOccupied(coordinateTest))) {
-                            moveSquares.add(coordinateTest)
+                            val coordinateTest = Coordinate.fromNumCoordinate(
+                                positionTest.toString()[0].digitToInt(),
+                                positionTest.toString()[1].digitToInt()
+                            )
+
+                            if (!position.board.isOccupied(coordinateTest)) {
+                                moveSquares.add(coordinateTest)
+                            }
                         }
+
                 }
 
 

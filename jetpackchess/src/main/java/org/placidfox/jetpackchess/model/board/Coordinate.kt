@@ -33,7 +33,6 @@ enum class Coordinate {
             "$file$rank".toInt()
 
         fun fromNumCoordinate(file: Int, rank: Int): Coordinate {
-
             return entries[(file - 1) * 8 + (rank - 1)]
         }
 
