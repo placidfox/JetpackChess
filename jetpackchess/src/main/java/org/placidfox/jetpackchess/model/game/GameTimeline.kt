@@ -29,6 +29,7 @@ data class GameTimeline (
 
     fun addGamePosition(gamePosition: GamePosition){
         positionsTimeline.add(gamePosition)
+        lastPosition.calculateTermination() // TODO BEST POSITION FOR CHECKMATE CHECK ?
     }
 
     fun initNewTimeline(gamePosition: GamePosition){

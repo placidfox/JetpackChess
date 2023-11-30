@@ -96,7 +96,6 @@ class GameViewModel (
         val newPosition = calculateNewPosition(uiState.activePosition, move)
         addNextMoveToPosition(move)
         gameTimeline.addGamePosition(newPosition)
-        gameTimeline.lastPosition.calculateTermination() // TODO BEST POSITION FOR CHECKMATE CHECK ?
         forwardActivePosition()
     }
 
