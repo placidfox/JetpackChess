@@ -23,7 +23,8 @@ class GameViewModel (
     val gameTimeline: GameTimeline,
 ): ViewModel() {
 
-    var uiState by mutableStateOf(UIState())
+    var activePosition by mutableStateOf(initialGamePosition)
+    val uiState = UIState()
 
     var proposedMove: ProposedMove? = null
 
@@ -45,7 +46,7 @@ class GameViewModel (
     private fun clickAction(square: Square){
         if (uiState.selectedSquare.isEmpty()) {
 
-            if (uiState.activePosition.getActivePiecesPosition().contains(square.coordinate)) {
+            if (activePosition.getActivePiecesPosition().contains(square.coordinate)) {
                 setSelectedSquare(square.coordinate)
                 setMoveSquares()
             }
@@ -58,7 +59,7 @@ class GameViewModel (
 
                 if (uiState.moveSquares.contains(square.coordinate)) {
 
-                    proposedMove = ProposedMove(uiState.selectedSquare.first(), square.coordinate, uiState.activePosition)
+                    proposedMove = ProposedMove(uiState.selectedSquare.first(), square.coordinate, activePosition)
 
                     if (proposedMove!!.isPromotionMove){
                         askPromotion()
@@ -92,8 +93,8 @@ class GameViewModel (
         to: Coordinate,
         typePiecePromoteTo: Class<out Piece>? = null
     ) {
-        val move = AppliedMove(from, to, uiState.activePosition, typePiecePromoteTo)
-        val newPosition = calculateNewPosition(uiState.activePosition, move)
+        val move = AppliedMove(from, to, activePosition, typePiecePromoteTo)
+        val newPosition = calculateNewPosition(activePosition, move)
         addNextMoveToPosition(move)
         gameTimeline.addGamePosition(newPosition)
         forwardActivePosition()
@@ -105,14 +106,14 @@ class GameViewModel (
 
 
     fun setBoardOrientation(playerColor: PlayerColor){
-        uiState = uiState.copy(boardOrientation = playerColor)
+        uiState.boardOrientation = playerColor
     }
     fun switchBoardOrientation(){
         setBoardOrientation(uiState.boardOrientation.opponent())
     }
 
     fun changeBoardColor(boardColor: BoardColor){
-        uiState = uiState.copy(boardColor = boardColor)
+        uiState.boardColor = boardColor
     }
 
     fun changeActivePosition(index: Int){
@@ -131,53 +132,49 @@ class GameViewModel (
     }
 
     fun switchPromotionDialog(){
-        uiState = uiState.copy(showPromotionDialog = !uiState.showPromotionDialog)
+        uiState.showPromotionDialog = !uiState.showPromotionDialog
     }
 
     private fun setSelectedSquare(coordinate: Coordinate){
-        uiState = uiState.copy(selectedSquare = listOf(coordinate))
+        uiState.selectedSquare = listOf(coordinate)
     }
 
     fun resetSelectedSquare(){
-        uiState = uiState.copy(selectedSquare = emptyList())
+        uiState.selectedSquare = emptyList()
     }
 
     private fun setMoveSquares(){
-        uiState = uiState.copy(moveSquares = uiState.activePosition.pieceLegalDestinations(uiState.selectedSquare.first()))
+        uiState.moveSquares = activePosition.pieceLegalDestinations(uiState.selectedSquare.first())
     }
 
     fun resetMoveSquares(){
-        uiState = uiState.copy(moveSquares = emptyList())
+        uiState.moveSquares = emptyList()
+    }
+
+    private fun setWrongSquares(){
+        // TODO
+    }
+
+    fun resetWrongSquares(){
+        uiState.wrongChoiceSquares = emptyList()
     }
 
     fun addNextMoveToPosition(move : AppliedMove){
-        uiState.activePosition.nextMove = move
+        activePosition.nextMove = move
     }
 
 
 
-    private fun updateActivePosition(){
-        uiState = uiState.copy(activePosition = gameTimeline.positionsTimeline[gameTimeline.activePositionIndex],
-            selectedSquare = emptyList(),
-            moveSquares = emptyList(),
-            wrongChoiceSquares = emptyList(),
-            isActivePositionFirst = gameTimeline.isActivePositionFirst,
-            isActivePositionLast = gameTimeline.isActivePositionLast)
+    private fun updateActivePosition() {
+        activePosition = gameTimeline.positionsTimeline[gameTimeline.activePositionIndex]
+
+        resetSelectedSquare()
+        resetMoveSquares()
+        resetWrongSquares()
+
+        uiState.isActivePositionFirst = gameTimeline.isActivePositionFirst
+        uiState.isActivePositionLast = gameTimeline.isActivePositionLast
     }
-
-
 
 }
 
-val testFENMate = "4k3/4Q3/4K3/8/8/8/8/8 b - - 0 1"
-
-val splitFenMate = testFENMate.split(" ")
-
-val positionCheckmate = GamePosition(
-    Board(splitFenPosition(splitFenMate[0])),
-    splitPlayerTurn(splitFenMate[1]),
-    splitCastlingPossibilities(splitFenMate[2]),
-    splitEnPassant(splitFenMate[3]),
-    splitHalfMove(splitFenMate[4]),
-    splitMoveNumber(splitFenMate[5])
-)

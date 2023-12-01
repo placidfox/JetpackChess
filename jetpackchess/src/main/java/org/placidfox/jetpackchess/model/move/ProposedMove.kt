@@ -14,9 +14,6 @@ class ProposedMove(
 
     private val pieceToMove: Piece = position.board.findPiece(from)!!
 
-    private val isKingToMove: Boolean =
-        pieceToMove::class.java == King::class.java
-
     private val isPawnToMove: Boolean =
         pieceToMove::class.java == Pawn::class.java
 
@@ -28,35 +25,7 @@ class ProposedMove(
         }
 
 
-    val isCastleMove: Boolean =
-        isKingToMove && mapCastleMoveUci.contains(Pair(from, to))
-
-    val castleType: CastleType? =
-        when (from to to) {
-            Coordinate.E1 to Coordinate.G1 -> CastleType.WHITE_SHORT_CASTLE
-            Coordinate.E1 to Coordinate.C1 -> CastleType.WHITE_LONG_CASTLE
-            Coordinate.E8 to Coordinate.G8 -> CastleType.BLACK_SHORT_CASTLE
-            Coordinate.E8 to Coordinate.C8 -> CastleType.BLACK_LONG_CASTLE
-            else -> null
-        }
-
-
-    val isEnPassantMove: Boolean =
-        isPawnToMove && position.enPassantStatus.enPassantCoordinate == to
-
-    val isCaptureMove: Boolean =
-        position.board.isOccupied(to)
-
-
 
 }
 
 
-
-val mapCastleMoveUci: List<Pair<Coordinate, Coordinate>>
-    = listOf(
-        Coordinate.E1 to Coordinate.G1,
-        Coordinate.E1 to Coordinate.C1,
-        Coordinate.E8 to Coordinate.G8,
-        Coordinate.E8 to Coordinate.C8,
-    )

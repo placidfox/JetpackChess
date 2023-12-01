@@ -64,20 +64,28 @@ class AppliedMove(
         }
 
 
-    val isKingtoMove: Boolean =
+    private val isKingToMove: Boolean =
         pieceToMove::class.java == King::class.java
+
+    val isCastleMove: Boolean =
+        isKingToMove && mapCastleMoveUci.contains(Pair(from, to))
+
+    val isCastle: CastleType? =
+        if (isCastleMove) {
+
+            when (from to to) {
+                Coordinate.E1 to Coordinate.G1 -> CastleType.WHITE_SHORT_CASTLE
+                Coordinate.E1 to Coordinate.C1 -> CastleType.WHITE_LONG_CASTLE
+                Coordinate.E8 to Coordinate.G8 -> CastleType.BLACK_SHORT_CASTLE
+                Coordinate.E8 to Coordinate.C8 -> CastleType.BLACK_LONG_CASTLE
+                else -> null
+            }
+        } else {
+            null
+        }
 
     val isPawntoMove: Boolean =
         pieceToMove::class.java == Pawn::class.java
-
-    val isCastle: CastleType? =
-        when (from to to) {
-            Coordinate.E1 to Coordinate.G1 -> CastleType.WHITE_SHORT_CASTLE
-            Coordinate.E1 to Coordinate.C1 -> CastleType.WHITE_LONG_CASTLE
-            Coordinate.E8 to Coordinate.G8 -> CastleType.BLACK_SHORT_CASTLE
-            Coordinate.E8 to Coordinate.C8 -> CastleType.BLACK_LONG_CASTLE
-            else -> null
-        }
 
     val isEnableEnPassant: Boolean =
         if (isPawntoMove){
@@ -116,5 +124,13 @@ class AppliedMove(
 
 
 }
+
+val mapCastleMoveUci: List<Pair<Coordinate, Coordinate>>
+        = listOf(
+    Coordinate.E1 to Coordinate.G1,
+    Coordinate.E1 to Coordinate.C1,
+    Coordinate.E8 to Coordinate.G8,
+    Coordinate.E8 to Coordinate.C8,
+)
 
 

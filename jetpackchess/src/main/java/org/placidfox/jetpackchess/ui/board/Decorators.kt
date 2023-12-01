@@ -36,12 +36,12 @@ fun DecoratorSelected(viewModel: GameViewModel, square: Square){
 @Composable
 fun DecoratorKingCheck(viewModel: GameViewModel, square: Square){
 
-    if(square.hasColorKing(viewModel.uiState.activePosition.activePlayer) && viewModel.uiState.activePosition.isActiveKingCheck){
+    if(square.hasColorKing(viewModel.activePosition.activePlayer) && viewModel.activePosition.isActiveKingCheck){
         Box(modifier = Modifier
             .fillMaxSize(0.91f)
             .drawBehind {
                 drawRect(
-                    color = if (viewModel.uiState.activePosition.termination == Termination.CHECKMATE) {
+                    color = if (viewModel.activePosition.termination == Termination.CHECKMATE) {
                         DecoratorColor.CHECKMATE_COLOR.color
                     } else {
                         DecoratorColor.CHECK_COLOR.color
@@ -55,7 +55,7 @@ fun DecoratorKingCheck(viewModel: GameViewModel, square: Square){
 @Composable
 fun DecoratorKingStalemate(viewModel: GameViewModel, square: Square){
 
-    if(square.hasColorKing(viewModel.uiState.activePosition.activePlayer) && viewModel.uiState.activePosition.termination == Termination.STALEMATE){
+    if(square.hasColorKing(viewModel.activePosition.activePlayer) && viewModel.activePosition.termination == Termination.STALEMATE){
         Box(modifier = Modifier
             .fillMaxSize(0.91f)
             .drawBehind {
@@ -71,7 +71,7 @@ fun DecoratorKingStalemate(viewModel: GameViewModel, square: Square){
 @Composable
 fun DecoratorPossibleDestination(viewModel: GameViewModel, square: Square){ // TODO : TO REFACTOR
 
-    if (viewModel.uiState.moveSquares.contains(square.coordinate) && (square.isNotEmpty || square.coordinate == viewModel.uiState.activePosition.enPassantStatus.enPassantCoordinate)){
+    if (viewModel.uiState.moveSquares.contains(square.coordinate) && (square.isNotEmpty || square.coordinate == viewModel.activePosition.enPassantStatus.enPassantCoordinate)){
         Box(modifier = Modifier
             .fillMaxSize(0.7f)
             .drawBehind {
@@ -109,7 +109,7 @@ fun DecoratorPossibleDestination(viewModel: GameViewModel, square: Square){ // T
 @Composable
 fun DecoratorPreviousMoves(viewModel: GameViewModel, square: Square){
 
-    if (viewModel.uiState.activePosition.lastMovePositions?.contains(square.coordinate) == true){
+    if (viewModel.activePosition.lastMovePositions?.contains(square.coordinate) == true){
         Box(modifier = Modifier
             .fillMaxSize()
             .drawBehind {
