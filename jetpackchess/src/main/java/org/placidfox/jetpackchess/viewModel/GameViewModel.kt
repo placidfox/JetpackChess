@@ -4,6 +4,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.jetbrains.annotations.TestOnly
 import org.placidfox.jetpackchess.controller.*
 import org.placidfox.jetpackchess.model.board.Board
@@ -35,9 +39,14 @@ class GameViewModel (
                 if (gameTimeline.activePositionIndex == gameTimeline.positionsTimeline.lastIndex && gameTimeline.status == STATUS.IN_PROGRESS_GAME) {
                     clickAction(square)
                 }
-            JetpackChessMode.PUZZLE -> {} // TODO
+            JetpackChessMode.PUZZLE -> {
+                if (gameTimeline.activePositionIndex == gameTimeline.lastSeenPosition && gameTimeline.activePositionIndex !=gameTimeline.positionsTimeline.lastIndex) {
+                    clickAction(square)
+                }
 
-            JetpackChessMode.SCROLL -> {} // TODO
+            }
+
+            JetpackChessMode.SCROLL -> {} // no piece selection in this mode
 
         }
 
@@ -81,7 +90,18 @@ class GameViewModel (
         when (mode){
             JetpackChessMode.GAME ->
                 applyMove(proposedMove.from, proposedMove.to, proposedMove.promotionTo)
-            JetpackChessMode.PUZZLE -> {}
+            JetpackChessMode.PUZZLE -> {
+                if (proposedMove.from == activePosition.nextMove!!.from && proposedMove.to == activePosition.nextMove!!.to && proposedMove.promotionTo == activePosition.nextMove!!.promotionTo){
+                    resetWrongSquares()
+                    applyAutoMove()
+                } else {
+                    resetSelectedSquare()
+                    setWrongSquares(proposedMove)
+                    //statusMistake() // TODO
+                }
+
+
+            }
             JetpackChessMode.SCROLL -> {}
 
         }
@@ -98,9 +118,19 @@ class GameViewModel (
         addNextMoveToPosition(move)
         gameTimeline.addGamePosition(newPosition)
         forwardActivePosition()
+        updateStatus()
     }
 
+    private fun applyAutoMove() {
+        forwardActivePosition()
+        updateStatus()
 
+        if (gameTimeline.activePositionIndex < gameTimeline.positionsTimeline.lastIndex) // Stop if in last position
+            viewModelScope.launch(Dispatchers.IO) {
+                delay(500L) // delay before auto-applying the next move
+                forwardActivePosition()
+            }
+    }
 
 
 
@@ -151,8 +181,9 @@ class GameViewModel (
         uiState.moveSquares = emptyList()
     }
 
-    private fun setWrongSquares(){
-        // TODO
+    private fun setWrongSquares(proposedMove: ProposedMove){
+        resetMoveSquares()
+        uiState.wrongChoiceSquares = listOf(proposedMove.from, proposedMove.to)
     }
 
     fun resetWrongSquares(){
@@ -161,6 +192,20 @@ class GameViewModel (
 
     fun addNextMoveToPosition(move : AppliedMove){
         activePosition.nextMove = move
+    }
+
+    fun initNewTimeline(initPosition: GamePosition) {
+        gameTimeline.initNewTimeline(initPosition)
+        changeActivePosition(0)
+    }
+
+    fun initStartActivePosition(index: Int) {
+        gameTimeline.initStartPosition(index)
+        updateActivePosition()
+    }
+
+    fun updateStatus(){
+        uiState.status = gameTimeline.status
     }
 
 

@@ -21,10 +21,10 @@ interface Controller {
 
 
 
-    fun importFen(fen: String) { //TODO adapt to new viewModel
+    fun importFen(fen: String) {
 
         val splitFen = fen.split(" ")
-/*
+
         viewModel.initNewTimeline(
             GamePosition(
                 Board(splitFenPosition(splitFen[0])),
@@ -36,14 +36,13 @@ interface Controller {
             )
         )
 
-        viewModel.changeActivePosition(0)
-        */
+        viewModel.initStartActivePosition(0)
 
 
     }
 
 
-    fun importFENandMoveList(fen: String, uciMoves: String, startIndex: Int = 0) { //TODO adapt to new viewModel
+    fun importFENandMoveList(fen: String, uciMoves: String, startIndex: Int = 0) {
         importFen(fen)
 
         val uciMovesString: List<String> =
@@ -68,10 +67,10 @@ interface Controller {
                 }
             }
 
-            //viewModel.applyMove(Coordinate.fromString(from), Coordinate.fromString(to), piecePromote)
+            viewModel.applyMove(Coordinate.fromString(from), Coordinate.fromString(to), piecePromote)
         }
 
-        //viewModel.initStartActivePosition(startIndex)
+        viewModel.initStartActivePosition(startIndex)
 
     }
 

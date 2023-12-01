@@ -12,6 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.placidfox.jetpackchess.controller.FEN_DEFAULT_POSITION
 import org.placidfox.jetpackchess.controller.GameController
+import org.placidfox.jetpackchess.controller.PuzzleController
+import org.placidfox.jetpackchess.controller.ScrollController
 import org.placidfox.jetpackchess.model.piece.PlayerColor
 import org.placidfox.jetpackchess.ui.theme.JetpackChessTheme
 
@@ -19,8 +21,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         val controller = GameController()
+        //val controller = PuzzleController()
 
-        //controller.newPuzzle(openingwhite[0], openingwhite[1], PlayerColor.WHITE,0)
+        //controller.newPuzzleLichess(puzzlewhitepromotion[0], puzzlewhitepromotion[1])
 
 
         super.onCreate(savedInstanceState)
@@ -40,11 +43,8 @@ class MainActivity : ComponentActivity() {
                         Button(onClick = { controller.reset() }) {
                             Text("Reset")
                         }
-                        Button(onClick = { controller.viewModel.TESTaddposition() }) {
-                            Text("Add position")
-                        }
 
-                        Text(controller.viewModel.gameTimeline.status.toString())
+                        Text(controller.viewModel.uiState.status.toString())
                         }
                     }
 

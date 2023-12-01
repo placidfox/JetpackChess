@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import org.placidfox.jetpackchess.controller.initialGamePosition
 import org.placidfox.jetpackchess.model.board.Coordinate
 import org.placidfox.jetpackchess.model.game.GamePosition
+import org.placidfox.jetpackchess.model.game.STATUS
 import org.placidfox.jetpackchess.model.piece.PlayerColor
 import org.placidfox.jetpackchess.ui.board.BoardColor
 
@@ -25,6 +26,7 @@ class UIState {
 
     var isActivePositionFirst by mutableStateOf(true)
     var isActivePositionLast by mutableStateOf(true)
-    
+
+    var status by mutableStateOf(STATUS.PENDING) // ONLY USAGE IS IN EXTERNAL APP ?
     
 }
