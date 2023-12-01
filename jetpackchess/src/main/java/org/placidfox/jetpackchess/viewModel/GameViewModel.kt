@@ -97,7 +97,8 @@ class GameViewModel (
                 } else {
                     resetSelectedSquare()
                     setWrongSquares(proposedMove)
-                    //statusMistake() // TODO
+                    setStatusMistake()
+                    updateStatus()
                 }
 
 
@@ -125,11 +126,14 @@ class GameViewModel (
         forwardActivePosition()
         updateStatus()
 
-        if (gameTimeline.activePositionIndex < gameTimeline.positionsTimeline.lastIndex) // Stop if in last position
+        if (gameTimeline.activePositionIndex < gameTimeline.positionsTimeline.lastIndex) { // Stop if in last position
             viewModelScope.launch(Dispatchers.IO) {
                 delay(500L) // delay before auto-applying the next move
                 forwardActivePosition()
             }
+        } else {
+            setStatusPuzzleFinish()
+        }
     }
 
 
@@ -208,6 +212,20 @@ class GameViewModel (
         uiState.status = gameTimeline.status
     }
 
+    fun setStatusMistake(){
+        gameTimeline.status = STATUS.IN_PROGRESS_WRONG
+    }
+
+    fun setStatusPuzzleFinish(){
+        when (gameTimeline.status){
+            STATUS.IN_PROGRESS_OK -> gameTimeline.status = STATUS.FINISH_OK
+            STATUS.IN_PROGRESS_WRONG -> gameTimeline.status = STATUS.FINISH_WRONG
+            else -> {}
+        }
+
+        updateStatus()
+
+    }
 
 
     private fun updateActivePosition() {

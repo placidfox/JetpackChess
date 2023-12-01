@@ -38,7 +38,6 @@ interface Controller {
 
         viewModel.initStartActivePosition(0)
 
-
     }
 
 
@@ -91,6 +90,7 @@ class GameController : Controller {
     ) {
         importFen(initialFEN)
         viewModel.setBoardOrientation(playerSide)
+        viewModel.updateStatus()
     }
 
 
