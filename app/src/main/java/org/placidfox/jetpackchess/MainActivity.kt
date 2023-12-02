@@ -20,15 +20,16 @@ import org.placidfox.jetpackchess.ui.theme.JetpackChessTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        //val controller = GameController()
-        //controller.newGame(PlayerColor.WHITE)
+        val controller = GameController()
+        controller.newGame(PlayerColor.WHITE)
 
-        val controller = PuzzleController()
-        controller.newPuzzleLichess(puzzlewhitepromotion[0], puzzlewhitepromotion[1])
+        //val controller = PuzzleController()
+        //controller.newPuzzle(FEN_DEFAULT_POSITION, testVariationCaroKann, PlayerColor.BLACK, 1)
 
-        //val controller = ScrollController()
-        //controller.newVariation(puzzlewhitepromotion[0], puzzlewhitepromotion[1], PlayerColor.WHITE)
-
+        /*
+        val controller = ScrollController()
+        controller.newVariation(puzzlewhitepromotion[0], puzzlewhitepromotion[1], PlayerColor.WHITE)
+        */
 
         super.onCreate(savedInstanceState)
         setContent {
@@ -44,7 +45,7 @@ class MainActivity : ComponentActivity() {
 
                         JetpackChess(controller)
 
-                        Button(onClick = { controller.reset() }) {
+                        Button(onClick = {  controller.reset()}) {
                             Text("Reset")
                         }
 

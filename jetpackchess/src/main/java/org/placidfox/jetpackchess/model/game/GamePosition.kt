@@ -31,8 +31,8 @@ data class GamePosition(
 
         val lastMovePositions: List<Coordinate>? = lastMove?.let { listOf(it.from, it.to) }
 
-        val activePlayerScore: Int =
-            calculateScore(activePlayer)
+        val activePlayerScore: Int
+            get () = calculateScore(activePlayer)
 
         fun calculateScore(playerColor: PlayerColor): Int =
             board.piecesColorPosition(playerColor).values.sumOf {it.value} - board.piecesColorPosition(playerColor.opponent()).values.sumOf {it.value}

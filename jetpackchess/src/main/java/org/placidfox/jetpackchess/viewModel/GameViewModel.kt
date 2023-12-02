@@ -124,16 +124,20 @@ class GameViewModel (
 
     private fun applyAutoMove() {
         forwardActivePosition()
-        updateStatus()
 
         if (gameTimeline.activePositionIndex < gameTimeline.positionsTimeline.lastIndex) { // Stop if in last position
             viewModelScope.launch(Dispatchers.IO) {
                 delay(500L) // delay before auto-applying the next move
                 forwardActivePosition()
+                if (gameTimeline.activePositionIndex == gameTimeline.positionsTimeline.lastIndex){ // TODO - Refactor 2 time check because activePosition change after coroutine
+                    setStatusPuzzleFinish()
+                }
             }
-        } else {
+        }
+        if (gameTimeline.activePositionIndex == gameTimeline.positionsTimeline.lastIndex){
             setStatusPuzzleFinish()
         }
+
     }
 
 
@@ -212,11 +216,11 @@ class GameViewModel (
         uiState.status = gameTimeline.status
     }
 
-    fun setStatusMistake(){
+    private fun setStatusMistake(){
         gameTimeline.status = STATUS.IN_PROGRESS_WRONG
     }
 
-    fun setStatusPuzzleFinish(){
+    private fun setStatusPuzzleFinish(){
         when (gameTimeline.status){
             STATUS.IN_PROGRESS_OK -> gameTimeline.status = STATUS.FINISH_OK
             STATUS.IN_PROGRESS_WRONG -> gameTimeline.status = STATUS.FINISH_WRONG
