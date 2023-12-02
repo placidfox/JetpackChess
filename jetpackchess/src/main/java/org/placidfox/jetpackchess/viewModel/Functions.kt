@@ -5,91 +5,23 @@ import org.placidfox.jetpackchess.model.board.Board
 import org.placidfox.jetpackchess.model.board.Coordinate
 import org.placidfox.jetpackchess.model.game.GamePosition
 import org.placidfox.jetpackchess.model.game.parameters.CastleType
-import org.placidfox.jetpackchess.model.game.parameters.CastlingStatus
 import org.placidfox.jetpackchess.model.game.parameters.EnPassantStatus
 import org.placidfox.jetpackchess.model.move.AppliedMove
 import org.placidfox.jetpackchess.model.move.ProposedMove
 import org.placidfox.jetpackchess.model.piece.*
 
 
-fun UIViewModel.updateButtonState(){
-
-    isActivePositionFirst.value = activePositionIndex > 0
-    isFirstPosition.value = activePositionIndex != 0
-
-    when(mode){
-        JetpackChessMode.GAME, JetpackChessMode.SCROLL -> {
-            isActivePositionLast.value = activePositionIndex < gameTimeline.positionsTimeline.lastIndex
-            isLastPosition.value = (activePositionIndex != gameTimeline.positionsTimeline.lastIndex)
-        }
-        JetpackChessMode.PUZZLE -> {
-            isActivePositionLast.value = activePositionIndex < maxSeenPosition
-            isLastPosition.value = maxSeenPosition == gameTimeline.positionsTimeline.lastIndex && activePositionIndex < gameTimeline.positionsTimeline.lastIndex
-        }
-
-    }
-
+fun GameViewModel.askPromotion(){
+    switchPromotionDialog()
 }
 
-fun UIViewModel.initStatus(){
-    when(mode){
-        JetpackChessMode.GAME -> status.value = STATUS.IN_PROGRESS_GAME
-        JetpackChessMode.PUZZLE  -> status.value = STATUS.IN_PROGRESS_OK
-        JetpackChessMode.SCROLL -> status.value = STATUS.SCROLLING
-    }
-}
-
-fun UIViewModel.statusMistake(){
-    when(mode){
-        JetpackChessMode.PUZZLE -> status.value = STATUS.IN_PROGRESS_WRONG
-        else -> {} // Nothing to do in Game & Scroll Mode
-
-    }
-}
-
-fun UIViewModel.checkEndStatus(){
-
-    when(mode){
-        JetpackChessMode.GAME -> {
-            if (isKingCheckmate){
-                status.value = STATUS.FINISH_CHECKMATE
-            }
-
-            if (isKingStalemate){
-                status.value = STATUS.FINISH_STALEMATE
-            }
-        } //TODO() CHECK IF CHECKMATE OR STALEMATE OR GIVE UP
-        JetpackChessMode.PUZZLE -> if(activePositionIndex == gameTimeline.positionsTimeline.lastIndex){
-            if (status.value == STATUS.IN_PROGRESS_OK){
-                status.value = STATUS.FINISH_OK
-            } else {
-                status.value = STATUS.FINISH_WRONG
-            }
-        }
-        JetpackChessMode.SCROLL -> {} // Nothing to do in Scrolling Mode
-    }
-
-}
-
-fun UIViewModel.setWrongMoveDecorator(proposedMove: ProposedMove){
-    wrongMovePosition.value = listOf(proposedMove.from, proposedMove.to)
-}
-
-fun UIViewModel.resetWrongMoveDecorator(){
-    wrongMovePosition.value = null
-}
-
-
-fun UIViewModel.askPromotion(){
-    showPromotionDialog.value = true
-}
-
-fun UIViewModel.cancelPromotion(){
-    showPromotionDialog.value = false
+fun GameViewModel.cancelPromotion(){
+    switchPromotionDialog()
     resetSelectedSquare()
+    resetMoveSquares()
 }
 
-fun UIViewModel.promotionChoice(chosenPiece: Class<out Piece>){
+fun GameViewModel.promotionChoice(chosenPiece: Class<out Piece>){
     proposedMove!!.promotionTo = chosenPiece
     validateMove(proposedMove!!)
     switchPromotionDialog()

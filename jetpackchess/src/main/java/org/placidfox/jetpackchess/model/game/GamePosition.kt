@@ -1,5 +1,7 @@
 package org.placidfox.jetpackchess.model.game
 
+import android.text.BoringLayout
+import androidx.compose.ui.res.booleanResource
 import org.placidfox.jetpackchess.model.board.Board
 import org.placidfox.jetpackchess.model.board.Coordinate
 import org.placidfox.jetpackchess.model.game.parameters.CastlingStatus
@@ -7,10 +9,12 @@ import org.placidfox.jetpackchess.model.game.parameters.EnPassantStatus
 import org.placidfox.jetpackchess.model.move.AppliedMove
 import org.placidfox.jetpackchess.model.piece.Piece
 import org.placidfox.jetpackchess.model.piece.PlayerColor
+import org.placidfox.jetpackchess.viewModel.calculateNewPosition
+
 
 data class GamePosition(
     val board: Board,
-    val activePlayer: PlayerColor,
+    var activePlayer: PlayerColor,
 
     val castlingStatus: CastlingStatus,
     val enPassantStatus: EnPassantStatus,
@@ -21,27 +25,87 @@ data class GamePosition(
     var lastMove: AppliedMove? = null,
     var nextMove: AppliedMove? = null,
 
-    val capturedPieces: List<Piece?> = emptyList(),
-
-    var isActivePlayerKingInCheck: Boolean = false,
-
-    var isActivePlayerKingInCheckmate: Boolean = false,
-
-    var isActivePlayerKingInStalemate: Boolean = false,
+    val capturedPieces: List<Piece> = emptyList(),
 
     ){
+
         val lastMovePositions: List<Coordinate>? = lastMove?.let { listOf(it.from, it.to) }
 
-        fun calculateScore(playerColor: PlayerColor): Int =
-            when (playerColor){
-                PlayerColor.WHITE ->
-                    board.piecesColorPosition(playerColor).values.sumOf {it.value} - board.piecesColorPosition(playerColor.opponent()).values.sumOf {it.value}
+        val activePlayerScore: Int
+            get () = calculateScore(activePlayer)
 
-                PlayerColor.BLACK ->
-                    board.piecesColorPosition(playerColor).values.sumOf {it.value} - board.piecesColorPosition(playerColor.opponent()).values.sumOf {it.value}
+        fun calculateScore(playerColor: PlayerColor): Int =
+            board.piecesColorPosition(playerColor).values.sumOf {it.value} - board.piecesColorPosition(playerColor.opponent()).values.sumOf {it.value}
+
+
+        var isActiveKingCheck =
+            isKingCheck(activePlayer)
+
+        var termination = Termination.IN_PROGRESS
+
+        fun getActivePiecesPosition(): Set<Coordinate>{
+            return getPiecesPosition(activePlayer)
+        }
+
+        fun getPiecesPosition(color: PlayerColor): Set<Coordinate>{
+            return board.piecesColorPosition(color).keys
+        }
+
+        fun isKingCheck(color: PlayerColor) : Boolean{
+
+            var calculateIsKingChecked = false
+            val kingCoordinate = board.kingPosition(color)
+
+            board.piecesColorPosition(color.opponent()).forEach {
+                entry -> if(entry.value.reachableSquares(this).contains(kingCoordinate)) {
+                    calculateIsKingChecked = true
+                }
             }
 
+            return calculateIsKingChecked
+        }
+
+        fun pieceLegalDestinations(coordinate: Coordinate): List<Coordinate> =
+            board.findPiece(coordinate)!!.reachableSquares(this)
+                .applyPinnedConstraints(this, coordinate)
 
 
-    }
+        private fun List<Coordinate>.applyPinnedConstraints(actualPosition: GamePosition, coordinate: Coordinate) : List<Coordinate> =
+            filter {
+                !calculateNewPosition(
+                    actualPosition,
+                    AppliedMove(coordinate, it, actualPosition)
+                ).isKingCheck(activePlayer) // because turn has been made
+            }
 
+        fun calculateTermination(){ // TODO TO SIMPIFY
+
+            if (!isLegalMoves()){
+                termination = if(isActiveKingCheck){
+                    Termination.CHECKMATE
+                } else {
+                    Termination.STALEMATE
+                }
+            }
+
+        }
+
+
+        fun isLegalMoves(): Boolean { // TODO SIMPLIFY ?
+            var isEmpty = false
+            board.piecesColorPosition(activePlayer).forEach {
+                if (pieceLegalDestinations(it.key).isNotEmpty()){
+                    isEmpty = true
+                }
+            }
+            return isEmpty
+        }
+
+
+}
+
+enum class Termination {
+    IN_PROGRESS,
+    CHECKMATE,
+    STALEMATE
+}

@@ -1,21 +1,15 @@
 package org.placidfox.jetpackchess
 
-import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalConsumer
-import androidx.compose.ui.unit.dp
 import org.placidfox.jetpackchess.controller.FEN_DEFAULT_POSITION
 import org.placidfox.jetpackchess.controller.GameController
 import org.placidfox.jetpackchess.controller.PuzzleController
@@ -27,37 +21,42 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         val controller = GameController()
+        controller.newGame(PlayerColor.WHITE)
 
-        //controller.newGame(PlayerColor.WHITE, testStalemate[0])
+        //val controller = PuzzleController()
+        //controller.newPuzzle(FEN_DEFAULT_POSITION, testVariationCaroKann, PlayerColor.BLACK, 1)
 
-        //controller.newPuzzle(openingwhite[0], openingwhite[1], PlayerColor.WHITE,0)
-
+        /*
+        val controller = ScrollController()
+        controller.newVariation(puzzlewhitepromotion[0], puzzlewhitepromotion[1], PlayerColor.WHITE)
+        */
 
         super.onCreate(savedInstanceState)
         setContent {
             JetpackChessTheme {
 
+
                 Surface(modifier = Modifier.fillMaxSize()) {
 
-                    Column (verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                    Column (
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally)
+                    {
 
                         JetpackChess(controller)
 
-
-                        Button(onClick = { controller.reset() }) {
+                        Button(onClick = {  controller.reset()}) {
                             Text("Reset")
                         }
-                        Button(onClick = { controller.newGame(PlayerColor.WHITE, testStalemate[0]) }) {
-                            Text("Test Stalemate")
+
+                        Text(controller.viewModel.uiState.status.toString())
                         }
-                        Text(controller.uiState.status.value.toString())
-                        }
-                }
+                    }
+
 
 
 
             }
-
         }
     }
 }

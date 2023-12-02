@@ -19,7 +19,7 @@ enum class Coordinate {
 
     val textName: String = "$fileLetter$rank"
 
-    val position: Int = "$file$rank".toInt()
+    val coordinateInt: Int = "$file$rank".toInt()
 
     companion object {
 
@@ -33,8 +33,6 @@ enum class Coordinate {
             "$file$rank".toInt()
 
         fun fromNumCoordinate(file: Int, rank: Int): Coordinate {
-            checkValidCoordinate(file, rank)
-
             return entries[(file - 1) * 8 + (rank - 1)]
         }
 
@@ -62,14 +60,8 @@ enum class Coordinate {
     }
 }
 
-fun checkValidCoordinate(file: Int, rank: Int) {
-    require(file >= 1)
-    require(file <= 8)
-    require(rank >= 1)
-    require(rank <= 8)
-}
 
-val positions = listOf( // to check if a destionationIsOnTheBoard
+val boardCoordinateNum = listOf( // to check if a destionationIsOnTheBoard
     18, 28, 38, 48, 58, 68, 78, 88,
     17, 27, 37, 47, 57, 67, 77, 87,
     16, 26, 36, 46, 56, 66, 76, 86,

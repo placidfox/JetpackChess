@@ -8,13 +8,14 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import org.placidfox.jetpackchess.model.board.Square
-import org.placidfox.jetpackchess.viewModel.UIViewModel
+import org.placidfox.jetpackchess.model.game.Termination
+import org.placidfox.jetpackchess.viewModel.GameViewModel
 
 
 @Composable
-fun DecoratorSelected(uiState: UIViewModel, square: Square){
+fun DecoratorSelected(viewModel: GameViewModel, square: Square){
 
-    if (square.coordinate == uiState.selectedSquare.value){
+    if (viewModel.uiState.selectedSquare.contains(square.coordinate)){
         Box(modifier = Modifier
             .fillMaxSize()
             .drawBehind {
@@ -33,14 +34,14 @@ fun DecoratorSelected(uiState: UIViewModel, square: Square){
 }
 
 @Composable
-fun DecoratorKingCheck(uiState: UIViewModel, square: Square){
+fun DecoratorKingCheck(viewModel: GameViewModel, square: Square){
 
-    if(square.hasColorKing(uiState.activePlayer.value) && uiState.isKingCheck){
+    if(square.hasColorKing(viewModel.activePosition.activePlayer) && viewModel.activePosition.isActiveKingCheck){
         Box(modifier = Modifier
             .fillMaxSize(0.91f)
             .drawBehind {
                 drawRect(
-                    color = if (uiState.isKingCheckmate) {
+                    color = if (viewModel.activePosition.termination == Termination.CHECKMATE) {
                         DecoratorColor.CHECKMATE_COLOR.color
                     } else {
                         DecoratorColor.CHECK_COLOR.color
@@ -52,9 +53,9 @@ fun DecoratorKingCheck(uiState: UIViewModel, square: Square){
 }
 
 @Composable
-fun DecoratorKingStalemate(uiState: UIViewModel, square: Square){
+fun DecoratorKingStalemate(viewModel: GameViewModel, square: Square){
 
-    if(square.hasColorKing(uiState.activePlayer.value) && uiState.isKingStalemate){
+    if(square.hasColorKing(viewModel.activePosition.activePlayer) && viewModel.activePosition.termination == Termination.STALEMATE){
         Box(modifier = Modifier
             .fillMaxSize(0.91f)
             .drawBehind {
@@ -68,9 +69,9 @@ fun DecoratorKingStalemate(uiState: UIViewModel, square: Square){
 
 
 @Composable
-fun DecoratorPossibleDestination(uiState: UIViewModel, square: Square){ // TODO : TO REFACTOR
+fun DecoratorPossibleDestination(viewModel: GameViewModel, square: Square){ // TODO : TO REFACTOR
 
-    if (uiState.captureMoveSquares.value?.contains(square.coordinate) == true){
+    if (viewModel.uiState.moveSquares.contains(square.coordinate) && (square.isNotEmpty || square.coordinate == viewModel.activePosition.enPassantStatus.enPassantCoordinate)){
         Box(modifier = Modifier
             .fillMaxSize(0.7f)
             .drawBehind {
@@ -88,7 +89,7 @@ fun DecoratorPossibleDestination(uiState: UIViewModel, square: Square){ // TODO 
                 )
             })
     } else {
-        if (uiState.reachableSquares.value?.contains(square.coordinate) == true){
+        if (viewModel.uiState.moveSquares.contains(square.coordinate)){
            Box(modifier = Modifier
                .fillMaxSize(0.25f)
                .drawBehind {
@@ -106,9 +107,9 @@ fun DecoratorPossibleDestination(uiState: UIViewModel, square: Square){ // TODO 
 }
 
 @Composable
-fun DecoratorPreviousMoves(uiState: UIViewModel, square: Square){
+fun DecoratorPreviousMoves(viewModel: GameViewModel, square: Square){
 
-    if (uiState.lastMovePosition?.contains(square.coordinate) == true){
+    if (viewModel.activePosition.lastMovePositions?.contains(square.coordinate) == true){
         Box(modifier = Modifier
             .fillMaxSize()
             .drawBehind {
@@ -126,9 +127,9 @@ fun DecoratorPreviousMoves(uiState: UIViewModel, square: Square){
 }
 
 @Composable
-fun DecoratorWrongMove(uiState: UIViewModel, square: Square){
+fun DecoratorWrongMove(viewModel: GameViewModel, square: Square){
 
-    if (uiState.wrongMovePosition.value?.contains(square.coordinate) == true){
+    if (viewModel.uiState.wrongChoiceSquares.contains(square.coordinate)){
         Box(modifier = Modifier
             .fillMaxSize()
             .drawBehind {

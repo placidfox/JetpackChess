@@ -14,10 +14,11 @@ data class Board(
         piecesPosition.filter { (_, piece) -> piece.color == color }
 
     fun piecesColorPositionMinusKing(color: PlayerColor): Map<Coordinate, Piece> =
-        piecesColorPosition(color).filter { it.value::class.java != King::class.java }
+        piecesPosition.filter { (_, piece) -> piece.color == color }.filter { (_, piece) -> piece::class.java != King::class.java}
 
-    fun emptySquares(): List<Coordinate> =
-        Coordinate.entries.filter { !piecesPosition.keys.contains(it) }
+
+    fun kingPosition(color: PlayerColor): Coordinate =
+        piecesColorPosition(color).filter { it.value::class.java == King::class.java }.keys.first()
 
 
     fun getSquare(coordinate: Coordinate): Square =
