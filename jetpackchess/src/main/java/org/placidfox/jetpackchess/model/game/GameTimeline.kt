@@ -1,5 +1,6 @@
 package org.placidfox.jetpackchess.model.game
 
+import androidx.compose.animation.core.updateTransition
 import org.placidfox.jetpackchess.controller.JetpackChessMode
 
 
@@ -31,6 +32,10 @@ data class GameTimeline (
         positionsTimeline.add(gamePosition)
         lastPosition.calculateTermination() // TODO BEST POSITION FOR CHECKMATE CHECK ?
         updateStatus()
+    }
+
+    fun addImportPosition(gamePosition: GamePosition){
+        positionsTimeline.add(gamePosition)
     }
 
     fun initNewTimeline(gamePosition: GamePosition){

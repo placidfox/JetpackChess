@@ -122,6 +122,18 @@ class GameViewModel (
         updateStatus()
     }
 
+    fun importMove( // TODO Simplify ?
+        from: Coordinate,
+        to: Coordinate,
+        typePiecePromoteTo: Class<out Piece>? = null
+    ) {
+        val move = AppliedMove(from, to, activePosition, typePiecePromoteTo)
+        val newPosition = calculateNewPosition(activePosition, move)
+        addNextMoveToPosition(move)
+        gameTimeline.addImportPosition(newPosition)
+        forwardActivePosition()
+    }
+
     private fun applyAutoMove() {
         forwardActivePosition()
 
