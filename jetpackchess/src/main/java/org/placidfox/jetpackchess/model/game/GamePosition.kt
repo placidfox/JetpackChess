@@ -87,18 +87,17 @@ data class GamePosition(
                     Termination.STALEMATE
                 }
             }
-
         }
 
 
-        fun isLegalMoves(): Boolean { // TODO SIMPLIFY ?
-            var isEmpty = false
+        fun isLegalMoves(): Boolean {
             board.piecesColorPosition(activePlayer).forEach {
-                if (pieceLegalDestinations(it.key).isNotEmpty()){
-                    isEmpty = true
-                }
+                  println(it.value.color.toString() + " " + it.value.FENSymbol + " " + it.key)
+                  if (pieceLegalDestinations(it.key).isNotEmpty()) {
+                       return true
+                  }
             }
-            return isEmpty
+            return false
         }
 
 
