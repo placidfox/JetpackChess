@@ -92,7 +92,6 @@ data class GamePosition(
 
         fun isLegalMoves(): Boolean {
             board.piecesColorPosition(activePlayer).forEach {
-                  println(it.value.color.toString() + " " + it.value.FENSymbol + " " + it.key)
                   if (pieceLegalDestinations(it.key).isNotEmpty()) {
                        return true
                   }
