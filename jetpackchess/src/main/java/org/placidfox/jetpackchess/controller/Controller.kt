@@ -66,9 +66,10 @@ interface Controller {
                 }
             }
 
-            viewModel.applyMove(Coordinate.fromString(from), Coordinate.fromString(to), piecePromote)
+            viewModel.importMove(Coordinate.fromString(from), Coordinate.fromString(to), piecePromote)
         }
 
+        viewModel.gameTimeline.lastPosition.calculateTermination() // TO CALCULATE IF CHECKMATE AT THE END OF VARIATION ONLY FOR BETTER PERFORMANCE
         viewModel.initStartActivePosition(startIndex)
 
     }
