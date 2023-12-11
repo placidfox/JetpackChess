@@ -136,6 +136,26 @@ fun DecoratorWrongMove(viewModel: GameViewModel, square: Square){
                 drawRect(
                     color = DecoratorColor.WRONG_MOVE_COLOR.color,
                     alpha = if (square.isLight) {
+                        0.7f
+                    } else {
+                        0.8f
+                    }
+                )
+            }
+        )
+    }
+}
+
+@Composable
+fun DecoratorHint(viewModel: GameViewModel, square: Square){
+
+    if (viewModel.uiState.hintSquare.contains(square.coordinate)){
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .drawBehind {
+                drawRect(
+                    color = DecoratorColor.HINT_COLOR.color,
+                    alpha = if (square.isLight) {
                         0.8f
                     } else {
                         0.75f
@@ -153,6 +173,7 @@ enum class DecoratorColor (val color: Color){
     SELECTED_SQUARE(Color.Blue),
     PREVIOUS_MOVE_COLOR(Color.Yellow),
     WRONG_MOVE_COLOR(Color.Red),
+    HINT_COLOR(Color(red = 236, green = 159, blue = 83)),
     POSSIBLE_DESTINATION_COLOR(Color.DarkGray),
     CHECK_COLOR(Color.Red),
     CHECKMATE_COLOR(Color.Green),

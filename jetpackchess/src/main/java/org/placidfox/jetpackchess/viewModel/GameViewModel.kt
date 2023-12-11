@@ -52,6 +52,7 @@ class GameViewModel (
 
     }
 
+
     private fun clickAction(square: Square){
         if (uiState.selectedSquare.isEmpty()) {
 
@@ -206,8 +207,22 @@ class GameViewModel (
         uiState.wrongChoiceSquares = listOf(proposedMove.from, proposedMove.to)
     }
 
-    fun resetWrongSquares(){
+    private fun resetWrongSquares(){
         uiState.wrongChoiceSquares = emptyList()
+    }
+
+    fun showHintSquare(){
+
+        if (uiState.hintSquare.isEmpty()){
+            uiState.hintSquare = listOf(activePosition.nextMove!!.from)
+        } else {
+            uiState.hintSquare = listOf(activePosition.nextMove!!.from, activePosition.nextMove!!.to)
+        }
+    }
+
+    private fun resetHintSquare(){
+        uiState.hintSquare = emptyList()
+        uiState.hintSquareButtonActive = activePosition.nextMove != null
     }
 
     fun addNextMoveToPosition(move : AppliedMove){
@@ -244,12 +259,13 @@ class GameViewModel (
     }
 
 
-    private fun updateActivePosition() {
+    private fun updateActivePosition() { // TODO Perf issue to reset Hint, Wrong, ... if not already shown ?
         activePosition = gameTimeline.positionsTimeline[gameTimeline.activePositionIndex]
 
         resetSelectedSquare()
         resetMoveSquares()
         resetWrongSquares()
+        resetHintSquare()
 
         uiState.isActivePositionFirst = gameTimeline.isActivePositionFirst
         uiState.isActivePositionLast = gameTimeline.isActivePositionLast

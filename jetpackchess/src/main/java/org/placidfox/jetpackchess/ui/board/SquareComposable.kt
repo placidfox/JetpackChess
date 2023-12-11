@@ -33,6 +33,7 @@ fun SquareComposable(viewModel: GameViewModel, square: Square){
 
         DecoratorPreviousMoves(viewModel, square)
         DecoratorWrongMove(viewModel, square)
+        DecoratorHint(viewModel, square)
         DecoratorSelected(viewModel, square)
         DecoratorKingCheck(viewModel, square)
         DecoratorKingStalemate(viewModel, square)

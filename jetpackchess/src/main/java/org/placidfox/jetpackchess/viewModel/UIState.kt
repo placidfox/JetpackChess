@@ -19,8 +19,12 @@ class UIState {
     var boardColor by mutableStateOf(BoardColor.Blue)
     
     var selectedSquare by mutableStateOf(emptyList<Coordinate>())
+
     var moveSquares by mutableStateOf(emptyList<Coordinate>())
     var wrongChoiceSquares by mutableStateOf(emptyList<Coordinate>())
+
+    var hintSquare by mutableStateOf(emptyList<Coordinate>())
+    var hintSquareButtonActive by mutableStateOf(false)
 
     var showPromotionDialog by mutableStateOf(false)
 
