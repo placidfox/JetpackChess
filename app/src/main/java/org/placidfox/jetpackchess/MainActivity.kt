@@ -5,15 +5,18 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import org.placidfox.jetpackchess.controller.FEN_DEFAULT_POSITION
 import org.placidfox.jetpackchess.controller.GameController
 import org.placidfox.jetpackchess.controller.PuzzleController
 import org.placidfox.jetpackchess.controller.ScrollController
+import org.placidfox.jetpackchess.model.game.STATUS
 import org.placidfox.jetpackchess.model.piece.PlayerColor
 import org.placidfox.jetpackchess.ui.theme.JetpackChessTheme
 
@@ -49,10 +52,30 @@ class MainActivity : ComponentActivity() {
                             Text("Reset")
                         }
 
+                        Button(onClick = {   controller.newPuzzle(openingwhite[0], openingwhite[1], PlayerColor.WHITE, 0)}) {
+                            Text("Restrart")
+                        }
+
                         Text(controller.viewModel.uiState.status.toString())
+
+
+                        Button(
+                            colors =
+                            when(controller.viewModel.uiState.status){
+                                STATUS.PENDING -> ButtonDefaults.buttonColors(Color.Gray)
+                                STATUS.SCROLLING -> TODO()
+                                STATUS.IN_PROGRESS_GAME -> TODO()
+                                STATUS.IN_PROGRESS_OK -> ButtonDefaults.buttonColors(Color.Yellow)
+                                STATUS.IN_PROGRESS_WRONG -> ButtonDefaults.buttonColors(Color.Red)
+                                STATUS.FINISH_CHECKMATE -> TODO()
+                                STATUS.FINISH_STALEMATE -> TODO()
+                                STATUS.FINISH_OK -> ButtonDefaults.buttonColors(Color.Green)
+                                STATUS.FINISH_WRONG -> ButtonDefaults.buttonColors(Color.Red)
+                            }
+                            , onClick = {println(controller.viewModel.uiState.status)}){
                         }
                     }
-
+                }
 
 
 

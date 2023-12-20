@@ -17,6 +17,7 @@ interface Controller {
     fun reset() {
         importFen(FEN_DEFAULT_POSITION)
         viewModel.setBoardOrientation(PlayerColor.WHITE)
+        viewModel.updateStatus()
     }
 
 
@@ -71,6 +72,7 @@ interface Controller {
 
         viewModel.gameTimeline.lastPosition.calculateTermination() // TO CALCULATE IF CHECKMATE AT THE END OF VARIATION ONLY FOR BETTER PERFORMANCE
         viewModel.initStartActivePosition(startIndex)
+        viewModel.updateStatus()
 
     }
 

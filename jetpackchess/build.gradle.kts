@@ -58,7 +58,7 @@ publishing {
         create<MavenPublication>("maven") {
             groupId = "org.placidfox.jetpackchess"
             artifactId = "JetpackChess"
-            version = "1.1.5"
+            version = "1.1.6"
 
         }
     }
