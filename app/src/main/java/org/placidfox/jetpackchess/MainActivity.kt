@@ -18,6 +18,7 @@ import org.placidfox.jetpackchess.controller.PuzzleController
 import org.placidfox.jetpackchess.controller.ScrollController
 import org.placidfox.jetpackchess.model.game.STATUS
 import org.placidfox.jetpackchess.model.piece.PlayerColor
+import org.placidfox.jetpackchess.ui.board.BoardColor
 import org.placidfox.jetpackchess.ui.theme.JetpackChessTheme
 
 class MainActivity : ComponentActivity() {
@@ -53,14 +54,6 @@ class MainActivity : ComponentActivity() {
                         }
 
                         Text(controller.viewModel.uiState.status.toString())
-
-
-                        /// TEST CAPTURED PIECES
-                        Text(controller.viewModel.activePosition.capturedPieces.toString())
-
-                        /// TEST SCORES
-                        Text(controller.viewModel.uiState.score.toString())
-
 
 
                         /*

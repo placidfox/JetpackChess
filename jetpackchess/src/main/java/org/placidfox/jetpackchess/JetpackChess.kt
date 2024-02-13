@@ -15,6 +15,7 @@ import org.placidfox.jetpackchess.controller.Controller
 import org.placidfox.jetpackchess.ui.board.BoardComposable
 import org.placidfox.jetpackchess.ui.control.PromotionDialog
 import org.placidfox.jetpackchess.ui.control.Toolbar
+import org.placidfox.jetpackchess.ui.game_info.GameInfoBar
 
 
 @Composable
@@ -26,6 +27,7 @@ fun JetpackChess(controller: Controller){
         horizontalAlignment = Alignment.CenterHorizontally){
 
         BoardComposable(controller.viewModel)
+        GameInfoBar(controller.viewModel)
         Toolbar(controller.viewModel)
 
         if(controller.viewModel.uiState.showPromotionDialog) {

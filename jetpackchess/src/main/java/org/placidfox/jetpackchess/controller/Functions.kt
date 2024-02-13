@@ -4,6 +4,7 @@ import org.placidfox.jetpackchess.model.board.Coordinate
 import org.placidfox.jetpackchess.model.game.parameters.CastlingStatus
 import org.placidfox.jetpackchess.model.game.parameters.EnPassantStatus
 import org.placidfox.jetpackchess.model.piece.*
+import org.placidfox.jetpackchess.ui.board.BoardColor
 
 
 fun splitPlayerTurn(fenHalfMove: String) : PlayerColor{
@@ -14,6 +15,8 @@ fun splitPlayerTurn(fenHalfMove: String) : PlayerColor{
     }
 
 }
+
+
 
 fun splitCastlingPossibilities(castlingPossibilities: String): CastlingStatus{
 
