@@ -27,12 +27,12 @@ class MainActivity : ComponentActivity() {
         //controller.newGame(PlayerColor.WHITE)
 
         val controller = PuzzleController()
-        controller.newPuzzle(openingwhite[0], openingwhite[1], PlayerColor.WHITE, 0)
+        controller.newPuzzleLichess(puzzlewhite[0], puzzlewhite[1])
 
-        /*
-        val controller = ScrollController()
-        controller.newVariation(puzzlewhitepromotion[0], puzzlewhitepromotion[1], PlayerColor.WHITE)
-        */
+
+        //val controller = ScrollController()
+        //controller.newVariation(puzzlewhitepromotion[0], puzzlewhitepromotion[1], PlayerColor.WHITE)
+
 
         super.onCreate(savedInstanceState)
         setContent {
@@ -52,28 +52,44 @@ class MainActivity : ComponentActivity() {
                             Text("Reset")
                         }
 
-                        Button(onClick = {   controller.newPuzzle(openingwhite[0], openingwhite[1], PlayerColor.WHITE, 0)}) {
-                            Text("Restrart")
-                        }
-
                         Text(controller.viewModel.uiState.status.toString())
 
 
+                        /// TEST CAPTURED PIECES
+                        Text(controller.viewModel.activePosition.capturedPieces.toString())
+
+                        /// TEST SCORES
+                        Text(controller.viewModel.uiState.score.toString())
+
+
+
+                        /*
+                        Button(
+                            onClick = { controller.viewModel.showHintSquare()},
+                            enabled = controller.viewModel.uiState.hintSquareButtonActive
+                        ) {
+                            Text("Hint")
+                        }
+                        */
+
+                        /*
                         Button(
                             colors =
                             when(controller.viewModel.uiState.status){
                                 STATUS.PENDING -> ButtonDefaults.buttonColors(Color.Gray)
-                                STATUS.SCROLLING -> TODO()
-                                STATUS.IN_PROGRESS_GAME -> TODO()
+                                STATUS.SCROLLING -> ButtonDefaults.buttonColors(Color.Gray) //TODO()
+                                STATUS.IN_PROGRESS_GAME -> ButtonDefaults.buttonColors(Color.Gray) //TODO()
                                 STATUS.IN_PROGRESS_OK -> ButtonDefaults.buttonColors(Color.Yellow)
                                 STATUS.IN_PROGRESS_WRONG -> ButtonDefaults.buttonColors(Color.Red)
-                                STATUS.FINISH_CHECKMATE -> TODO()
-                                STATUS.FINISH_STALEMATE -> TODO()
+                                STATUS.FINISH_CHECKMATE -> ButtonDefaults.buttonColors(Color.Gray) //TODO()
+                                STATUS.FINISH_STALEMATE -> ButtonDefaults.buttonColors(Color.Gray) //TODO()
                                 STATUS.FINISH_OK -> ButtonDefaults.buttonColors(Color.Green)
                                 STATUS.FINISH_WRONG -> ButtonDefaults.buttonColors(Color.Red)
                             }
                             , onClick = {println(controller.viewModel.uiState.status)}){
                         }
+
+                         */
                     }
                 }
 

@@ -27,15 +27,6 @@ fun JetpackChess(controller: Controller){
 
         BoardComposable(controller.viewModel)
         Toolbar(controller.viewModel)
-        /*
-        Button(
-            onClick = { controller.viewModel.showHintSquare()},
-            enabled = controller.viewModel.uiState.hintSquareButtonActive
-        ) {
-            Text("Hint")
-        }
-        */
-
 
         if(controller.viewModel.uiState.showPromotionDialog) {
             PromotionDialog(controller.viewModel)

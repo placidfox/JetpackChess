@@ -269,6 +269,8 @@ class GameViewModel (
 
         uiState.isActivePositionFirst = gameTimeline.isActivePositionFirst
         uiState.isActivePositionLast = gameTimeline.isActivePositionLast
+
+        uiState.score = activePosition.calculateScore(uiState.boardOrientation)
     }
 
 }

@@ -17,6 +17,8 @@ class UIState {
 
     var boardOrientation by mutableStateOf(PlayerColor.WHITE)
     var boardColor by mutableStateOf(BoardColor.Blue)
+
+    var score by mutableStateOf(0)
     
     var selectedSquare by mutableStateOf(emptyList<Coordinate>())
 
