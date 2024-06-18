@@ -16,7 +16,7 @@ import org.placidfox.jetpackchess.viewModel.GameViewModel
 fun SquareComposable(viewModel: GameViewModel, square: Square){
     Box(
         modifier = Modifier
-            .testTag(square.coordinate.textName) // TO DELETE ?
+
             .aspectRatio(1f)
             .background(
                 color = if (square.isLight) {
