@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
         //controller.newGame(PlayerColor.WHITE)
 
         val controller = PuzzleController()
-        controller.newPuzzleLichess(puzzlewhite[0], puzzlewhite[1])
+        controller.newPuzzleLichess(puzzlewhitepromotion[0], puzzlewhitepromotion[1])
 
 
         //val controller = ScrollController()
